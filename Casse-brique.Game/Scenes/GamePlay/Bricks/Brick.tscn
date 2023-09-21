@@ -1,18 +1,30 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4ilnbdabja5t"]
+[gd_scene load_steps=10 format=3 uid="uid://b4ilnbdabja5t"]
 
-[ext_resource type="Script" path="res://Scenes/GamePlay/Brick.cs" id="1_kgu1t"]
+[ext_resource type="Script" path="res://Scenes/GamePlay/Bricks/Brick.cs" id="1_8m6iy"]
+
+[sub_resource type="Gradient" id="Gradient_438g4"]
+offsets = PackedFloat32Array(0)
+colors = PackedColorArray(0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_krte0"]
+gradient = SubResource("Gradient_438g4")
+width = 100
+height = 20
+
+[sub_resource type="Gradient" id="Gradient_4s5xc"]
+offsets = PackedFloat32Array(0.502959, 1)
+colors = PackedColorArray(0.709804, 0, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ajc8s"]
+gradient = SubResource("Gradient_4s5xc")
+width = 98
+height = 18
+fill_from = Vector2(0.560345, 0.610153)
+fill_to = Vector2(1, 1)
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8lri8"]
 radius = 7.0
 height = 100.0
-
-[sub_resource type="Gradient" id="Gradient_3xtw4"]
-colors = PackedColorArray(0.858824, 0, 0, 1, 0.953115, 0.238724, 0.229868, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_jsw8i"]
-gradient = SubResource("Gradient_3xtw4")
-width = 100
-height = 20
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_exhmc"]
 radius = 7.0
@@ -27,40 +39,51 @@ radius = 7.0
 height = 20.0
 
 [node name="RigidBody2D" type="Node2D"]
-script = ExtResource("1_kgu1t")
+script = ExtResource("1_8m6iy")
+
+[node name="Border" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_krte0")
+
+[node name="Sprite2D" type="Sprite2D" parent="Border"]
+light_mask = 3
+visibility_layer = 3
+texture = SubResource("GradientTexture2D_ajc8s")
 
 [node name="TopArea" type="Area2D" parent="."]
+visible = false
 collision_mask = 2
 
 [node name="TopCollision" type="CollisionShape2D" parent="TopArea"]
+visible = false
 position = Vector2(0, -7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_8lri8")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-light_mask = 3
-visibility_layer = 3
-texture = SubResource("GradientTexture2D_jsw8i")
-
 [node name="BottomArea" type="Area2D" parent="."]
+visible = false
 collision_mask = 2
 
 [node name="BottomCollision" type="CollisionShape2D" parent="BottomArea"]
+visible = false
 position = Vector2(0, 8)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_exhmc")
 
 [node name="LeftArea" type="Area2D" parent="."]
+visible = false
 collision_mask = 2
 
 [node name="LeftCollision" type="CollisionShape2D" parent="LeftArea"]
+visible = false
 position = Vector2(-48, 0)
 shape = SubResource("CapsuleShape2D_bmwgl")
 
 [node name="RightArea" type="Area2D" parent="."]
+visible = false
 collision_mask = 2
 
 [node name="RightCollision" type="CollisionShape2D" parent="RightArea"]
+visible = false
 position = Vector2(48, 0)
 shape = SubResource("CapsuleShape2D_b3u5k")
 

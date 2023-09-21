@@ -8,8 +8,18 @@ namespace Cassebrique.Factory
     /// </summary>
     public class BrickFactory : IBrickFactory
     {
-        private const string BrickPath = "res://Scenes/GamePlay/Brick.tscn";
+        private const string BrickPath = "res://Scenes/GamePlay/Bricks/Brick.tscn";
+        private const string AcceleratorBrickPath = "res://Scenes/GamePlay/Bricks/AcceleratorBrick.tscn";
+        private const string DividerBrickPath = "res://Scenes/GamePlay/Bricks/DividerBrick.tscn";
+        private const string SturdyBrickPath = "res://Scenes/GamePlay/Bricks/SturdyBrick.tscn";
+        private const string TrulySturdyBrickPath = "res://Scenes/GamePlay/Bricks/TrulySturdyBrick.tscn";
+        private const string UnbreakableBrickPath = "res://Scenes/GamePlay/Bricks/UnbreakableBrick.tscn";
         private readonly PackedScene _brickPackedScene;
+        private readonly PackedScene _acceleratorPackedScene;
+        private readonly PackedScene _dividerBrickPackedScene;
+        private readonly PackedScene _sturdyBrickPackedScene;
+        private readonly PackedScene _trulySturdyBrickPackedScene;
+        private readonly PackedScene _unbreakablePackedScene;
 
         #region Colors 
         private readonly Color NormalColor = Color.Color8(255, 0, 0, 255);
@@ -25,6 +35,11 @@ namespace Cassebrique.Factory
         public BrickFactory()
         {
             _brickPackedScene = ResourceLoader.Load<PackedScene>(BrickPath);
+            _acceleratorPackedScene = ResourceLoader.Load<PackedScene>(AcceleratorBrickPath);
+            _dividerBrickPackedScene = ResourceLoader.Load<PackedScene>(DividerBrickPath);
+            _sturdyBrickPackedScene = ResourceLoader.Load<PackedScene>(SturdyBrickPath);
+            _trulySturdyBrickPackedScene = ResourceLoader.Load<PackedScene>(TrulySturdyBrickPath);
+            _unbreakablePackedScene = ResourceLoader.Load<PackedScene>(UnbreakableBrickPath);
         }
 
         /// <summary>
@@ -34,34 +49,30 @@ namespace Cassebrique.Factory
         /// <returns></returns>
         public Brick CreateBrick(BrickDto model)
         {
-            var brick = _brickPackedScene.Instantiate() as Brick;
-            brick.Position = new Vector2(model.X, model.Y);
-            brick.BrickType = model.BrickType;
+            Brick brick;
+
             switch (model.BrickType)
             {
-                case BrickType.Normal:
-                    SetColor(brick, NormalColor);
-                    break;
                 case BrickType.Sturdy:
-                    brick.HP = 2;
-                    SetColor(brick, SturdyColor);
+                    brick = _sturdyBrickPackedScene.Instantiate<Brick>();
                     break;
                 case BrickType.TrulySturdy:
-                    brick.HP = 3;
-                    SetColor(brick, TrulySturdyColor);
+                    brick = _trulySturdyBrickPackedScene.Instantiate<Brick>();
                     break;
                 case BrickType.Divider:
-                    brick.IsDivider = true;
-                    SetColor(brick, DividerColor);
+                    brick = _dividerBrickPackedScene.Instantiate<Brick>();
                     break;
                 case BrickType.Accelerator:
-                    brick.IsAccelerator = true;
-                    SetColor(brick, AcceleratorColor);
+                    brick = _acceleratorPackedScene.Instantiate<Brick>();
                     break;
                 case BrickType.Unbreakable:
-                    brick.HP = -1;
+                    brick = _unbreakablePackedScene.Instantiate<Brick>();
+                    break;
+                default:
+                    brick = _brickPackedScene.Instantiate<Brick>();
                     break;
             }
+            brick.Position = new Vector2(model.X, model.Y);
             return brick;
         }
 

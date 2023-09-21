@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://cyto8li01dncw"]
+
+[ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_seais"]
+
+[sub_resource type="Gradient" id="Gradient_c5hxl"]
+colors = PackedColorArray(0.768627, 0.815686, 0, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vkxh3"]
+gradient = SubResource("Gradient_c5hxl")
+width = 98
+height = 18
+fill_from = Vector2(0.556035, 0.331897)
+fill_to = Vector2(0.974138, 0.969828)
+
+[node name="RigidBody2D" instance=ExtResource("1_seais")]
+BrickType = 4
+Points = 15
+IsDivider = true
+
+[node name="Sprite2D" parent="Border" index="0"]
+texture = SubResource("GradientTexture2D_vkxh3")

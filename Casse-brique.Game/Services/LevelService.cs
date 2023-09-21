@@ -30,7 +30,7 @@ namespace Cassebrique.Services
                     if (levelId == 2)
                         brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Sturdy;
                     if (levelId >= 3)
-                        brick.BrickType = (BrickType) rand.Next(0, 5);
+                        brick.BrickType = (BrickType) (rand.Next() %6);
                     bricks.Add(brick);
                 }
                 

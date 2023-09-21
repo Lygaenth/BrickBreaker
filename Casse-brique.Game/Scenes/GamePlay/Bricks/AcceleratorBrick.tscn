@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://dtr4vt0k0moxu"]
+
+[ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_jrnm5"]
+
+[node name="RigidBody2D" instance=ExtResource("1_jrnm5")]
+BrickType = 3
+Points = 15
+IsAccelerator = true
+
+[node name="TopArea" parent="." index="1"]
+visible = true
+
+[node name="TopCollision" parent="TopArea" index="0"]
+visible = true
+
+[node name="BottomArea" parent="." index="2"]
+visible = true
+
+[node name="BottomCollision" parent="BottomArea" index="0"]
+visible = true
+
+[node name="LeftArea" parent="." index="3"]
+visible = true
+
+[node name="LeftCollision" parent="LeftArea" index="0"]
+visible = true
+
+[node name="RightArea" parent="." index="4"]
+visible = true
+
+[node name="RightCollision" parent="RightArea" index="0"]
+visible = true
