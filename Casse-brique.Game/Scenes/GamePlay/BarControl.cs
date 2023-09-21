@@ -1,0 +1,57 @@
+using Godot;
+
+public partial class BarControl : Area2D
+{
+	[Export]
+	public int Speed { get; set; }
+
+    public bool CanMove { get; set; }
+
+    private Vector2 _screenSize;
+	private Vector2 _velocity;
+
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
+	{
+		_screenSize = GetViewportRect().Size;
+		_velocity = Vector2.Zero;
+    }
+
+	// Move bar on inputs
+    public override void _Process(double delta)
+	{
+		if (!CanMove)
+			return;
+
+		var velocity = Vector2.Zero;
+
+		if (Input.IsActionPressed("MoveLeft"))
+			velocity.X -= 1;
+
+		if (Input.IsActionPressed("MoveRight"))
+			velocity.X += 1;
+
+        _velocity = velocity;
+
+		var position = Position + velocity * Speed * (float)delta;
+		position.X = Mathf.Clamp(position.X, 50, _screenSize.X - 50);
+
+        Position = position;
+	}
+
+	/// <summary>
+	/// On ball collision
+	/// </summary>
+	/// <param name="body"></param>
+    private void OnAreaHit(Node2D body)
+    {
+        if (!(body is Ball ball) || ball.IsAttachedToBar)
+            return;
+
+        var velocity = ball.LinearVelocity;
+        velocity.Y = -1 * ball.Speed;
+		velocity.X += _velocity.X * ball.Speed;
+        ball.Bounce(true);
+        ball.LinearVelocity = velocity.Normalized() * ball.Speed;
+    }
+}

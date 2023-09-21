@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://n8fdffos2rhq"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/BarControl.cs" id="1_0io05"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d2y0r"]
+size = Vector2(105, 20)
+
+[sub_resource type="Gradient" id="Gradient_t3syw"]
+offsets = PackedFloat32Array(0.887574, 1)
+colors = PackedColorArray(0.00215783, 0.00335152, 0.0565643, 1, 0.100987, 0.334428, 0.675573, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_f0aq2"]
+gradient = SubResource("Gradient_t3syw")
+width = 100
+height = 10
+
+[node name="BarControl" type="Area2D"]
+collision_mask = 3
+script = ExtResource("1_0io05")
+Speed = 400
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_d2y0r")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_f0aq2")
+
+[connection signal="body_entered" from="." to="." method="OnAreaHit"]

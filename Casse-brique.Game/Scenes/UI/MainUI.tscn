@@ -1,0 +1,144 @@
+[gd_scene load_steps=10 format=3 uid="uid://bbxokb6d0ipw2"]
+
+[ext_resource type="Script" path="res://Scenes/UI/MainUI.cs" id="1_o2p6q"]
+[ext_resource type="Texture2D" uid="uid://c7kuddq75dq11" path="res://Images/Ball/BallHit.png" id="2_u04rg"]
+[ext_resource type="Texture2D" uid="uid://d1d4vpscbkixk" path="res://Images/Ball/Ball1.png" id="3_tspfg"]
+[ext_resource type="Texture2D" uid="uid://yawmit4mfrdb" path="res://Images/Brick/Brick.png" id="4_2jhrf"]
+[ext_resource type="Texture2D" uid="uid://c6sp63am6v4ei" path="res://Images/Brick/BrickShale2.png" id="5_mphhe"]
+[ext_resource type="Texture2D" uid="uid://bjrbflvyb1lur" path="res://Images/Brick/BrickShake3.png" id="6_k4blr"]
+[ext_resource type="Texture2D" uid="uid://dqu0pyamrv5pt" path="res://Images/Note.png" id="7_5vuxi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0ap0a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_u04rg")
+}],
+"loop": true,
+"name": &"Hit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tspfg")
+}],
+"loop": true,
+"name": &"Still",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_431o7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_2jhrf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_mphhe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2jhrf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_k4blr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2jhrf")
+}],
+"loop": false,
+"name": &"Shake",
+"speed": 20.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_2jhrf")
+}],
+"loop": true,
+"name": &"Still",
+"speed": 5.0
+}]
+
+[node name="Control" type="Control"]
+process_mode = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o2p6q")
+
+[node name="BrickLabel" type="Label" parent="."]
+layout_mode = 1
+offset_left = 50.0
+offset_top = 17.0
+offset_right = 179.0
+offset_bottom = 43.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "999"
+
+[node name="MessageLabel" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -33.5
+offset_top = -13.0
+offset_right = 33.5
+offset_bottom = 47.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 24
+text = "Message"
+
+[node name="MessageTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="LivesLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 42.0
+offset_right = 94.0
+offset_bottom = 68.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "999"
+
+[node name="LiveIcon" type="AnimatedSprite2D" parent="."]
+position = Vector2(30, 55)
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_0ap0a")
+animation = &"Still"
+
+[node name="LiveIconTimer" type="Timer" parent="LiveIcon"]
+wait_time = 0.5
+one_shot = true
+
+[node name="BrickIcon" type="AnimatedSprite2D" parent="."]
+position = Vector2(30, 30)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_431o7")
+animation = &"Shake"
+frame = 4
+frame_progress = 1.0
+
+[node name="ScoreIcon" type="Sprite2D" parent="."]
+position = Vector2(900, 30)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_5vuxi")
+
+[node name="ScoreLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 920.0
+offset_top = 17.0
+offset_right = 970.0
+offset_bottom = 40.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "99999"
+
+[connection signal="timeout" from="MessageTimer" to="." method="OnMessageTimerTimeout"]
+[connection signal="timeout" from="LiveIcon/LiveIconTimer" to="." method="OnLiveIconTimeout"]

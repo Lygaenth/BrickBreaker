@@ -1,0 +1,5 @@
+[gd_scene format=3 uid="uid://b0dv71t84om74"]
+
+[node name="HighScoreHttpRequest" type="HTTPRequest"]
+process_mode = 3
+timeout = 1.0

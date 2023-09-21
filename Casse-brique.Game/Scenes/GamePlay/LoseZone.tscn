@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr38lyywilen1"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/LoseZone.cs" id="1_pq4m6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qsarn"]
+size = Vector2(1000, 20)
+
+[node name="Area2D" type="Area2D"]
+collision_mask = 3
+script = ExtResource("1_pq4m6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_qsarn")
+
+[connection signal="body_entered" from="." to="." method="OnLoseZoneHit"]

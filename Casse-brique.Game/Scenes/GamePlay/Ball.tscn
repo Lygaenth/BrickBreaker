@@ -1,0 +1,59 @@
+[gd_scene load_steps=9 format=3 uid="uid://cei0skg7hfarg"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/Ball.cs" id="1_bdylk"]
+[ext_resource type="Texture2D" uid="uid://d1d4vpscbkixk" path="res://Images/Ball/Ball1.png" id="2_4npsg"]
+[ext_resource type="Texture2D" uid="uid://d2rw7rryists0" path="res://Images/Ball/Ball2.png" id="3_3d2v8"]
+[ext_resource type="Texture2D" uid="uid://ceot7ujhphucn" path="res://Images/Ball/Ball3.png" id="4_gmecr"]
+[ext_resource type="Texture2D" uid="uid://d6pgli1odsrw" path="res://Images/Ball/Ball4.png" id="5_dokjh"]
+[ext_resource type="AudioStream" uid="uid://cmju5ma7y2y2l" path="res://Sound/Bounce.mp3" id="6_6x84f"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x33xx"]
+radius = 15.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8ojtc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_4npsg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_3d2v8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_gmecr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_dokjh")
+}],
+"loop": true,
+"name": &"Moving",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_4npsg")
+}],
+"loop": true,
+"name": &"Still",
+"speed": 5.0
+}]
+
+[node name="Ball" type="RigidBody2D" groups=["balls"]]
+position = Vector2(-297, -65)
+collision_layer = 2
+gravity_scale = 0.0
+script = ExtResource("1_bdylk")
+Speed = 400
+DetachedSpeedBall = 400
+
+[node name="BallCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_x33xx")
+
+[node name="Ballsprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_8ojtc")
+animation = &"Moving"
+
+[node name="BounceSoundPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_6x84f")
+pitch_scale = 0.5

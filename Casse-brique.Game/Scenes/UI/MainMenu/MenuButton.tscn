@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddgpqpohuoktb"]
+
+[ext_resource type="Script" path="res://Scenes/UI/MainMenu/MenuButton.cs" id="1_fbckl"]
+[ext_resource type="Theme" uid="uid://dowqdyho3yy7w" path="res://Scenes/UI/MainMenu/DefaultButton.tres" id="1_fd161"]
+
+[node name="MenuButton" type="Button"]
+size_flags_vertical = 0
+theme = ExtResource("1_fd161")
+theme_override_font_sizes/font_size = 24
+text = "Start"
+script = ExtResource("1_fbckl")
+
+[connection signal="pressed" from="." to="." method="OnPressed"]
