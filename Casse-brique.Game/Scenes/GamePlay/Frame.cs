@@ -44,6 +44,8 @@ public partial class Frame : Node2D
 			{
 				GD.Print("Forcing rotation on frame");
 				vector = vector.Rotated(vector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
+				if (vector.X > 0)
+					vector.Y *= -1;
 			}
 			ball.LinearVelocity = vector* ball.Speed;
 		}

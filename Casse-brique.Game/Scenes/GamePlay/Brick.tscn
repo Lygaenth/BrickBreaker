@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://b4ilnbdabja5t"]
+[gd_scene load_steps=8 format=3 uid="uid://b4ilnbdabja5t"]
 
 [ext_resource type="Script" path="res://Scenes/GamePlay/Brick.cs" id="1_kgu1t"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_oyx63"]
-size = Vector2(100, 5)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8lri8"]
+radius = 7.0
+height = 100.0
 
 [sub_resource type="Gradient" id="Gradient_3xtw4"]
 colors = PackedColorArray(0.858824, 0, 0, 1, 0.953115, 0.238724, 0.229868, 1)
@@ -13,11 +14,17 @@ gradient = SubResource("Gradient_3xtw4")
 width = 100
 height = 20
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3yjje"]
-size = Vector2(100, 5)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_exhmc"]
+radius = 7.0
+height = 100.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_i4p57"]
-size = Vector2(5, 20)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bmwgl"]
+radius = 7.0
+height = 20.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b3u5k"]
+radius = 7.0
+height = 20.0
 
 [node name="RigidBody2D" type="Node2D"]
 script = ExtResource("1_kgu1t")
@@ -26,8 +33,9 @@ script = ExtResource("1_kgu1t")
 collision_mask = 2
 
 [node name="TopCollision" type="CollisionShape2D" parent="TopArea"]
-position = Vector2(0, -8)
-shape = SubResource("RectangleShape2D_oyx63")
+position = Vector2(0, -7)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_8lri8")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 light_mask = 3
@@ -39,21 +47,22 @@ collision_mask = 2
 
 [node name="BottomCollision" type="CollisionShape2D" parent="BottomArea"]
 position = Vector2(0, 8)
-shape = SubResource("RectangleShape2D_3yjje")
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_exhmc")
 
 [node name="LeftArea" type="Area2D" parent="."]
 collision_mask = 2
 
 [node name="LeftCollision" type="CollisionShape2D" parent="LeftArea"]
 position = Vector2(-48, 0)
-shape = SubResource("RectangleShape2D_i4p57")
+shape = SubResource("CapsuleShape2D_bmwgl")
 
 [node name="RightArea" type="Area2D" parent="."]
 collision_mask = 2
 
 [node name="RightCollision" type="CollisionShape2D" parent="RightArea"]
 position = Vector2(48, 0)
-shape = SubResource("RectangleShape2D_i4p57")
+shape = SubResource("CapsuleShape2D_b3u5k")
 
 [connection signal="body_entered" from="TopArea" to="." method="OnTopOrBottomAreaEntered"]
 [connection signal="body_entered" from="BottomArea" to="." method="OnTopOrBottomAreaEntered"]

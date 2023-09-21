@@ -45,6 +45,8 @@ public partial class Ball : RigidBody2D
 	[Signal]
 	public delegate void OnHitEventHandler();
 
+	private Vector2 _impulse = Vector2.Zero;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -71,46 +73,36 @@ public partial class Ball : RigidBody2D
 	        _collisionShape.Scale = Vector2.One * _scale;
     }
 
-    public override void _Process(double delta)
-	{
-		if (!CanMove)
-			return;
-
-        var velocity = Vector2.Zero;
-
-		if (IsAttachedToBar && !_launching)
+	/// <summary>
+	/// Force management
+	/// </summary>
+	/// <param name="state"></param>
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    {
+		if (IsAttachedToBar)
 		{
+			var velocity = new Vector2();
 			if (Input.IsActionPressed("MoveLeft"))
 				velocity.X -= 1;
 
 			if (Input.IsActionPressed("MoveRight"))
 				velocity.X += 1;
 
-			if (Input.IsActionJustPressed("Action"))
-			{
-				CanMove = false;
+            if (Input.IsActionJustPressed("Action"))
+            {
                 IsAttachedToBar = false;
-                _launching = true;
-				velocity.Y -= 1;
-				GD.Print("Position X: "+Position.X);
-				Launch();
-				LinearVelocity = velocity * Speed;
-                GD.Print("Position after launch X: " + Position.X);
+                Launch();
+                ApplyImpulse(Vector2.Up * Speed);
+                return;
             }
-			else
-			{
-				GD.Print("Clamp for whatever reason");
-				var position= Position + velocity * Speed * (float)delta;
-                position.X = Mathf.Clamp(position.X, 50, _screenSize.X - 50);
-				Position = position;
-            }
-        }
-        _sprite.FlipH = velocity.X >= 0;
+
+            LinearVelocity = velocity * Speed;
+		}
     }
 
-	/// <summary>
-	/// Accelerate the ball to max speed and max bonus
-	/// </summary>
+    /// <summary>
+    /// Accelerate the ball to max speed and max bonus
+    /// </summary>
     public void Accelerate()
 	{
 		Speed = (int)(GameConstants.BaseSpeed * 1.5);
@@ -148,7 +140,7 @@ public partial class Ball : RigidBody2D
 	/// </summary>
     public void Launch()
 	{
-		UpdateAnimation(MovingAnim);
+		//UpdateAnimation(MovingAnim);
 	}
 
 	/// <summary>

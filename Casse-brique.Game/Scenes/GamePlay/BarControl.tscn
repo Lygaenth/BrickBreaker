@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://n8fdffos2rhq"]
+[gd_scene load_steps=6 format=3 uid="uid://n8fdffos2rhq"]
 
 [ext_resource type="Script" path="res://Scenes/GamePlay/BarControl.cs" id="1_0io05"]
+[ext_resource type="AudioStream" uid="uid://cmju5ma7y2y2l" path="res://Sound/Bounce.mp3" id="2_l2lmw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d2y0r"]
 size = Vector2(105, 20)
@@ -24,5 +25,16 @@ shape = SubResource("RectangleShape2D_d2y0r")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("GradientTexture2D_f0aq2")
+
+[node name="BashTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="BashCoolDownTimer" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="BashSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_l2lmw")
+pitch_scale = 0.2
 
 [connection signal="body_entered" from="." to="." method="OnAreaHit"]

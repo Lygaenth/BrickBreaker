@@ -1,7 +1,9 @@
 using Cassebrique.Domain.API;
 using Cassebrique.Domain.Bricks;
 using Cassebrique.Factory;
+using Cassebrique.Scenes.UI;
 using Godot;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -66,8 +68,13 @@ public partial class Level : Node2D
     public void Initialize()
     {
         InitializeLevelSeries();
+        LoadAndStartGame();
+    }
+
+    private void LoadAndStartGame()
+    {
         LoadLevel();
-        StartGame();
+        StartGame();   
     }
 
     /// <summary>
@@ -75,7 +82,6 @@ public partial class Level : Node2D
     /// </summary>
     private void InitializeLevelSeries()
     {
-        StopParty();
         Lives = 3;
         Score = 0;
     }
@@ -113,7 +119,6 @@ public partial class Level : Node2D
         ball.Show();
 
         _numberOfBalls = 1;
-        ball.CanMove = true;
         _barControl.CanMove = true;
 
         CallDeferred(Node.MethodName.AddChild, ball);
@@ -142,22 +147,17 @@ public partial class Level : Node2D
     private async void LoadNextLevel()
     {
         StopParty();
-        _mainUI.ShowMessage("Level cleared !");
-
-        await Wait(2.0f);
 
         _currentLevel++;
-        _mainUI.ShowMessage("Level " + _currentLevel+" !");
 
-        await Wait(2.0f);
+        await _mainUI.ShowMessages(new List<TimedMessage>() { new TimedMessage("Level cleared !", 1.0f), new TimedMessage("Level " + _currentLevel + " !", 1.0f)});
 
-        LoadLevel();
-        StartGame();
+        LoadAndStartGame();
     }
     #endregion
 
     /// <summary>
-    /// Wait while message is displayed (kind of wrong since we're doing it to wait on message display in MainUI while not truly having a dependance)
+    /// Wait while message is displayed (bad behaviour of wrong since we're doing it to wait on message display in MainUI while not truly having a dependance)
     /// </summary>
     /// <param name="time"></param>
     /// <returns></returns>
@@ -173,6 +173,7 @@ public partial class Level : Node2D
     {
         _barControl.SetPhysicsProcess(false);
         _barControl.Hide();
+
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
     }
 
@@ -209,6 +210,7 @@ public partial class Level : Node2D
             return;
 
         var duplicatedBall = CreateBall(ball.Position);
+        duplicatedBall.CanMove = false;
         duplicatedBall.Rotation = ball.Rotation;
         GD.Randomize();
         var sign = GD.RandRange(0, 1) == 0 ? -1 : 1;
@@ -221,12 +223,13 @@ public partial class Level : Node2D
     /// <summary>
     /// On ball hit lose zone
     /// </summary>
-    private void OnBallHitLoseZone()
+    private async void OnBallHitLoseZone()
     {
-        GD.Print("lose zone hit");
         _numberOfBalls--;
         if (_numberOfBalls != 0 || _numberOfBricks == 0)
             return;
+
+        await Wait(0.5f);
 
         StopParty();
 
@@ -235,14 +238,14 @@ public partial class Level : Node2D
 
         if (Lives == 0)
         {
-            _mainUI.ShowMessage("You lost :(");
-
             EmitSignal(SignalName.OnFinalScore, Score);
+            await _mainUI.ShowMessage("You lost :(");
 
             InitializeLevelSeries();
             LoadLevel();   
         }
 
+        GD.Print("Starting game");
         StartGame();
     }
     #endregion

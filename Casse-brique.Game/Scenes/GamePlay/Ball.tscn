@@ -39,12 +39,14 @@ animations = [{
 }]
 
 [node name="Ball" type="RigidBody2D" groups=["balls"]]
-position = Vector2(-297, -65)
+position = Vector2(-297, -59)
 collision_layer = 2
 gravity_scale = 0.0
+can_sleep = false
 script = ExtResource("1_bdylk")
 Speed = 400
 DetachedSpeedBall = 400
+CanMove = true
 
 [node name="BallCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_x33xx")

@@ -1,4 +1,7 @@
+using Cassebrique.Scenes.UI;
 using Godot;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 /// <summary>
 /// Game UI during play 
@@ -14,7 +17,18 @@ public partial class MainUI : Control
     private AnimatedSprite2D _liveSprite;
 	private Timer _iconTimer;
 	private AnimatedSprite2D _brickSprite;
-    #endregion
+
+	private int _messageIndex = 0;
+	private List<string> _messagesBatch;
+	#endregion
+
+	[Signal]
+	public delegate void MessagesDisplayedEventHandler();
+
+	public MainUI()
+	{
+		_messagesBatch = new List<string>();
+	}
 
     /// <summary>
     /// Initializing node on ready
@@ -38,20 +52,42 @@ public partial class MainUI : Control
 	/// Display message for 2 secondes
 	/// </summary>
 	/// <param name="message"></param>
-    public void ShowMessage(string message)
+    public async Task ShowMessages(List<TimedMessage> messages)
 	{
-		_messageLabel.SetDeferred(Label.PropertyName.Text, message);
-		_messageLabel.Show();
-		_messageTimer.Start();
+		foreach(var message in messages)
+			await DisplayMessage(message);
 	}
 
-    /// <summary>
-    /// On time out hide message
-    /// </summary>
-    private void OnMessageTimerTimeout()
+	public async Task ShowMessage(string message)
+	{
+		await DisplayMessage(message);
+	}
+
+    private async Task DisplayMessage(TimedMessage TimedMessage)
     {
-        _messageLabel.Hide();
+        _messageLabel.SetDeferred(Label.PropertyName.Text, TimedMessage.Message);
+        _messageLabel.Show();
+		_messageTimer.WaitTime = TimedMessage.Time;
+        _messageTimer.Start();
+        await ToSignal(_messageTimer, Timer.SignalName.Timeout);
     }
+
+    private async Task DisplayMessage(string message)
+	{
+		_messageLabel.SetDeferred(Label.PropertyName.Text, message);
+        _messageLabel.Show();
+        _messageTimer.Start();
+		await ToSignal(_messageTimer, Timer.SignalName.Timeout);
+    }
+
+	/// <summary>
+	/// On time out hide message
+	/// </summary>
+	private void OnMessageTimerTimeout()
+	{
+		_messageLabel.Hide();
+		_messageTimer.WaitTime = 2.0f;
+	}
 	#endregion
 
 	/// <summary>
