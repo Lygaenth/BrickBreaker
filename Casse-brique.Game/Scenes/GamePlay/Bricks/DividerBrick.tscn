@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_seais"]
 
 [sub_resource type="Gradient" id="Gradient_c5hxl"]
-colors = PackedColorArray(0.768627, 0.815686, 0, 1, 1, 1, 1, 1)
+colors = PackedColorArray(0.82042, 0.453509, 0.087275, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_vkxh3"]
 gradient = SubResource("Gradient_c5hxl")

@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://bjrr6s02xjr3l"]
+
+[ext_resource type="Texture2D" uid="uid://bhkfrh4qm4jcc" path="res://Images/Bonus/Bonus1.png" id="1_f5bi2"]
+[ext_resource type="Texture2D" uid="uid://cgx38lhxe43n0" path="res://Images/Bonus/Bonus1_2.png" id="2_xbgs3"]
+[ext_resource type="Texture2D" uid="uid://by081vg3kx055" path="res://Images/Bonus/Bonus1_3.png" id="3_w0ski"]
+[ext_resource type="Texture2D" uid="uid://cp6y1nisqlfkl" path="res://Images/Bonus/Bonus1_4.png" id="4_e166c"]
+[ext_resource type="Script" path="res://Scenes/UI/Tracker/BallBonus.cs" id="5_dch77"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1h73s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_f5bi2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_xbgs3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_w0ski")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_e166c")
+}],
+"loop": true,
+"name": &"Active",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_f5bi2")
+}],
+"loop": true,
+"name": &"Inactive",
+"speed": 5.0
+}]
+
+[node name="Bonus" type="AnimatedSprite2D"]
+position = Vector2(10, 100)
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("SpriteFrames_1h73s")
+animation = &"Active"
+script = ExtResource("5_dch77")

@@ -6,7 +6,7 @@ using Godot;
 public partial class LoseZone : Area2D
 {
 	[Signal]
-	public delegate void BallHitLoseZoneEventHandler();
+	public delegate void BallHitLoseZoneEventHandler(int ID);
 
 	/// <summary>
 	/// On ball hitting this zone
@@ -18,6 +18,6 @@ public partial class LoseZone : Area2D
             return;
 
 		ball.QueueFree();
-		EmitSignal(SignalName.BallHitLoseZone);
+		EmitSignal(SignalName.BallHitLoseZone, ball.ID);
     }
 }

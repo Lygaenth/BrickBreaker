@@ -1,5 +1,6 @@
 using Cassebrique.Domain.Bricks;
 using Godot;
+using System;
 
 public partial class Brick : Node2D
 {
@@ -24,25 +25,39 @@ public partial class Brick : Node2D
     [Signal]
 	public delegate void OnBrickDestroyedEventHandler(int point);
 
-
-
+	private DateTime _lastHitTime;
 	private bool _hasDuplicated = false;
 	
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	Brick()
 	{
-
-    }
-
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+		_lastHitTime = DateTime.Now;
 	}
+
+	private bool CheckIsValid(Node2D body, out Ball ball)
+	{
+        var hitTime = DateTime.Now;
+		if (body is not Ball)
+		{
+			ball = null;
+			return false;
+		}
+
+		if ((hitTime - _lastHitTime).Milliseconds < 10)
+		{
+			ball = null;
+			return false;
+		}
+
+        _lastHitTime = hitTime;
+        ball = body as Ball;
+		return true;
+    }
 
     private void OnTopOrBottomAreaEntered(Node2D body)
 	{
-        if (body is not Ball ball)
-            return;
+		Ball ball;
+		if (!CheckIsValid(body, out ball))
+			return;
 
         var velocity = ball.LinearVelocity;
 		velocity.Y *= -1;
@@ -52,7 +67,8 @@ public partial class Brick : Node2D
 
 	private void OnLeftOrRightAreaEntered(Node2D body)
 	{
-        if (body is not Ball ball)
+        Ball ball;
+        if (!CheckIsValid(body, out ball))
             return;
 
         var velocity = ball.LinearVelocity;
@@ -62,15 +78,9 @@ public partial class Brick : Node2D
     }
 
     private void OnBrickHit(Ball ball, Vector2 velocity)
-	{		
+	{
 		ball.Bounce(IsBrickHeavy);
 		ball.LinearVelocity = velocity.Normalized() * (IsAccelerator ? 2 : 1) * ball.Speed;
-
-		if (IsDivider && !_hasDuplicated)
-		{
-			_hasDuplicated = true;
-			ball.MakeDuplicate();
-		}
 
 		HP--;
 		if (HP == 0)
@@ -78,5 +88,11 @@ public partial class Brick : Node2D
 			EmitSignal(SignalName.OnBrickDestroyed, Points*ball.Bonus);
             this.QueueFree();
 		}
-	}
+
+        if (IsDivider && !_hasDuplicated)
+        {
+            _hasDuplicated = true;
+            ball.RaiseDuplicate();
+        }
+    }
 }

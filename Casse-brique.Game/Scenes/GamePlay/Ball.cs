@@ -27,6 +27,8 @@ public partial class Ball : RigidBody2D
 
 	public float Bonus { get => (100f + _bonus * 10) / 100; }
 
+	public int ID { get; set; }
+
     [Export]
 	public bool IsAttachedToBar { get; set; }
 
@@ -43,7 +45,7 @@ public partial class Ball : RigidBody2D
     public delegate void OnDuplicateBallEventHandler(Ball ball);
 
 	[Signal]
-	public delegate void OnHitEventHandler();
+	public delegate void OnHitEventHandler(int ID, int intensity);
 
 	private Vector2 _impulse = Vector2.Zero;
 
@@ -91,7 +93,6 @@ public partial class Ball : RigidBody2D
             if (Input.IsActionJustPressed("Action"))
             {
                 IsAttachedToBar = false;
-                Launch();
                 ApplyImpulse(Vector2.Up * Speed);
                 return;
             }
@@ -132,16 +133,8 @@ public partial class Ball : RigidBody2D
 		else
 			_sprite.PlayBackwards(MovingAnim);
 
-		EmitSignal(SignalName.OnHit);
+		EmitSignal(SignalName.OnHit, ID, _bonus);
     }
-
-	/// <summary>
-	/// Launch ball
-	/// </summary>
-    public void Launch()
-	{
-		//UpdateAnimation(MovingAnim);
-	}
 
 	/// <summary>
 	/// Update current animation
@@ -156,7 +149,7 @@ public partial class Ball : RigidBody2D
 	/// <summary>
 	/// Raise an event to duplicate this ball
 	/// </summary>
-	public void MakeDuplicate()
+	public void RaiseDuplicate()
 	{
 		EmitSignal(SignalName.OnDuplicateBall, this);
 	}

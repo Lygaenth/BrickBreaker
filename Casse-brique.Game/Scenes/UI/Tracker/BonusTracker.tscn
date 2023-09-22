@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bs284i512ojmk"]
+
+[ext_resource type="Script" path="res://Scenes/UI/Tracker/BonusTracker.cs" id="1_g3v8n"]
+[ext_resource type="PackedScene" uid="uid://bjrr6s02xjr3l" path="res://Scenes/UI/Tracker/BallBonus.tscn" id="2_dtyob"]
+
+[node name="BonusTracker" type="Node2D" groups=["BonusTrackers"]]
+script = ExtResource("1_g3v8n")
+
+[node name="Bonus1" parent="." instance=ExtResource("2_dtyob")]
+position = Vector2(10, 90)
+
+[node name="Bonus2" parent="." instance=ExtResource("2_dtyob")]
+position = Vector2(15, 70)
+
+[node name="Bonus3" parent="." instance=ExtResource("2_dtyob")]
+position = Vector2(8, 50)
+
+[node name="Bonus4" parent="." instance=ExtResource("2_dtyob")]
+position = Vector2(11, 30)
+
+[node name="Bonus5" parent="." instance=ExtResource("2_dtyob")]
+position = Vector2(13, 10)

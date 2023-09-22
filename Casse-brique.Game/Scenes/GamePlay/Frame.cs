@@ -40,13 +40,6 @@ public partial class Frame : Node2D
 			}
 			ball.Bounce(true);
 			var vector = velocity.Normalized();
-			if (vector.Y < 0.1 && vector.Y > -0.1)
-			{
-				GD.Print("Forcing rotation on frame");
-				vector = vector.Rotated(vector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
-				if (vector.X > 0)
-					vector.Y *= -1;
-			}
 			ball.LinearVelocity = vector* ball.Speed;
 		}
 	}

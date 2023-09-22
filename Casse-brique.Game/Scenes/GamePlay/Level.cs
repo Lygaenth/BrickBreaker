@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 
 public partial class Level : Node2D
 {
+    private const string _bonusTrackerPackedScene = "res://Scenes/UI/Tracker/BonusTracker.tscn";
+
     #region SubNodes
     private MainUI _mainUI;
     private BarControl _barControl;
     private Marker2D _barStartMarker;
     private Marker2D _ballStartMarker;
+    private Marker2D _trackerStartMarker;
     #endregion
 
     [Signal]
@@ -22,8 +25,7 @@ public partial class Level : Node2D
     [Export]
     public PackedScene BallScene { get; set; }
 
-    [Export]
-    public PackedScene BrickScene { get; set; }
+    private PackedScene _bonusTrackerScene;
 
     [Export]
     public int Lives { get; set; }
@@ -31,11 +33,20 @@ public partial class Level : Node2D
     public int Score { get; set; }
 
     private int _numberOfBricks = 0;
-    private int _numberOfBalls = 0;
+    private int _numberOfBallsCreated = 0;
     private int _currentLevel = 1;
+
+    private readonly List<Ball> _balls;
+    private readonly List<BonusTracker> _bonusTrackers;
 
     private IBrickFactory _brickFactory;
     private ILevelService _levelService;
+
+    public Level()
+    {
+        _balls = new List<Ball>();
+        _bonusTrackers = new List<BonusTracker>();
+    }
 
     /// <summary>
     /// Initializing values since it cannot be passed through constructor
@@ -54,10 +65,13 @@ public partial class Level : Node2D
     /// </summary>
     public override void _Ready()
 	{
+        _bonusTrackerScene = ResourceLoader.Load<PackedScene>(_bonusTrackerPackedScene);
+
         _mainUI  = GetNode<MainUI>("MainUi");
         _barControl = GetNode<BarControl>("BarControl");
         _barStartMarker = GetNode<Marker2D>("BarStartPosition");
         _ballStartMarker = GetNode<Marker2D>("BallStartPosition");
+        _trackerStartMarker = GetNode<Marker2D>("TrackerStartPosition");
     }
 
     #region Loading and starting level
@@ -114,14 +128,13 @@ public partial class Level : Node2D
         _barControl.Position = _barStartMarker.Position;
         _barControl.Show();
 
+        _numberOfBallsCreated = 0;
         var ball = CreateBall(_ballStartMarker.Position);
         ball.IsAttachedToBar = true;
         ball.Show();
 
-        _numberOfBalls = 1;
         _barControl.CanMove = true;
-
-        CallDeferred(Node.MethodName.AddChild, ball);
+        AddChild(ball);
     }
     #endregion
 
@@ -175,6 +188,9 @@ public partial class Level : Node2D
         _barControl.Hide();
 
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
+        GetTree().CallGroup("BonusTrackers", Node.MethodName.QueueFree);
+        _balls.Clear();
+        _bonusTrackers.Clear();
     }
 
     #region Ball management
@@ -186,16 +202,28 @@ public partial class Level : Node2D
     private Ball CreateBall(Vector2 position)
     {
         var ball = BallScene.Instantiate<Ball>();
+        ball.ID = _numberOfBallsCreated++;
         ball.Scale = new Vector2(0.3f, 0.3f);
         ball.Position = position;
         ball.OnDuplicateBall += OnDuplicateBall;
         ball.OnHit += OnBallHit;
+        _balls.Add(ball);
+        GD.Print("Created ball: " + ball.ID);
         ball.Show();
-        _numberOfBalls++;
+
+        var bonusTracker = _bonusTrackerScene.Instantiate<BonusTracker>();
+        bonusTracker.ID = ball.ID;
+        bonusTracker.Scale *= (GD.Randf() + 0.5f);
+        _bonusTrackers.Add(bonusTracker);
+        AddChild(bonusTracker);
+        bonusTracker.Position = _trackerStartMarker.Position;
+        bonusTracker.ActivateLevel(0);
+        ball.OnHit += bonusTracker.OnAssociatedBallHit;
+        GD.Print("Created bonus tracker: " + bonusTracker.ID +"on existing "+_bonusTrackers.Count);
         return ball;
     }
 
-    private void OnBallHit()
+    private void OnBallHit(int ID, int intensity)
     {
         _mainUI.Hit();
     }
@@ -206,7 +234,8 @@ public partial class Level : Node2D
     /// <param name="ball"></param>
     private void OnDuplicateBall(Ball ball)
     {
-        if (_numberOfBalls >= 10)
+        GD.Print("Ball count: " + _balls.Count + " bricks count:" + _numberOfBricks);
+        if (_balls.Count >= 10 || _numberOfBricks == 0)
             return;
 
         var duplicatedBall = CreateBall(ball.Position);
@@ -214,8 +243,14 @@ public partial class Level : Node2D
         duplicatedBall.Rotation = ball.Rotation;
         GD.Randomize();
         var sign = GD.RandRange(0, 1) == 0 ? -1 : 1;
-        duplicatedBall.LinearVelocity = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 4);
-
+        var duplicatedVector = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 4);
+        if (duplicatedVector.Y < 0.1 && duplicatedVector.Y > -0.1)
+        {
+            duplicatedVector = duplicatedVector.Rotated(duplicatedVector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
+            if (duplicatedVector.X > 0)
+                duplicatedVector.Y *= -1;
+        }
+        duplicatedBall.LinearVelocity = duplicatedVector;
         CallDeferred(MethodName.AddChild, duplicatedBall);
         duplicatedBall.Show();
     }
@@ -223,10 +258,19 @@ public partial class Level : Node2D
     /// <summary>
     /// On ball hit lose zone
     /// </summary>
-    private async void OnBallHitLoseZone()
+    private async void OnBallHitLoseZone(int ID)
     {
-        _numberOfBalls--;
-        if (_numberOfBalls != 0 || _numberOfBricks == 0)
+        var ball = _balls.FirstOrDefault(b => b.ID == ID);
+
+        var associatedBonusTracker = _bonusTrackers.FirstOrDefault(t => t.ID == ID);
+        ball.OnHit -= associatedBonusTracker.OnAssociatedBallHit;
+        _bonusTrackers.Remove(associatedBonusTracker);
+        if (associatedBonusTracker != null)
+            associatedBonusTracker.QueueFree();
+
+        _balls.Remove(ball);
+
+        if (_balls.Count != 0 || _numberOfBricks == 0)
             return;
 
         await Wait(0.5f);

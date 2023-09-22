@@ -17,6 +17,7 @@ fill_to = Vector2(1, 0.00431034)
 HP = 4
 BrickType = 2
 Points = 50
+IsBrickHeavy = true
 
 [node name="Sprite2D" parent="Border" index="0"]
 texture = SubResource("GradientTexture2D_defpy")

@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://8j4rxn7fqj5v"]
+[gd_scene load_steps=9 format=3 uid="uid://8j4rxn7fqj5v"]
 
 [ext_resource type="PackedScene" uid="uid://n8fdffos2rhq" path="res://Scenes/GamePlay/BarControl.tscn" id="1_ohviu"]
 [ext_resource type="Script" path="res://Scenes/GamePlay/Level.cs" id="1_re4xy"]
 [ext_resource type="PackedScene" uid="uid://c5ad7h5hsqokc" path="res://Scenes/GamePlay/Frame.tscn" id="2_3lgnu"]
 [ext_resource type="PackedScene" uid="uid://cei0skg7hfarg" path="res://Scenes/GamePlay/Ball.tscn" id="2_kthgc"]
-[ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="3_gu14e"]
 [ext_resource type="PackedScene" uid="uid://cr38lyywilen1" path="res://Scenes/GamePlay/LoseZone.tscn" id="3_t3n81"]
 [ext_resource type="Texture2D" uid="uid://c4tjcghd5ffud" path="res://Images/Background.png" id="4_1glh8"]
 [ext_resource type="PackedScene" uid="uid://bbxokb6d0ipw2" path="res://Scenes/UI/MainUI.tscn" id="5_idg2a"]
@@ -24,7 +23,6 @@ animations = [{
 process_mode = 1
 script = ExtResource("1_re4xy")
 BallScene = ExtResource("2_kthgc")
-BrickScene = ExtResource("3_gu14e")
 
 [node name="ColorRect" type="AnimatedSprite2D" parent="."]
 position = Vector2(500, 500)
@@ -62,6 +60,9 @@ position = Vector2(515, 912)
 
 [node name="BallStartPosition" type="Marker2D" parent="."]
 position = Vector2(518, 895)
+
+[node name="TrackerStartPosition" type="Marker2D" parent="."]
+position = Vector2(508, 699)
 
 [node name="LoseZone" parent="." instance=ExtResource("3_t3n81")]
 position = Vector2(502, 963)
