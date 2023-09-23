@@ -28,9 +28,9 @@ namespace Cassebrique.Services
                     //if (levelId == 1)
                     //    brick.BrickType = BrickType.Normal;
                     //if (levelId == 2)
-                        brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Divider;
+                    //    brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Divider;
                     //if (levelId >= 3)
-                    //    brick.BrickType = (BrickType) (rand.Next() %6);
+                        brick.BrickType = (BrickType) (rand.Next() %6);
                     bricks.Add(brick);
                 }
                 

@@ -53,28 +53,60 @@ public partial class Brick : Node2D
 		return true;
     }
 
-    private void OnTopOrBottomAreaEntered(Node2D body)
+    private void OnTopAreaEntered(Node2D body)
 	{
 		Ball ball;
 		if (!CheckIsValid(body, out ball))
 			return;
 
         var velocity = ball.LinearVelocity;
-		velocity.Y *= -1;
-
-		OnBrickHit(ball, velocity);
+        if (velocity.Y > 0)
+        {
+            velocity.Y *= -1;
+            OnBrickHit(ball, velocity);
+        }
     }
 
-	private void OnLeftOrRightAreaEntered(Node2D body)
+	private void OnBottomAreaEntered(Node2D body)
 	{
         Ball ball;
         if (!CheckIsValid(body, out ball))
             return;
 
         var velocity = ball.LinearVelocity;
-        velocity.X *= -1;
+		if (velocity.Y < 0)
+		{
+			velocity.Y *= -1;
+			OnBrickHit(ball, velocity);
+		}
+    }
 
-        OnBrickHit(ball, velocity);
+	private void OnLeftAreaEntered(Node2D body)
+	{
+        Ball ball;
+        if (!CheckIsValid(body, out ball))
+            return;
+
+        var velocity = ball.LinearVelocity;
+        if (velocity.X > 0)
+        {
+            velocity.X *= -1;
+            OnBrickHit(ball, velocity);
+        }
+    }
+
+    private void OnRightAreaEntered(Node2D body)
+    {
+        Ball ball;
+        if (!CheckIsValid(body, out ball))
+            return;
+
+        var velocity = ball.LinearVelocity;
+        if (velocity.X < 0)
+        {
+            velocity.X *= -1;
+            OnBrickHit(ball, velocity);
+        }
     }
 
     private void OnBrickHit(Ball ball, Vector2 velocity)
@@ -83,7 +115,7 @@ public partial class Brick : Node2D
 		ball.LinearVelocity = velocity.Normalized() * (IsAccelerator ? 2 : 1) * ball.Speed;
 
 		HP--;
-		if (HP == 0)
+		if (HP <= 0 && BrickType != BrickType.Unbreakable)
 		{
 			EmitSignal(SignalName.OnBrickDestroyed, Points*ball.Bonus);
             this.QueueFree();

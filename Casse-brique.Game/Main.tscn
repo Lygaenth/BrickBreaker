@@ -5,5 +5,3 @@
 [node name="Main" type="Node"]
 process_mode = 3
 script = ExtResource("1_wk1af")
-
-[node name="HighScoreHttpRequest" type="HTTPRequest" parent="."]

@@ -1,16 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bwulgqmn7gnnw"]
+[gd_scene load_steps=3 format=3 uid="uid://bwulgqmn7gnnw"]
 
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_48rdd"]
-
-[sub_resource type="Gradient" id="Gradient_uduat"]
-colors = PackedColorArray(0.111197, 0.111197, 0.111197, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_krrsb"]
-gradient = SubResource("Gradient_uduat")
-width = 98
-height = 18
-fill_from = Vector2(0.0818966, 0.0517241)
-fill_to = Vector2(0.952586, 0.771552)
+[ext_resource type="Texture2D" uid="uid://c5nhuiwrxyxv7" path="res://Images/brickUnbreakable.png" id="2_enosf"]
 
 [node name="RigidBody2D" instance=ExtResource("1_48rdd")]
 HP = -1
@@ -19,4 +10,4 @@ Points = 0
 IsBrickHeavy = true
 
 [node name="Sprite2D" parent="Border" index="0"]
-texture = SubResource("GradientTexture2D_krrsb")
+texture = ExtResource("2_enosf")

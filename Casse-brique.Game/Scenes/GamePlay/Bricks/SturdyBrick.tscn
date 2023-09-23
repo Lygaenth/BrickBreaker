@@ -1,16 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cddnb3doyswej"]
+[gd_scene load_steps=3 format=3 uid="uid://cddnb3doyswej"]
 
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_yx37t"]
-
-[sub_resource type="Gradient" id="Gradient_6ebh4"]
-colors = PackedColorArray(0, 0.203922, 0, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_6i451"]
-gradient = SubResource("Gradient_6ebh4")
-width = 98
-height = 18
-fill_from = Vector2(0.775862, 0.547414)
-fill_to = Vector2(0.922414, 0.905172)
+[ext_resource type="Texture2D" uid="uid://vqy6s5belf4a" path="res://Images/brickSturdy.png" id="2_xdxix"]
 
 [node name="RigidBody2D" instance=ExtResource("1_yx37t")]
 HP = 2
@@ -19,4 +10,4 @@ Points = 20
 IsBrickHeavy = true
 
 [node name="Sprite2D" parent="Border" index="0"]
-texture = SubResource("GradientTexture2D_6i451")
+texture = ExtResource("2_xdxix")

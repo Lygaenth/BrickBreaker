@@ -187,6 +187,8 @@ public partial class Level : Node2D
         _barControl.SetPhysicsProcess(false);
         _barControl.Hide();
 
+        Score += _balls.Count * 100;
+
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
         GetTree().CallGroup("BonusTrackers", Node.MethodName.QueueFree);
         _balls.Clear();

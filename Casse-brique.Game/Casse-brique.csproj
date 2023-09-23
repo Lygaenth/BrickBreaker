@@ -5,6 +5,7 @@
     <RootNamespace>Cassebrique</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Casse-brique.DAL\Casse-brique.DAL.csproj" />
     <ProjectReference Include="..\Casse-brique.Domain\Casse-brique.Domain.csproj" />
   </ItemGroup>
 </Project>

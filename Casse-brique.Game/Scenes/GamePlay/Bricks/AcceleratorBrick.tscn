@@ -1,16 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtr4vt0k0moxu"]
+[gd_scene load_steps=3 format=3 uid="uid://dtr4vt0k0moxu"]
 
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_jrnm5"]
-
-[sub_resource type="Gradient" id="Gradient_1au83"]
-colors = PackedColorArray(0.896459, 0.917581, 0.259093, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_a8hpe"]
-gradient = SubResource("Gradient_1au83")
-width = 98
-height = 18
-fill_from = Vector2(0.625, 0.625)
-fill_to = Vector2(0.931035, 0.810345)
+[ext_resource type="Texture2D" uid="uid://hsf1ajjkaox0" path="res://Images/brickAccelerator.png" id="2_1n4eu"]
 
 [node name="RigidBody2D" instance=ExtResource("1_jrnm5")]
 BrickType = 3
@@ -18,28 +9,4 @@ Points = 15
 IsAccelerator = true
 
 [node name="Sprite2D" parent="Border" index="0"]
-texture = SubResource("GradientTexture2D_a8hpe")
-
-[node name="TopArea" parent="." index="1"]
-visible = true
-
-[node name="TopCollision" parent="TopArea" index="0"]
-visible = true
-
-[node name="BottomArea" parent="." index="2"]
-visible = true
-
-[node name="BottomCollision" parent="BottomArea" index="0"]
-visible = true
-
-[node name="LeftArea" parent="." index="3"]
-visible = true
-
-[node name="LeftCollision" parent="LeftArea" index="0"]
-visible = true
-
-[node name="RightArea" parent="." index="4"]
-visible = true
-
-[node name="RightCollision" parent="RightArea" index="0"]
-visible = true
+texture = ExtResource("2_1n4eu")

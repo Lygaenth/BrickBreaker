@@ -1,3 +1,5 @@
+using Casse_brique.DAL;
+using Casse_brique.DAL.API;
 using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
 using Casse_brique.Services;
@@ -18,6 +20,7 @@ public partial class Main : Node
     private readonly ILevelService _levelService;
     private IHighScoreService _highScoreService;
     private IBrickFactory _brickFactory;
+    private IHighScoreDal _highScoreDal;
     #endregion
 
     private bool _gameIsOn = false;
@@ -41,13 +44,14 @@ public partial class Main : Node
         _levelService = new LevelService();
         _brickFactory = new BrickFactory();
         _mainMenuPackedScene = ResourceLoader.Load<PackedScene>(MainMenuPath);
+        _highScoreDal = new HighScoreDal();
     }
 
     public override void _Ready()
     {
         _httpRequest = GetNode<HttpRequest>("/root/HighScoreHttpRequest");
-        _highScoreService = new LocalHighScoreService(); //new OnlineHighScoreService(_httpRequest);
-
+        _highScoreService = new LocalHighScoreService(_highScoreDal); //new OnlineHighScoreService(_httpRequest);
+        GD.Print(OS.GetExecutablePath());
         LoadMenu();
     }
 
@@ -156,6 +160,7 @@ public partial class Main : Node
 
     private void OnFinalScoreReceived(int score)
     {
+        GD.Print("Saving score");
         _highScoreService.PostScore(new Score(1, "User", score));
     }
 
