@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjrbflvyb1lur"
-path="res://.godot/imported/BrickShake3.png-54e62e07a296ce6fb85dda4486dbf291.ctex"
+uid="uid://vqy6s5belf4a"
+path="res://.godot/imported/brickSturdy.png-7216ff0b705915bca6821693f0269428.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Brick/BrickShake3.png"
-dest_files=["res://.godot/imported/BrickShake3.png-54e62e07a296ce6fb85dda4486dbf291.ctex"]
+source_file="res://Images/Brick/brickSturdy.png"
+dest_files=["res://.godot/imported/brickSturdy.png-7216ff0b705915bca6821693f0269428.ctex"]
 
 [params]
 

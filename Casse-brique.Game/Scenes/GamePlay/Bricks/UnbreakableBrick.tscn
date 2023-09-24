@@ -1,13 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bwulgqmn7gnnw"]
+[gd_scene load_steps=4 format=3 uid="uid://bwulgqmn7gnnw"]
 
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_48rdd"]
-[ext_resource type="Texture2D" uid="uid://c5nhuiwrxyxv7" path="res://Images/brickUnbreakable.png" id="2_enosf"]
+[ext_resource type="Texture2D" uid="uid://c5nhuiwrxyxv7" path="res://Images/Brick/brickUnbreakable.png" id="2_ob2vb"]
+[ext_resource type="Script" path="res://Scenes/GamePlay/Bricks/UnbreakableBrick.cs" id="2_ovul3"]
 
-[node name="RigidBody2D" instance=ExtResource("1_48rdd")]
+[node name="RigidBody2D" groups=["UnbreakableBricks"] instance=ExtResource("1_48rdd")]
+script = ExtResource("2_ovul3")
 HP = -1
 BrickType = 5
-Points = 0
 IsBrickHeavy = true
 
 [node name="Sprite2D" parent="Border" index="0"]
-texture = ExtResource("2_enosf")
+texture = ExtResource("2_ob2vb")

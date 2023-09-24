@@ -14,14 +14,14 @@ namespace Casse_brique.DAL
         public HighScoreDal()
         {
             _scores = new List<Score>();
-            _scores.Add(new Score(1, "Bob", 1000));
-            _scores.Add(new Score(2, "Ted", 900));
-            _scores.Add(new Score(3, "NomBeaucoupTropLong", 800));
-            _scores.Add(new Score(4, "Nyx", 700));
-            _scores.Add(new Score(5, "Zagreus", 600));
-            _scores.Add(new Score(6, "Hades", 500));
-            _scores.Add(new Score(7, "Artemis", 400));
-            _scores.Add(new Score(8, "Athena", 300));
+            //_scores.Add(new Score(1, "Bob", 1000));
+            //_scores.Add(new Score(2, "Ted", 900));
+            //_scores.Add(new Score(3, "NomBeaucoupTropLong", 800));
+            //_scores.Add(new Score(4, "Nyx", 700));
+            //_scores.Add(new Score(5, "Zagreus", 600));
+            //_scores.Add(new Score(6, "Hades", 500));
+            //_scores.Add(new Score(7, "Artemis", 400));
+            //_scores.Add(new Score(8, "Athena", 300));
         }
 
         public List<ScoreDto> GetHighScores(int numberToDisplay)
@@ -73,7 +73,10 @@ namespace Casse_brique.DAL
 
         private int GetRankForNewScore(int score)
         {
-            return _scores.Last(s => s.Rank <= score).Rank+1;
+            if (!_scores.Any(s => s.Points <= score))
+                return 1;
+
+            return _scores.Last(s => s.Points <= score).Rank+1;
         }
 
         private void SaveFile()

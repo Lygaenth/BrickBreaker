@@ -115,16 +115,17 @@ public partial class Ball : RigidBody2D
 	/// Bounce on a surface and update internal stats
 	/// </summary>
 	/// <param name="isHeavy"></param>
-	public void Bounce(bool isHeavy)
+	public void Bounce(bool isHeavy, int bonusModifier)
 	{
 		_bounceSoundPlayer.PitchScale = isHeavy ? _lowPitch[GD.Randi() %_lowPitch.Length] : _highPitch[GD.Randi()%_highPitch.Length];
         _bounceSoundPlayer.Play();
 
-		if (isHeavy && _bonus > 0)
-			_bonus--;
-
-		if (!isHeavy && _bonus < 5)
-			_bonus++;
+		if (bonusModifier < 0 && _bonus + bonusModifier < 0)
+			_bonus = 0;
+		else if (bonusModifier > 0 && _bonus + bonusModifier > 5)
+			_bonus = 5;
+		else
+			_bonus += bonusModifier;
 
         Speed = GameConstants.BaseSpeed * (100 + _bonus * 10) / 100;
 

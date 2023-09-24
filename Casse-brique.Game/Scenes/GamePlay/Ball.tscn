@@ -41,7 +41,7 @@ animations = [{
 [node name="Ball" type="RigidBody2D" groups=["balls"]]
 position = Vector2(-297, -59)
 collision_layer = 2
-gravity_scale = 0.0
+gravity_scale = 0.01
 can_sleep = false
 script = ExtResource("1_bdylk")
 Speed = 400

@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://Scenes/UI/MainUI.cs" id="1_o2p6q"]
 [ext_resource type="Texture2D" uid="uid://c7kuddq75dq11" path="res://Images/Ball/BallHit.png" id="2_u04rg"]
 [ext_resource type="Texture2D" uid="uid://d1d4vpscbkixk" path="res://Images/Ball/Ball1.png" id="3_tspfg"]
-[ext_resource type="Texture2D" uid="uid://yawmit4mfrdb" path="res://Images/Brick/Brick.png" id="4_2jhrf"]
-[ext_resource type="Texture2D" uid="uid://c6sp63am6v4ei" path="res://Images/Brick/BrickShale2.png" id="5_mphhe"]
-[ext_resource type="Texture2D" uid="uid://bjrbflvyb1lur" path="res://Images/Brick/BrickShake3.png" id="6_k4blr"]
+[ext_resource type="Texture2D" uid="uid://yawmit4mfrdb" path="res://Images/Brick/BrickIcon/Brick.png" id="4_c1ax8"]
+[ext_resource type="Texture2D" uid="uid://c6sp63am6v4ei" path="res://Images/Brick/BrickIcon/BrickShale2.png" id="5_piga1"]
+[ext_resource type="Texture2D" uid="uid://bjrbflvyb1lur" path="res://Images/Brick/BrickIcon/BrickShake3.png" id="6_3qnlq"]
 [ext_resource type="Texture2D" uid="uid://dqu0pyamrv5pt" path="res://Images/Note.png" id="7_5vuxi"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0ap0a"]
@@ -31,19 +31,19 @@ animations = [{
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_2jhrf")
+"texture": ExtResource("4_c1ax8")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_mphhe")
+"texture": ExtResource("5_piga1")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_2jhrf")
+"texture": ExtResource("4_c1ax8")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_k4blr")
+"texture": ExtResource("6_3qnlq")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_2jhrf")
+"texture": ExtResource("4_c1ax8")
 }],
 "loop": false,
 "name": &"Shake",
@@ -51,7 +51,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_2jhrf")
+"texture": ExtResource("4_c1ax8")
 }],
 "loop": true,
 "name": &"Still",

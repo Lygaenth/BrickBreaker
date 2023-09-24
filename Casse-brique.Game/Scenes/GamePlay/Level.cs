@@ -160,6 +160,7 @@ public partial class Level : Node2D
     private async void LoadNextLevel()
     {
         StopParty();
+        GetTree().CallGroup("UnbreakableBricks", Node.MethodName.QueueFree);
 
         _currentLevel++;
 
@@ -221,7 +222,6 @@ public partial class Level : Node2D
         bonusTracker.Position = _trackerStartMarker.Position;
         bonusTracker.ActivateLevel(0);
         ball.OnHit += bonusTracker.OnAssociatedBallHit;
-        GD.Print("Created bonus tracker: " + bonusTracker.ID +"on existing "+_bonusTrackers.Count);
         return ball;
     }
 
@@ -246,7 +246,7 @@ public partial class Level : Node2D
         GD.Randomize();
         var sign = GD.RandRange(0, 1) == 0 ? -1 : 1;
         var duplicatedVector = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 4);
-        if (duplicatedVector.Y < 0.1 && duplicatedVector.Y > -0.1)
+        if (duplicatedVector.Y < 0.3 && duplicatedVector.Y > -0.3)
         {
             duplicatedVector = duplicatedVector.Rotated(duplicatedVector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
             if (duplicatedVector.X > 0)

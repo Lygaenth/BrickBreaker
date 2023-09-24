@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5nhuiwrxyxv7"
-path="res://.godot/imported/brickUnbreakable.png-84886dc676218261a2c0410318d24810.ctex"
+uid="uid://chp0kmqvaw1au"
+path="res://.godot/imported/BrickDivider.png-246d277fd17393dfc9cba7f50385a84d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/brickUnbreakable.png"
-dest_files=["res://.godot/imported/brickUnbreakable.png-84886dc676218261a2c0410318d24810.ctex"]
+source_file="res://Images/Brick/BrickDivider.png"
+dest_files=["res://.godot/imported/BrickDivider.png-246d277fd17393dfc9cba7f50385a84d.ctex"]
 
 [params]
 

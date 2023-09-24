@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hsf1ajjkaox0"
-path="res://.godot/imported/brickAccelerator.png-f2d202a815413c2f595a515fcf4f67aa.ctex"
+uid="uid://c6sp63am6v4ei"
+path="res://.godot/imported/BrickShale2.png-2962b03bc25ff792e474445bc05cd795.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/brickAccelerator.png"
-dest_files=["res://.godot/imported/brickAccelerator.png-f2d202a815413c2f595a515fcf4f67aa.ctex"]
+source_file="res://Images/Brick/BrickIcon/BrickShale2.png"
+dest_files=["res://.godot/imported/BrickShale2.png-2962b03bc25ff792e474445bc05cd795.ctex"]
 
 [params]
 

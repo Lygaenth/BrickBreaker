@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vqy6s5belf4a"
-path="res://.godot/imported/brickSturdy.png-fdfad6668344d1a340a0d922d1c0cc3e.ctex"
+uid="uid://c5nhuiwrxyxv7"
+path="res://.godot/imported/brickUnbreakable.png-61aa6d2b64003c0655aa30cf9f127280.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/brickSturdy.png"
-dest_files=["res://.godot/imported/brickSturdy.png-fdfad6668344d1a340a0d922d1c0cc3e.ctex"]
+source_file="res://Images/Brick/brickUnbreakable.png"
+dest_files=["res://.godot/imported/brickUnbreakable.png-61aa6d2b64003c0655aa30cf9f127280.ctex"]
 
 [params]
 

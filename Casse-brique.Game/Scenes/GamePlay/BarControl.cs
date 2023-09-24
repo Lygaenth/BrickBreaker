@@ -91,7 +91,7 @@ public partial class BarControl : Area2D
         var velocity = ball.LinearVelocity;
         velocity.Y = -1 * ball.Speed;
 		velocity.X += _velocity.X * ball.Speed;
-        ball.Bounce(true);
+        ball.Bounce(true, 0);
         ball.LinearVelocity = velocity.Normalized() * (_isBashing ? new Vector2(1, 2) : Vector2.One) * ball.Speed;
     }
 }

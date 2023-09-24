@@ -1,5 +1,6 @@
 ﻿using Cassebrique.Domain.API;
 using Cassebrique.Domain.Bricks;
+using Godot;
 using System;
 using System.Collections.Generic;
 
@@ -32,6 +33,7 @@ namespace Cassebrique.Services
                     //if (levelId >= 3)
                         brick.BrickType = (BrickType) (rand.Next() %6);
                     bricks.Add(brick);
+                    GD.Print(brick.BrickType);
                 }
                 
             }

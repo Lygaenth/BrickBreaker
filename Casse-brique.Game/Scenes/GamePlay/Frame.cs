@@ -38,7 +38,7 @@ public partial class Frame : Node2D
 					velocity.X = velocity.Normalized().X * -1 * ball.Speed;
 					break;
 			}
-			ball.Bounce(true);
+			ball.Bounce(true, 0);
 			var vector = velocity.Normalized();
 			ball.LinearVelocity = vector* ball.Speed;
 		}

@@ -14,21 +14,14 @@ public partial class Brick : Node2D
     public int Points { get; set; } = 10;
 
 	[Export]
-    public bool IsDivider { get; set; }
-
-	[Export]
-    public bool IsAccelerator { get; set; }
-
-	[Export]
 	public bool IsBrickHeavy { get; set; }
 
     [Signal]
 	public delegate void OnBrickDestroyedEventHandler(int point);
 
 	private DateTime _lastHitTime;
-	private bool _hasDuplicated = false;
 	
-	Brick()
+	public Brick()
 	{
 		_lastHitTime = DateTime.Now;
 	}
@@ -109,22 +102,25 @@ public partial class Brick : Node2D
         }
     }
 
-    private void OnBrickHit(Ball ball, Vector2 velocity)
+    protected void RaiseBroken(Ball ball)
+    {
+        EmitSignal(SignalName.OnBrickDestroyed, Points * ball.Bonus);
+        this.QueueFree();
+    }
+
+    protected void ApplyBounceVelocity(Ball ball, Vector2 velocity, int speed)
+    {
+        ball.LinearVelocity = velocity.Normalized() * speed;
+    }
+
+    protected virtual void OnBrickHit(Ball ball, Vector2 velocity)
 	{
-		ball.Bounce(IsBrickHeavy);
-		ball.LinearVelocity = velocity.Normalized() * (IsAccelerator ? 2 : 1) * ball.Speed;
+		ball.Bounce(IsBrickHeavy, 1);
+        ApplyBounceVelocity(ball, velocity, ball.Speed);
 
-		HP--;
-		if (HP <= 0 && BrickType != BrickType.Unbreakable)
-		{
-			EmitSignal(SignalName.OnBrickDestroyed, Points*ball.Bonus);
-            this.QueueFree();
-		}
+        HP--;
 
-        if (IsDivider && !_hasDuplicated)
-        {
-            _hasDuplicated = true;
-            ball.RaiseDuplicate();
-        }
+        if (HP <= 0)
+            RaiseBroken(ball);
     }
 }

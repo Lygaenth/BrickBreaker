@@ -1,13 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://ngafaa0p48ur"]
+[gd_scene load_steps=4 format=3 uid="uid://ngafaa0p48ur"]
 
 [ext_resource type="PackedScene" uid="uid://b4ilnbdabja5t" path="res://Scenes/GamePlay/Bricks/Brick.tscn" id="1_q2wbe"]
-[ext_resource type="Texture2D" uid="uid://6gr3pdlw1041" path="res://Images/brickTrulySturdy.png" id="2_wlalf"]
+[ext_resource type="Script" path="res://Scenes/GamePlay/Bricks/SturdyBrick.cs" id="2_mhl2p"]
+[ext_resource type="Texture2D" uid="uid://6gr3pdlw1041" path="res://Images/Brick/brickTrulySturdy.png" id="2_nkbk5"]
 
 [node name="RigidBody2D" instance=ExtResource("1_q2wbe")]
+script = ExtResource("2_mhl2p")
 HP = 4
 BrickType = 2
 Points = 50
 IsBrickHeavy = true
 
 [node name="Sprite2D" parent="Border" index="0"]
-texture = ExtResource("2_wlalf")
+texture = ExtResource("2_nkbk5")

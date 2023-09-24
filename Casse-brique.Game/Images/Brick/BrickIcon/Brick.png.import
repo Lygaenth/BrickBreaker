@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chp0kmqvaw1au"
-path="res://.godot/imported/BrickDivider.png-2febcd8ca70e1d93006136a4438d4659.ctex"
+uid="uid://yawmit4mfrdb"
+path="res://.godot/imported/Brick.png-94ac38601ed168dd72db57b4d2e2339d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/BrickDivider.png"
-dest_files=["res://.godot/imported/BrickDivider.png-2febcd8ca70e1d93006136a4438d4659.ctex"]
+source_file="res://Images/Brick/BrickIcon/Brick.png"
+dest_files=["res://.godot/imported/Brick.png-94ac38601ed168dd72db57b4d2e2339d.ctex"]
 
 [params]
 

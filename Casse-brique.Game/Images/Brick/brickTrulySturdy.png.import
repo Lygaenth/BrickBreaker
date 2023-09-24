@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6gr3pdlw1041"
-path="res://.godot/imported/brickTrulySturdy.png-f964c4a42e64208f23fea46c07680b91.ctex"
+path="res://.godot/imported/brickTrulySturdy.png-be29bd33bd6a1d3e6a42fbf4e412fac2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/brickTrulySturdy.png"
-dest_files=["res://.godot/imported/brickTrulySturdy.png-f964c4a42e64208f23fea46c07680b91.ctex"]
+source_file="res://Images/Brick/brickTrulySturdy.png"
+dest_files=["res://.godot/imported/brickTrulySturdy.png-be29bd33bd6a1d3e6a42fbf4e412fac2.ctex"]
 
 [params]
 
