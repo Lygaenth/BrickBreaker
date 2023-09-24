@@ -13,13 +13,13 @@ namespace Casse_brique.Domain.Scoring
         /// <summary>
         /// UserID
         /// </summary>
-        public int UserID { get; private set; }
+        public int UserID { get; set; }
 
         [XmlElement]
         /// <summary>
         /// User name
         /// </summary>
-        public string UserName { get; private set; }
+        public string UserName { get; set; }
 
         [XmlElement]
         /// <summary>
@@ -32,6 +32,14 @@ namespace Casse_brique.Domain.Scoring
         /// Ranking of player's best score
         /// </summary>
         public int Rank { get; set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public Score()
+        {
+
+        }
 
         /// <summary>
         /// Constructor

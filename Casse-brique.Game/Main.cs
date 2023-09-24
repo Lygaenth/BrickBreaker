@@ -2,9 +2,9 @@ using Casse_brique.DAL;
 using Casse_brique.DAL.API;
 using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
-using Casse_brique.Services;
 using Cassebrique.Domain.API;
 using Cassebrique.Factory;
+using Cassebrique.Scenes.UI;
 using Cassebrique.Services;
 using Godot;
 
@@ -14,6 +14,7 @@ public partial class Main : Node
     private const string LevelPath = "res://Scenes/GamePlay/Level.tscn";
     private const string MainMenuPath = "res://Scenes/UI/MainMenu/MainMenu.tscn";
     private const string HighScorePath = "res://Scenes/UI/Scores/HighScores.tscn";
+    private const string ControlsPath = "res://Scenes/UI/InputControls.tscn";
     #endregion
 
     #region Services
@@ -24,7 +25,7 @@ public partial class Main : Node
     #endregion
 
     private bool _gameIsOn = false;
-    private bool _isInScoreScreen = false;
+    private ScreenType _currentScreen;
     private bool _paused = false;
 
     #region SubNodes
@@ -32,9 +33,12 @@ public partial class Main : Node
     private MainMenu _menu = null;
     private HighScores _highScores = null;
     private HttpRequest _httpRequest = null;
+    private InputControls _inputScreen = null;
     #endregion
 
-    private PackedScene _mainMenuPackedScene; 
+    private PackedScene _mainMenuPackedScene;
+    private PackedScene _highScoresScreenPackedScene;
+    private PackedScene _inputScreenPackedScene;
 
     /// <summary>
     /// Constructor
@@ -44,6 +48,9 @@ public partial class Main : Node
         _levelService = new LevelService();
         _brickFactory = new BrickFactory();
         _mainMenuPackedScene = ResourceLoader.Load<PackedScene>(MainMenuPath);
+        _highScoresScreenPackedScene = ResourceLoader.Load<PackedScene>(HighScorePath);
+        _inputScreenPackedScene = ResourceLoader.Load<PackedScene>(ControlsPath);
+
         _highScoreDal = new HighScoreDal();
     }
 
@@ -59,10 +66,17 @@ public partial class Main : Node
     {
         if (Input.IsActionJustPressed("DisplayMenu"))
         {
-            if (_isInScoreScreen)
+            GD.Print("Quit");
+            if (_currentScreen == ScreenType.Scores)
             {
                 if(_highScores.AllowNavigation)
                     OnQuitScoresRequested();
+                return;
+            }
+
+            if (_currentScreen == ScreenType.Inputs)
+            {
+                OnQuitInputRequested();
                 return;
             }
 
@@ -123,13 +137,12 @@ public partial class Main : Node
     private void OnRequestHighScores()
     {        
         _menu.QueueFree();
-        var mainMenuPackedScene = ResourceLoader.Load<PackedScene>(HighScorePath);
-        _highScores = mainMenuPackedScene.Instantiate<HighScores>();
+        _highScores = _highScoresScreenPackedScene.Instantiate<HighScores>();
         _highScores.Setup(_highScoreService);
         AddChild(_highScores);
         _highScores.OnQuitScoresRequested += OnQuitScoresRequested;
         _highScores.UpdateScores();
-        _isInScoreScreen = true;
+        _currentScreen = ScreenType.Scores;
     }
 
     /// <summary>
@@ -141,8 +154,26 @@ public partial class Main : Node
         _highScores.OnQuitScoresRequested -= OnQuitScoresRequested;
         _highScores.QueueFree();
         LoadMenu();
-        _isInScoreScreen = false;
+        _currentScreen = ScreenType.MainMenu;
     }
+
+    private void OnRequestInputs()
+    {
+        _menu.QueueFree();
+        _inputScreen = _inputScreenPackedScene.Instantiate<InputControls>();
+        AddChild(_inputScreen);
+        _currentScreen = ScreenType.Inputs;
+        _inputScreen.OnRequestQuit += OnQuitInputRequested;
+    }
+
+    private void OnQuitInputRequested()
+    {
+        _inputScreen.OnRequestQuit -= OnQuitInputRequested;
+        _inputScreen.QueueFree();
+        LoadMenu();
+        _currentScreen = ScreenType.MainMenu;
+    }
+
     #endregion
 
     #region Load components
@@ -174,6 +205,7 @@ public partial class Main : Node
         _menu.RequestStart += OnRequestStart;
         _menu.RequestRestart += OnRequestReset;
         _menu.RequestHighScore += OnRequestHighScores;
+        _menu.RequestControls += OnRequestInputs;
         AddChild(_menu);
     }
 
@@ -188,6 +220,7 @@ public partial class Main : Node
         _menu.RequestStart -= OnRequestStart;
         _menu.RequestRestart -= OnRequestReset;
         _menu.RequestHighScore -= OnRequestHighScores;
+        _menu.RequestControls -= OnRequestInputs;
         _menu.QueueFree();
     }
 

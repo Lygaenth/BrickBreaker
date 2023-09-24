@@ -18,13 +18,13 @@ namespace Cassebrique.Services
 
             var bricks = new List<BrickDto>();
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < 7; j++)
                 {
                     var brick = new BrickDto();
                     brick.Id = i * j + j;
-                    brick.X = i * 120 + 200;
+                    brick.X = i * 100 + 150;
                     brick.Y = j * 52 + 81;
                     //if (levelId == 1)
                     //    brick.BrickType = BrickType.Normal;

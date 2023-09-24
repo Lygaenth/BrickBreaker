@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using Cassebrique.Domain.Bricks;
 
 public partial class SturdyBrick : Brick
 {
@@ -36,6 +34,7 @@ public partial class SturdyBrick : Brick
                 break;
             case 1:
                 _sprite.Texture = _1HPImg;
+                IsBrickHeavy = false;
                 break;
             default:
                 RaiseBroken(ball);

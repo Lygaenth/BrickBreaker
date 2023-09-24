@@ -5,6 +5,7 @@ public partial class BarControl : Area2D
 	private Timer _bashEffectTimer;
 	private Timer _bashCdTimer;
 	private AudioStreamPlayer _bashSound;
+	private Sprite2D _bashSprite;
 
 	[Export]
 	public int Speed { get; set; }
@@ -26,6 +27,7 @@ public partial class BarControl : Area2D
 		_bashEffectTimer = GetNode<Timer>("BashTimer");
         _bashEffectTimer.Timeout += OnBashTimeout;
 		_bashCdTimer = GetNode<Timer>("BashCoolDownTimer");
+		_bashSprite = GetNode<Sprite2D>("AccentuationSprite");
         _bashCdTimer.Timeout += OnBashCdTimeout;
 		_bashSound = GetNode<AudioStreamPlayer>("BashSound");
 		_startPosition = Position;
@@ -35,6 +37,7 @@ public partial class BarControl : Area2D
     private void OnBashCdTimeout()
     {
 		_isBashInCoolDown = false;
+		_bashSprite.Show();
     }
 
     private void OnBashTimeout()
@@ -64,6 +67,7 @@ public partial class BarControl : Area2D
 			_bashSound.Play();
 			_bashEffectTimer.Start();
 			_bashCdTimer.Start();
+			_bashSprite.Hide();
 		}
 
 		if (!_isBashing && _isBashInCoolDown && Position.Y < _startPosition.Y)
@@ -91,7 +95,7 @@ public partial class BarControl : Area2D
         var velocity = ball.LinearVelocity;
         velocity.Y = -1 * ball.Speed;
 		velocity.X += _velocity.X * ball.Speed;
-        ball.Bounce(true, 0);
-        ball.LinearVelocity = velocity.Normalized() * (_isBashing ? new Vector2(1, 2) : Vector2.One) * ball.Speed;
+        ball.Bounce(true, _isBashing ? 5 : 0);
+        ball.LinearVelocity = velocity.Normalized() * ball.Speed;
     }
 }

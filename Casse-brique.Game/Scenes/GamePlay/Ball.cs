@@ -10,9 +10,10 @@ public partial class Ball : RigidBody2D
 	private const string MovingAnim = "Moving";
     private const string StillAnim = "Still";
     private const float PitchRatio = 1.0595f;
-    private float[] _highPitch = new float[] { 1, 1 / Mathf.Pow(PitchRatio, 2f), 1 / Mathf.Pow(PitchRatio, 4f), 1 / Mathf.Pow(PitchRatio, 6f), 1 / Mathf.Pow(PitchRatio, 7f), 1 / Mathf.Pow(PitchRatio, 8f), 1 / Mathf.Pow(PitchRatio, 10f), 1 / Mathf.Pow(PitchRatio, 12f) };
-    private float[] _lowPitch = new float[] { 0.5f, 0.5f / Mathf.Pow(PitchRatio, 4f), 0.5f / Mathf.Pow(PitchRatio, 8f), 0.5f / Mathf.Pow(PitchRatio, 12f), 0.5f / Mathf.Pow(PitchRatio, 14f), 0.5f / Mathf.Pow(PitchRatio, 16f), 0.5f / Mathf.Pow(PitchRatio, 10f), 0.5f / Mathf.Pow(PitchRatio, 12f) };
-
+	private float[] _highPitch = new float[] { 1, 1 / Mathf.Pow(PitchRatio, 4f), 1 / Mathf.Pow(PitchRatio, 7f), 1/ Mathf.Sqrt2 };// 1 / Mathf.Pow(PitchRatio, 2f), 1 / Mathf.Pow(PitchRatio, 4f), 1 / Mathf.Pow(PitchRatio, 6f), 1 / Mathf.Pow(PitchRatio, 7f), 1 / Mathf.Pow(PitchRatio, 8f), 1 / Mathf.Pow(PitchRatio, 10f), 1 / Mathf.Pow(PitchRatio, 12f) };
+    private float[] _lowPitch = new float[] { 0.5f, 0.5f / Mathf.Pow(PitchRatio, 4f), 0.5f / Mathf.Pow(PitchRatio, 7f), 0.5f / Mathf.Sqrt2 };
+	private int _lowPitchIndex = 0;
+    private int _highPitchIndex = 0;
     #region subNodes
     private CollisionShape2D _collisionShape;
     private AnimatedSprite2D _sprite;
@@ -117,10 +118,15 @@ public partial class Ball : RigidBody2D
 	/// <param name="isHeavy"></param>
 	public void Bounce(bool isHeavy, int bonusModifier)
 	{
-		_bounceSoundPlayer.PitchScale = isHeavy ? _lowPitch[GD.Randi() %_lowPitch.Length] : _highPitch[GD.Randi()%_highPitch.Length];
+		_bounceSoundPlayer.PitchScale = isHeavy ? _lowPitch[_lowPitchIndex] : _highPitch[_highPitchIndex];
         _bounceSoundPlayer.Play();
 
-		if (bonusModifier < 0 && _bonus + bonusModifier < 0)
+		if (isHeavy)
+			_lowPitchIndex = (_lowPitchIndex+1) % 4;
+		else
+            _highPitchIndex = (_highPitchIndex + 1) % 4;
+
+        if (bonusModifier < 0 && _bonus + bonusModifier < 0)
 			_bonus = 0;
 		else if (bonusModifier > 0 && _bonus + bonusModifier > 5)
 			_bonus = 5;

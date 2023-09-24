@@ -56,7 +56,12 @@ namespace Casse_brique.DAL
             }
             else
             {
-                _scores.Insert(rank, new Score(userID, "undefined", score));
+                var newScore = new Score(userID, "undefined", score);
+                newScore.Rank = rank;
+                if (_scores.Count == 0)
+                    _scores.Add(newScore);
+                else
+                    _scores.Insert(rank, newScore);
             }
             SaveFile();
             return rank;

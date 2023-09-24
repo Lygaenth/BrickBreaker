@@ -1,6 +1,5 @@
 using Cassebrique.Scenes.UI.MainMenu;
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +21,9 @@ public partial class MainMenu : PanelContainer
 
     [Signal]
     public delegate void RequestHighScoreEventHandler();
+
+    [Signal]
+    public delegate void RequestControlsEventHandler();
 
     float[] _pitchScale = new[] { 0.1f, 0.2f, 0.5f, 1, 0.7f };
     int _pitchscaleIndex = 0;
@@ -95,6 +97,13 @@ public partial class MainMenu : PanelContainer
         highScoreButton.Text = "Scores";
         buttons.Add(highScoreButton);
 
+        // Control button
+        var controlsButton = _buttonPackedScene.Instantiate<MenuButton>();
+        controlsButton.Action = MenuAction.Controls;
+        controlsButton.Text = "Controls";
+        buttons.Add(controlsButton);
+
+        // Quit button
         var quitButton = _buttonPackedScene.Instantiate<MenuButton>();
         quitButton.Action = MenuAction.Quit;
         quitButton.Text = "Quit";
@@ -129,6 +138,9 @@ public partial class MainMenu : PanelContainer
             case MenuAction.HighScore:
                 OnScoreButtonPressed();
                 break;
+            case MenuAction.Controls:
+                OnControlsButtonPressed();
+                break;
             case MenuAction.Quit:
                 GetTree().Quit();
                 break;
@@ -149,4 +161,9 @@ public partial class MainMenu : PanelContainer
 	{
 		EmitSignal(SignalName.RequestHighScore);
 	}
+
+    private void OnControlsButtonPressed()
+    {
+        EmitSignal(SignalName.RequestControls);
+    }
 }

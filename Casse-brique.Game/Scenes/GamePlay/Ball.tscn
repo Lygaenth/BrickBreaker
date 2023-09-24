@@ -59,3 +59,4 @@ animation = &"Moving"
 [node name="BounceSoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_6x84f")
 pitch_scale = 0.5
+max_polyphony = 3

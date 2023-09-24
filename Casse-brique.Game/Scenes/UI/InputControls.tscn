@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://71h3mt7hoxgw"]
+
+[ext_resource type="Script" path="res://Scenes/UI/InputControls.cs" id="1_83n6p"]
+[ext_resource type="Texture2D" uid="uid://bmpfq8muyk083" path="res://Images/Controls.png" id="2_yavq7"]
+[ext_resource type="Texture2D" uid="uid://b7a76u7rpm8vt" path="res://Images/Controls_2.png" id="3_liphi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_lhii5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_yavq7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_liphi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="InputKey" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_83n6p")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.184314)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(500, 500)
+sprite_frames = SubResource("SpriteFrames_lhii5")
+autoplay = "default"
+frame_progress = 0.701488
