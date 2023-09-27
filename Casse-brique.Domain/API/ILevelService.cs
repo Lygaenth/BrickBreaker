@@ -1,4 +1,5 @@
-﻿using Cassebrique.Domain.Bricks;
+﻿using Casse_brique.Domain.API;
+using Cassebrique.Domain.Bricks;
 
 namespace Cassebrique.Domain.API
 {
@@ -7,6 +8,13 @@ namespace Cassebrique.Domain.API
     /// </summary>
     public interface ILevelService
     {
+        /// <summary>
+        /// Get level description
+        /// </summary>
+        /// <param name="levelId"></param>
+        /// <returns></returns>
+        LevelDto GetLevel(int levelId);
+
         /// <summary>
         /// Get level bricks
         /// </summary>

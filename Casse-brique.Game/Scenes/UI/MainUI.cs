@@ -17,6 +17,7 @@ public partial class MainUI : Control
     private AnimatedSprite2D _liveSprite;
 	private Timer _iconTimer;
 	private AnimatedSprite2D _brickSprite;
+	private Sprite2D _bossSprite;
 
 	private int _messageIndex = 0;
 	private List<string> _messagesBatch;
@@ -43,7 +44,7 @@ public partial class MainUI : Control
 		_brickLabel = GetNode<Label>("BrickLabel");
 		_scoreLabel = GetNode<Label>("ScoreLabel");
         _brickSprite = GetNode<AnimatedSprite2D>("BrickIcon");
-
+		_bossSprite = GetNode<Sprite2D>("BossSprite");
         _liveSprite.Play();
     }
 
@@ -122,6 +123,21 @@ public partial class MainUI : Control
 		_liveSprite.Animation = "Hit";
         _liveSprite.Play();
         _iconTimer.Start();
+	}
+
+	public void SwitchGameMode(GameObjective objective)
+	{
+		switch(objective)
+		{
+			case GameObjective.Bricks:
+				_brickSprite.Show();
+				_bossSprite.Hide();
+				break;
+			case GameObjective.Boss:
+				_brickSprite.Hide();
+				_bossSprite.Show();
+				break;
+		}
 	}
 
 	public void OnLiveIconTimeout()

@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://0lku5mqab5t4"]
+
+[ext_resource type="PackedScene" uid="uid://b0ow6mjoe4tdk" path="res://Scenes/GamePlay/Bosses/Boss.tscn" id="1_jvnu3"]
+
+[node name="Boss" instance=ExtResource("1_jvnu3")]
+
+[node name="Sprite" parent="." index="1"]
+frame = 0
+frame_progress = 0.0
+
+[node name="AttackTimer" type="Timer" parent="." index="2"]
+wait_time = 2.0

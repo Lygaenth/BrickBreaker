@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bbxokb6d0ipw2"]
+[gd_scene load_steps=11 format=3 uid="uid://bbxokb6d0ipw2"]
 
 [ext_resource type="Script" path="res://Scenes/UI/MainUI.cs" id="1_o2p6q"]
 [ext_resource type="Texture2D" uid="uid://c7kuddq75dq11" path="res://Images/Ball/BallHit.png" id="2_u04rg"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://c6sp63am6v4ei" path="res://Images/Brick/BrickIcon/BrickShale2.png" id="5_piga1"]
 [ext_resource type="Texture2D" uid="uid://bjrbflvyb1lur" path="res://Images/Brick/BrickIcon/BrickShake3.png" id="6_3qnlq"]
 [ext_resource type="Texture2D" uid="uid://dqu0pyamrv5pt" path="res://Images/Note.png" id="7_5vuxi"]
+[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/MozartSprite.png" id="8_eo6hd"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0ap0a"]
 animations = [{
@@ -139,6 +140,11 @@ offset_right = 970.0
 offset_bottom = 40.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "99999"
+
+[node name="BossSprite" type="Sprite2D" parent="."]
+position = Vector2(30, 30)
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("8_eo6hd")
 
 [connection signal="timeout" from="MessageTimer" to="." method="OnMessageTimerTimeout"]
 [connection signal="timeout" from="LiveIcon/LiveIconTimer" to="." method="OnLiveIconTimeout"]

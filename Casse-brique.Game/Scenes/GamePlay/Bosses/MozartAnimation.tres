@@ -1,0 +1,55 @@
+[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://c0eifsfu210wa"]
+
+[ext_resource type="Texture2D" uid="uid://cyfuwovysie42" path="res://Images/MozartSprite_Hit2.png" id="1_nnvbn"]
+[ext_resource type="Texture2D" uid="uid://c1v5grqc7v2v8" path="res://Images/Mozart_Hit3.png" id="2_3ov6f"]
+[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/MozartSprite.png" id="3_nocam"]
+[ext_resource type="Texture2D" uid="uid://200n5xu4ay6t" path="res://Images/MozartStillAngry_Hit2.png" id="4_5ykq0"]
+[ext_resource type="Texture2D" uid="uid://c7ed36tg0xnso" path="res://Images/MozartStillAngry.png" id="4_6fime"]
+[ext_resource type="Texture2D" uid="uid://dqqfvihfagli0" path="res://Images/MozartStillAngry_Hit3.png" id="5_b2chq"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nnvbn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_3ov6f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_nocam")
+}],
+"loop": false,
+"name": &"Hit",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_5ykq0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_b2chq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_6fime")
+}],
+"loop": false,
+"name": &"HitAngry",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_nocam")
+}],
+"loop": true,
+"name": &"Still",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_6fime")
+}],
+"loop": true,
+"name": &"StillAngry",
+"speed": 5.0
+}]

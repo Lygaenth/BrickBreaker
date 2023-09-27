@@ -4,6 +4,7 @@ using Cassebrique.Factory;
 using Cassebrique.Scenes.UI;
 using Godot;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,6 +18,8 @@ public partial class Level : Node2D
     private Marker2D _barStartMarker;
     private Marker2D _ballStartMarker;
     private Marker2D _trackerStartMarker;
+    public Path2D BossPath { get; set; }
+    public PathFollow2D BossPathFollow { get; set; }
     #endregion
 
     [Signal]
@@ -35,6 +38,7 @@ public partial class Level : Node2D
     private int _numberOfBricks = 0;
     private int _numberOfBallsCreated = 0;
     private int _currentLevel = 1;
+    private Boss _boss { get; set; }
 
     private readonly List<Ball> _balls;
     private readonly List<BonusTracker> _bonusTrackers;
@@ -72,9 +76,18 @@ public partial class Level : Node2D
         _barStartMarker = GetNode<Marker2D>("BarStartPosition");
         _ballStartMarker = GetNode<Marker2D>("BallStartPosition");
         _trackerStartMarker = GetNode<Marker2D>("TrackerStartPosition");
+        BossPath = GetNode<Path2D>("Path2D");
+        BossPathFollow = GetNode<PathFollow2D>("Path2D/PathFollow2D");
+
     }
 
     #region Loading and starting level
+
+    public override void _Process(double delta)
+    {
+        if (_boss != null)
+            BossPathFollow.Progress += (float)delta * _boss.Speed;
+    }
 
     /// <summary>
     /// Reset game
@@ -105,9 +118,27 @@ public partial class Level : Node2D
     /// </summary>
     private void LoadLevel()
     {
-        var bricks = _levelService.GetBricks(_currentLevel);
-        _numberOfBricks = bricks.Count(b => b.BrickType != BrickType.Unbreakable);
-        foreach (var brickDto in bricks)
+        var level = _levelService.GetLevel(_currentLevel);
+        BossPathFollow.Progress = 0;
+        _numberOfBricks = level.Bricks.Count(b => b.BrickType != BrickType.Unbreakable);
+        if (level.HasBoss)
+        {
+            var bossPackedScene = ResourceLoader.Load<PackedScene>(level.BossUri);
+            var boss = bossPackedScene.Instantiate() as Boss;
+            boss.HP = 10;
+            boss.Speed = 100;
+            _boss = boss;
+
+            BossPath.Curve.ClearPoints();
+            foreach(var point in level.BossPath)
+                BossPath.Curve.AddPoint(new Vector2(point.X, point.Y));
+            BossPathFollow.AddChild(boss);
+            _boss.BossHit += OnBossHit;
+            _boss.BossDestroyed += OnBossDestroyed;
+        }
+        _mainUI.SwitchGameMode(level.HasBoss ? GameObjective.Boss : GameObjective.Bricks);
+
+        foreach (var brickDto in level.Bricks)
         {
             var brick = _brickFactory.CreateBrick(brickDto);
             brick.OnBrickDestroyed += OnBrickDestroyed;
@@ -116,13 +147,32 @@ public partial class Level : Node2D
         }
     }
 
+    private void OnBossDestroyed()
+    {
+        Score += 1000;
+        _boss.BossHit -= OnBossHit;
+        _boss.BossDestroyed -= OnBossDestroyed;
+        _boss.QueueFree();
+        _boss = null;
+        LoadNextLevel();
+    }
+
+    private void OnBossHit(int hp)
+    {
+        _mainUI.UpdateRemainingBricks(hp);
+    }
+
     /// <summary>
     /// Start game
     /// </summary>
     private void StartGame()
     {
         _mainUI.UpdateLives(Lives);
-        _mainUI.UpdateRemainingBricks(_numberOfBricks);
+        if (_boss != null)
+            _mainUI.UpdateRemainingBricks(_boss.HP);
+        else
+            _mainUI.UpdateRemainingBricks(_numberOfBricks);
+
         _mainUI.UpdateScore(Score);
 
         _barControl.Position = _barStartMarker.Position;
@@ -134,7 +184,7 @@ public partial class Level : Node2D
         ball.Show();
 
         _barControl.CanMove = true;
-        AddChild(ball);
+        CallDeferred(MethodName.AddChild, ball);
     }
     #endregion
 
@@ -272,14 +322,23 @@ public partial class Level : Node2D
 
         _balls.Remove(ball);
 
-        if (_balls.Count != 0 || _numberOfBricks == 0)
+        if (_balls.Count != 0)
             return;
+
+        Lives--;
+
+        if (_boss != null && Lives >0)
+        {
+            GD.Print("QuickStartGame");
+            StartGame();
+            return;
+        }
 
         await Wait(0.5f);
 
         StopParty();
 
-        Lives--;
+
         _mainUI.UpdateLives(Lives);
 
         if (Lives == 0)

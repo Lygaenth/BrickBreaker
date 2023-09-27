@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://b0ow6mjoe4tdk"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/Bosses/Boss.cs" id="1_lpvc4"]
+[ext_resource type="SpriteFrames" uid="uid://c0eifsfu210wa" path="res://Scenes/GamePlay/Bosses/MozartAnimation.tres" id="2_up4ew"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tje8o"]
+radius = 100.0
+
+[node name="Boss" type="Node2D"]
+script = ExtResource("1_lpvc4")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_tje8o")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_up4ew")
+animation = &"HitAngry"
+
+[connection signal="body_entered" from="Area2D" to="." method="OnBossHit"]
