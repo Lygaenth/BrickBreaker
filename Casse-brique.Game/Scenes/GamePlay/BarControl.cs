@@ -19,6 +19,9 @@ public partial class BarControl : Area2D
 
 	private Vector2 _startPosition;
 
+	[Signal]
+	public delegate void HitByProjectileEventHandler(int damage);
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -89,13 +92,20 @@ public partial class BarControl : Area2D
 	/// <param name="body"></param>
     private void OnAreaHit(Node2D body)
     {
-        if (body is not Ball ball || ball.IsAttachedToBar)
-            return;
+		if (body is Ball ball && !ball.IsAttachedToBar)
+		{
+			var velocity = ball.LinearVelocity;
+			velocity.Y = -1 * ball.Speed;
+			velocity.X += _velocity.X * ball.Speed;
+			ball.Bounce(true, _isBashing ? 5 : 0);
+			ball.LinearVelocity = velocity.Normalized() * ball.Speed;
+		}
 
-        var velocity = ball.LinearVelocity;
-        velocity.Y = -1 * ball.Speed;
-		velocity.X += _velocity.X * ball.Speed;
-        ball.Bounce(true, _isBashing ? 5 : 0);
-        ball.LinearVelocity = velocity.Normalized() * ball.Speed;
+		if (body is Projectile projectile)
+		{
+			GD.Print("HitByProjectile");
+			EmitSignal(SignalName.HitByProjectile, -1);
+			projectile.QueueFree();
+		}
     }
 }

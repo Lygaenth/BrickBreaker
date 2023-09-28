@@ -13,9 +13,20 @@ public partial class Boss : Node2D
 	[Signal]
 	public delegate void BossHitEventHandler(int hp);
 
+	[Signal]
+	public delegate void BossSpawnProjectileEventHandler();
+
+	PackedScene _projectilePackedScene;
 	private AnimatedSprite2D _animatedSprite;
 	private bool _phase2;
 	private bool _isHit;
+
+	public Boss()
+	{
+		_projectilePackedScene = ResourceLoader.Load<PackedScene>("res://Scenes/GamePlay/Projectiles/Projectile.tscn");
+
+    }
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -68,4 +79,14 @@ public partial class Boss : Node2D
         _animatedSprite.Animation = _phase2 ? "StillAngry" : "Still";
 		_isHit = false;
     }
+
+    private void OnAttackTimeout()
+	{
+		EmitSignal(Boss.SignalName.BossSpawnProjectile);
+	}
+
+	public PackedScene GetProjectilePackedScene()
+	{
+		return _projectilePackedScene;
+	}
 }

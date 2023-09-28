@@ -20,4 +20,9 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_up4ew")
 animation = &"HitAngry"
 
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
 [connection signal="body_entered" from="Area2D" to="." method="OnBossHit"]
+[connection signal="timeout" from="AttackTimer" to="." method="OnAttackTimeout"]

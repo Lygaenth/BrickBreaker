@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://jy7of541bli"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/Projectiles/Projectile.cs" id="1_gisiu"]
+[ext_resource type="Texture2D" uid="uid://bgw0f1pn7ys3u" path="res://Images/Violon.png" id="1_yn8un"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kgy68"]
+size = Vector2(20, 40)
+
+[node name="Projectile" type="RigidBody2D" groups=["Projectiles"]]
+collision_layer = 2
+script = ExtResource("1_gisiu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_kgy68")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_yn8un")

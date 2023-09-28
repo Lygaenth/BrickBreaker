@@ -79,6 +79,16 @@ public partial class Level : Node2D
         BossPath = GetNode<Path2D>("Path2D");
         BossPathFollow = GetNode<PathFollow2D>("Path2D/PathFollow2D");
 
+        _barControl.HitByProjectile += OnBarHitByProjectile;
+    }
+
+    private async void OnBarHitByProjectile(int damage)
+    {
+        Lives += damage;
+        _mainUI.UpdateLives(Lives);
+        var isDead = await CheckDeath();
+        if (isDead)
+            StartGame();
     }
 
     #region Loading and starting level
@@ -135,6 +145,7 @@ public partial class Level : Node2D
             BossPathFollow.AddChild(boss);
             _boss.BossHit += OnBossHit;
             _boss.BossDestroyed += OnBossDestroyed;
+            _boss.BossSpawnProjectile += OnBossSpawnProjectile;
         }
         _mainUI.SwitchGameMode(level.HasBoss ? GameObjective.Boss : GameObjective.Bricks);
 
@@ -145,6 +156,13 @@ public partial class Level : Node2D
             CallDeferred(Node.MethodName.AddChild, brick);
             brick.Show();
         }
+    }
+
+    private void OnBossSpawnProjectile()
+    {
+        var projectile = _boss.GetProjectilePackedScene().Instantiate<Projectile>();
+        projectile.Position = (_boss.GlobalPosition - new Vector2(0, 10));
+        AddChild(projectile);
     }
 
     private void OnBossDestroyed()
@@ -240,6 +258,7 @@ public partial class Level : Node2D
 
         Score += _balls.Count * 100;
 
+        GetTree().CallGroup("Projectiles", Node.MethodName.QueueFree);
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
         GetTree().CallGroup("BonusTrackers", Node.MethodName.QueueFree);
         _balls.Clear();
@@ -341,17 +360,23 @@ public partial class Level : Node2D
 
         _mainUI.UpdateLives(Lives);
 
+        await CheckDeath();
+        StartGame();
+    }
+
+    private async Task<bool> CheckDeath()
+    {
         if (Lives == 0)
         {
             EmitSignal(SignalName.OnFinalScore, Score);
             await _mainUI.ShowMessage("You lost :(");
 
             InitializeLevelSeries();
-            LoadLevel();   
+            LoadLevel();
+            return true;
         }
 
-        GD.Print("Starting game");
-        StartGame();
+        return false;
     }
     #endregion
 }

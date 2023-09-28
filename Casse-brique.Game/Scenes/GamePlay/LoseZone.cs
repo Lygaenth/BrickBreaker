@@ -14,10 +14,18 @@ public partial class LoseZone : Area2D
 	/// <param name="body"></param>
 	public void OnLoseZoneHit(Node2D body)
 	{
-        if (body is not Ball ball)
-            return;
+		if (body is Ball ball)
+		{
+			ball.QueueFree();
+			EmitSignal(SignalName.BallHitLoseZone, ball.ID);
+			return;
+		}
 
-		ball.QueueFree();
-		EmitSignal(SignalName.BallHitLoseZone, ball.ID);
+		if(body is Projectile projectile)
+		{
+			GD.Print("projectile hit lose zone");
+			projectile.QueueFree();
+			return;
+		}
     }
 }
