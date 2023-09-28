@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ci8pfut1n4n38"
-path="res://.godot/imported/MozartSprite.png-c150be321d785b5261f426a102213e03.ctex"
+uid="uid://cyfuwovysie42"
+path="res://.godot/imported/MozartSprite_Hit2.png-1f660ec0aa0e047e1203de11c3de31ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/MozartSprite.png"
-dest_files=["res://.godot/imported/MozartSprite.png-c150be321d785b5261f426a102213e03.ctex"]
+source_file="res://Images/Boss/Mozart/MozartSprite_Hit2.png"
+dest_files=["res://.godot/imported/MozartSprite_Hit2.png-1f660ec0aa0e047e1203de11c3de31ac.ctex"]
 
 [params]
 

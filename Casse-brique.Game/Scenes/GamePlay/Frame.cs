@@ -20,11 +20,12 @@ public partial class Frame : Node2D
 
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="body"></param>
-	private void OnArea2dBodyEntered(Node2D body)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="body"></param>
+    private void OnArea2dBodyEntered(Node2D body)
 	{
 		if (body is Ball ball)
 		{
@@ -38,9 +39,9 @@ public partial class Frame : Node2D
 					velocity.X = velocity.Normalized().X * -1 * ball.Speed;
 					break;
 			}
-			ball.Bounce(true, 0);
+			ball.Bounce(true, -1);
 			var vector = velocity.Normalized();
-			ball.LinearVelocity = vector* ball.Speed;
+			ball.UpdateVelocity(vector * ball.Speed);
 		}
 	}
 }

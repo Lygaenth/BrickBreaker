@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://c6sp63am6v4ei" path="res://Images/Brick/BrickIcon/BrickShale2.png" id="5_piga1"]
 [ext_resource type="Texture2D" uid="uid://bjrbflvyb1lur" path="res://Images/Brick/BrickIcon/BrickShake3.png" id="6_3qnlq"]
 [ext_resource type="Texture2D" uid="uid://dqu0pyamrv5pt" path="res://Images/Note.png" id="7_5vuxi"]
-[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/MozartSprite.png" id="8_eo6hd"]
+[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/Boss/Mozart/MozartSprite.png" id="8_g2y6u"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_0ap0a"]
 animations = [{
@@ -144,7 +144,7 @@ text = "99999"
 [node name="BossSprite" type="Sprite2D" parent="."]
 position = Vector2(30, 30)
 scale = Vector2(0.05, 0.05)
-texture = ExtResource("8_eo6hd")
+texture = ExtResource("8_g2y6u")
 
 [connection signal="timeout" from="MessageTimer" to="." method="OnMessageTimerTimeout"]
 [connection signal="timeout" from="LiveIcon/LiveIconTimer" to="." method="OnLiveIconTimeout"]

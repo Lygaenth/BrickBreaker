@@ -1,0 +1,77 @@
+[gd_scene load_steps=7 format=3 uid="uid://n8fdffos2rhq"]
+
+[ext_resource type="Script" path="res://Scenes/GamePlay/BarControl/BarControl.cs" id="1_y212b"]
+[ext_resource type="Texture2D" uid="uid://cw4awqhhni4hb" path="res://Images/ControlBar.png" id="2_p82ba"]
+[ext_resource type="AudioStream" uid="uid://cmju5ma7y2y2l" path="res://Sound/Bounce.mp3" id="3_sy80h"]
+[ext_resource type="Texture2D" uid="uid://b4u7tccxaw42q" path="res://Images/Accentuation.png" id="4_o5x73"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d2y0r"]
+size = Vector2(105, 20)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ou8ue"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_p82ba")
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_p82ba")
+}, {
+"duration": 1.0,
+"texture": null
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_p82ba")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": false,
+"name": &"Hit",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_p82ba")
+}],
+"loop": true,
+"name": &"Still",
+"speed": 5.0
+}]
+
+[node name="BarControl" type="Area2D"]
+collision_mask = 3
+script = ExtResource("1_y212b")
+Speed = 400
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_d2y0r")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ou8ue")
+animation = &"Hit"
+
+[node name="BashTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="BashCoolDownTimer" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="BashSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_sy80h")
+pitch_scale = 0.2
+
+[node name="AccentuationSprite" type="Sprite2D" parent="."]
+position = Vector2(-40, -20)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_o5x73")
+
+[node name="BarSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_sy80h")
+pitch_scale = 0.15
+
+[connection signal="body_entered" from="." to="." method="OnAreaHit"]

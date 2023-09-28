@@ -38,12 +38,13 @@ public partial class Level : Node2D
     private int _numberOfBricks = 0;
     private int _numberOfBallsCreated = 0;
     private int _currentLevel = 1;
-    private Boss _boss { get; set; }
+    private Boss _boss;
 
     private readonly List<Ball> _balls;
     private readonly List<BonusTracker> _bonusTrackers;
 
     private IBrickFactory _brickFactory;
+    private IProjectileFactory _projectileFactory;
     private ILevelService _levelService;
 
     public Level()
@@ -57,10 +58,11 @@ public partial class Level : Node2D
     /// </summary>
     /// <param name="levelService"></param>
     /// <param name="brickFactory"></param>
-    public void Setup(ILevelService levelService, IBrickFactory brickFactory)
+    public void Setup(ILevelService levelService, IBrickFactory brickFactory, IProjectileFactory projectileFactory)
     {
         _levelService = levelService;
         _brickFactory = brickFactory;
+        _projectileFactory = projectileFactory;
         Initialize();
     }
 
@@ -88,7 +90,10 @@ public partial class Level : Node2D
         _mainUI.UpdateLives(Lives);
         var isDead = await CheckDeath();
         if (isDead)
+        {
+
             StartGame();
+        }
     }
 
     #region Loading and starting level
@@ -147,7 +152,7 @@ public partial class Level : Node2D
             _boss.BossDestroyed += OnBossDestroyed;
             _boss.BossSpawnProjectile += OnBossSpawnProjectile;
         }
-        _mainUI.SwitchGameMode(level.HasBoss ? GameObjective.Boss : GameObjective.Bricks);
+        _mainUI.SwitchGameMode(level.HasBoss ? LevelObjective.Boss : LevelObjective.Bricks);
 
         foreach (var brickDto in level.Bricks)
         {
@@ -160,8 +165,8 @@ public partial class Level : Node2D
 
     private void OnBossSpawnProjectile()
     {
-        var projectile = _boss.GetProjectilePackedScene().Instantiate<Projectile>();
-        projectile.Position = (_boss.GlobalPosition - new Vector2(0, 10));
+        var projectile = _projectileFactory.GetRandomProjectile();
+        projectile.Position = (_boss.GlobalPosition - new Vector2(0, 10)) + _boss.ProjectileSpawnPoint;
         AddChild(projectile);
     }
 
@@ -172,6 +177,7 @@ public partial class Level : Node2D
         _boss.BossDestroyed -= OnBossDestroyed;
         _boss.QueueFree();
         _boss = null;
+        Lives++;
         LoadNextLevel();
     }
 
@@ -257,6 +263,9 @@ public partial class Level : Node2D
         _barControl.Hide();
 
         Score += _balls.Count * 100;
+
+        if (_boss != null)
+            _boss.QueueFree();
 
         GetTree().CallGroup("Projectiles", Node.MethodName.QueueFree);
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
@@ -355,10 +364,9 @@ public partial class Level : Node2D
 
         await Wait(0.5f);
 
-        StopParty();
-
-
         _mainUI.UpdateLives(Lives);
+
+        StopParty();
 
         await CheckDeath();
         StartGame();
@@ -368,6 +376,8 @@ public partial class Level : Node2D
     {
         if (Lives == 0)
         {
+            _barControl.Hide();
+            StopParty();
             EmitSignal(SignalName.OnFinalScore, Score);
             await _mainUI.ShowMessage("You lost :(");
 

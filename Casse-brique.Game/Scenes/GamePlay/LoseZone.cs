@@ -23,7 +23,6 @@ public partial class LoseZone : Area2D
 
 		if(body is Projectile projectile)
 		{
-			GD.Print("projectile hit lose zone");
 			projectile.QueueFree();
 			return;
 		}

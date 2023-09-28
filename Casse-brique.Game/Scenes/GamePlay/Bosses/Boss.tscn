@@ -8,6 +8,7 @@ radius = 100.0
 
 [node name="Boss" type="Node2D"]
 script = ExtResource("1_lpvc4")
+ProjectileSpawnPoint = Vector2(40, 80)
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_mask = 2
@@ -18,7 +19,7 @@ shape = SubResource("CircleShape2D_tje8o")
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_up4ew")
-animation = &"HitAngry"
+animation = &"AttackingAngry"
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 2.0

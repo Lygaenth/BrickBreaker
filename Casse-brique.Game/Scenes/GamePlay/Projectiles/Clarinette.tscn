@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://cry0lfo70odij"]
+
+[ext_resource type="PackedScene" uid="uid://jy7of541bli" path="res://Scenes/GamePlay/Projectiles/Projectile.tscn" id="1_qdk6a"]
+[ext_resource type="Texture2D" uid="uid://ccrbd72aaqiub" path="res://Images/Boss/Projectiles/Clarinette.png" id="2_agnb0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6krsg"]
+size = Vector2(15, 60)
+
+[node name="Projectile" instance=ExtResource("1_qdk6a")]
+
+[node name="CollisionShape2D" parent="." index="0"]
+shape = SubResource("RectangleShape2D_6krsg")
+
+[node name="Sprite2D" parent="." index="1"]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_agnb0")

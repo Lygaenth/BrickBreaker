@@ -76,3 +76,4 @@ Enter={
 
 2d_physics/layer_1="Environnement"
 2d_physics/layer_2="Balls"
+2d_physics/layer_3="Projectiles"

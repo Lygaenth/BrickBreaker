@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7ed36tg0xnso"
-path="res://.godot/imported/MozartStillAngry.png-a368e3fcac25e011d9d3cd1f40513160.ctex"
+uid="uid://bgw0f1pn7ys3u"
+path="res://.godot/imported/Violon.png-0d3daef8657f58511a5de64b7d270906.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/MozartStillAngry.png"
-dest_files=["res://.godot/imported/MozartStillAngry.png-a368e3fcac25e011d9d3cd1f40513160.ctex"]
+source_file="res://Images/Boss/Projectiles/Violon.png"
+dest_files=["res://.godot/imported/Violon.png-0d3daef8657f58511a5de64b7d270906.ctex"]
 
 [params]
 

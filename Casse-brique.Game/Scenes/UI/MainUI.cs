@@ -125,15 +125,15 @@ public partial class MainUI : Control
         _iconTimer.Start();
 	}
 
-	public void SwitchGameMode(GameObjective objective)
+	public void SwitchGameMode(LevelObjective objective)
 	{
 		switch(objective)
 		{
-			case GameObjective.Bricks:
+			case LevelObjective.Bricks:
 				_brickSprite.Show();
 				_bossSprite.Hide();
 				break;
-			case GameObjective.Boss:
+			case LevelObjective.Boss:
 				_brickSprite.Hide();
 				_bossSprite.Show();
 				break;

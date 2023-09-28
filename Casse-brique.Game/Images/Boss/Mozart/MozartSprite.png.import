@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqqfvihfagli0"
-path="res://.godot/imported/MozartStillAngry_Hit3.png-fb17469e550a3c147dc3fef3699f346c.ctex"
+uid="uid://ci8pfut1n4n38"
+path="res://.godot/imported/MozartSprite.png-c08a282d66a67e597375dcfe7e4afbbd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/MozartStillAngry_Hit3.png"
-dest_files=["res://.godot/imported/MozartStillAngry_Hit3.png-fb17469e550a3c147dc3fef3699f346c.ctex"]
+source_file="res://Images/Boss/Mozart/MozartSprite.png"
+dest_files=["res://.godot/imported/MozartSprite.png-c08a282d66a67e597375dcfe7e4afbbd.ctex"]
 
 [params]
 

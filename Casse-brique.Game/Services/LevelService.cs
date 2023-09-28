@@ -15,12 +15,19 @@ namespace Cassebrique.Services
     {
         public LevelDto GetLevel(int levelId)
         {
-            if (levelId == 1)
-                return CreateMozartLevel();
-            
-            var level = new LevelDto();
-            level.Bricks = GetBricks(levelId);            
-            return level;
+            switch (levelId)
+            {
+                case 1:
+                    return CreateFirstLevel();
+                case 2:
+                    return CreateSecondLevel();
+                case 4:
+                    return CreateMozartLevel();
+                default:
+                    var level = new LevelDto();
+                    level.Bricks = GetBricks(levelId);
+                    return level;
+            }
         }
 
         public List<BrickDto> GetBricks(int levelId)
@@ -49,6 +56,42 @@ namespace Cassebrique.Services
                 }
             }
             return bricks;
+        }
+
+        private LevelDto CreateFirstLevel()
+        {
+            var firstLevel = new LevelDto();
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    var brick = new BrickDto();
+                    brick.Id = i * j + j;
+                    brick.X = i * 100 + 150;
+                    brick.Y = j * 52 + 81;
+                    brick.BrickType = BrickType.Normal;
+                    firstLevel.Bricks.Add(brick);
+                }
+            }
+            return firstLevel;
+        }
+
+        private LevelDto CreateSecondLevel()
+        {
+            var firstLevel = new LevelDto();
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    var brick = new BrickDto();
+                    brick.Id = i * j + j;
+                    brick.X = i * 100 + 150;
+                    brick.Y = j * 52 + 81;
+                    brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Divider;
+                    firstLevel.Bricks.Add(brick);
+                }
+            }
+            return firstLevel;
         }
 
         private LevelDto CreateMozartLevel()

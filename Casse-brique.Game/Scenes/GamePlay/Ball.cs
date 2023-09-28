@@ -11,7 +11,7 @@ public partial class Ball : RigidBody2D
     private const string StillAnim = "Still";
     private const float PitchRatio = 1.0595f;
 	private float[] _highPitch = new float[] { 1, 1 / Mathf.Pow(PitchRatio, 4f), 1 / Mathf.Pow(PitchRatio, 7f), 1/ Mathf.Sqrt2 };// 1 / Mathf.Pow(PitchRatio, 2f), 1 / Mathf.Pow(PitchRatio, 4f), 1 / Mathf.Pow(PitchRatio, 6f), 1 / Mathf.Pow(PitchRatio, 7f), 1 / Mathf.Pow(PitchRatio, 8f), 1 / Mathf.Pow(PitchRatio, 10f), 1 / Mathf.Pow(PitchRatio, 12f) };
-    private float[] _lowPitch = new float[] { 0.5f, 0.5f / Mathf.Pow(PitchRatio, 4f), 0.5f / Mathf.Pow(PitchRatio, 7f), 0.5f / Mathf.Sqrt2 };
+    private float[] _lowPitch = new float[] { 0.5f, 0.5f / Mathf.Pow(PitchRatio, 4f), 0.5f / Mathf.Pow(PitchRatio, 7f), 0.5f * Mathf.Pow(PitchRatio, 4f), 0.5f / Mathf.Sqrt2, 0.25f, 0.25f * Mathf.Pow(PitchRatio, 4f), };
 	private int _lowPitchIndex = 0;
     private int _highPitchIndex = 0;
     #region subNodes
@@ -25,6 +25,7 @@ public partial class Ball : RigidBody2D
 	private int _bonus = 0;
 	private bool _launching;
     private Vector2 _screenSize;
+	private int _rotationSpeed = 40;
 
 	public float Bonus { get => (100f + _bonus * 10) / 100; }
 
@@ -76,10 +77,10 @@ public partial class Ball : RigidBody2D
 	        _collisionShape.Scale = Vector2.One * _scale;
     }
 
-	/// <summary>
-	/// Force management
-	/// </summary>
-	/// <param name="state"></param>
+    /// <summary>
+    /// Force management
+    /// </summary>
+    /// <param name="state"></param>
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
 		if (IsAttachedToBar)
@@ -97,10 +98,16 @@ public partial class Ball : RigidBody2D
                 ApplyImpulse(Vector2.Up * Speed);
                 return;
             }
-
-            LinearVelocity = velocity * Speed;
-		}
+            UpdateVelocity(velocity * Speed);
+        }
     }
+
+    public void UpdateVelocity(Vector2 vector)
+    {
+		LinearVelocity = vector;
+        AngularVelocity = Mathf.Sign(LinearVelocity.X) * 5;
+    }
+
 
     /// <summary>
     /// Accelerate the ball to max speed and max bonus
@@ -122,7 +129,7 @@ public partial class Ball : RigidBody2D
         _bounceSoundPlayer.Play();
 
 		if (isHeavy)
-			_lowPitchIndex = (_lowPitchIndex+1) % 4;
+			_lowPitchIndex = (_lowPitchIndex+1) % _lowPitch.Length;
 		else
             _highPitchIndex = (_highPitchIndex + 1) % 4;
 
@@ -135,11 +142,6 @@ public partial class Ball : RigidBody2D
 
         Speed = GameConstants.BaseSpeed * (100 + _bonus * 10) / 100;
 
-        if (LinearVelocity.X >= 0)
-			_sprite.Play();
-		else
-			_sprite.PlayBackwards(MovingAnim);
-
 		EmitSignal(SignalName.OnHit, ID, _bonus);
     }
 
@@ -149,8 +151,8 @@ public partial class Ball : RigidBody2D
 	/// <param name="animationName"></param>
 	private void UpdateAnimation(string animationName)
 	{
-		_sprite.Animation = animationName;
-		_sprite.Play();
+		//_sprite.Animation = animationName;
+		//_sprite.Play();
     }
 
 	/// <summary>

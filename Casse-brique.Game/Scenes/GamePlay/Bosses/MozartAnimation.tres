@@ -1,23 +1,56 @@
-[gd_resource type="SpriteFrames" load_steps=7 format=3 uid="uid://c0eifsfu210wa"]
+[gd_resource type="SpriteFrames" load_steps=12 format=3 uid="uid://c0eifsfu210wa"]
 
-[ext_resource type="Texture2D" uid="uid://cyfuwovysie42" path="res://Images/MozartSprite_Hit2.png" id="1_nnvbn"]
-[ext_resource type="Texture2D" uid="uid://c1v5grqc7v2v8" path="res://Images/Mozart_Hit3.png" id="2_3ov6f"]
-[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/MozartSprite.png" id="3_nocam"]
-[ext_resource type="Texture2D" uid="uid://200n5xu4ay6t" path="res://Images/MozartStillAngry_Hit2.png" id="4_5ykq0"]
-[ext_resource type="Texture2D" uid="uid://c7ed36tg0xnso" path="res://Images/MozartStillAngry.png" id="4_6fime"]
-[ext_resource type="Texture2D" uid="uid://dqqfvihfagli0" path="res://Images/MozartStillAngry_Hit3.png" id="5_b2chq"]
+[ext_resource type="Texture2D" uid="uid://ddktma5jtrft0" path="res://Images/Boss/Mozart/MozartSpriteAttacking.png" id="1_57m8y"]
+[ext_resource type="Texture2D" uid="uid://b80narn42nup6" path="res://Images/Boss/Mozart/MozartAttack2.png" id="2_q6gr3"]
+[ext_resource type="Texture2D" uid="uid://ddigxggkxl814" path="res://Images/Boss/Mozart/MozartAttack3.png" id="3_4u3ih"]
+[ext_resource type="Texture2D" uid="uid://20x20stbd0th" path="res://Images/Boss/Mozart/MozartAttack2Angry.png" id="4_w56tp"]
+[ext_resource type="Texture2D" uid="uid://sewsh4v52jud" path="res://Images/Boss/Mozart/MozartAttack3Angry.png" id="5_p8ayh"]
+[ext_resource type="Texture2D" uid="uid://cyfuwovysie42" path="res://Images/Boss/Mozart/MozartSprite_Hit2.png" id="6_cj7wf"]
+[ext_resource type="Texture2D" uid="uid://c1v5grqc7v2v8" path="res://Images/Boss/Mozart/Mozart_Hit3.png" id="7_3un7x"]
+[ext_resource type="Texture2D" uid="uid://ci8pfut1n4n38" path="res://Images/Boss/Mozart/MozartSprite.png" id="8_uv3au"]
+[ext_resource type="Texture2D" uid="uid://200n5xu4ay6t" path="res://Images/Boss/Mozart/MozartStillAngry_Hit2.png" id="9_5045b"]
+[ext_resource type="Texture2D" uid="uid://dqqfvihfagli0" path="res://Images/Boss/Mozart/MozartStillAngry_Hit3.png" id="10_r37in"]
+[ext_resource type="Texture2D" uid="uid://c7ed36tg0xnso" path="res://Images/Boss/Mozart/MozartStillAngry.png" id="11_b5cr2"]
 
 [resource]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_nnvbn")
+"texture": ExtResource("1_57m8y")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_3ov6f")
+"texture": ExtResource("2_q6gr3")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_nocam")
+"texture": ExtResource("3_4u3ih")
+}],
+"loop": false,
+"name": &"Attacking",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_w56tp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_p8ayh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_p8ayh")
+}],
+"loop": false,
+"name": &"AttackingAngry",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_cj7wf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_3un7x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_uv3au")
 }],
 "loop": false,
 "name": &"Hit",
@@ -25,13 +58,13 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_5ykq0")
+"texture": ExtResource("9_5045b")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_b2chq")
+"texture": ExtResource("10_r37in")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_6fime")
+"texture": ExtResource("11_b5cr2")
 }],
 "loop": false,
 "name": &"HitAngry",
@@ -39,7 +72,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_nocam")
+"texture": ExtResource("8_uv3au")
 }],
 "loop": true,
 "name": &"Still",
@@ -47,7 +80,7 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_6fime")
+"texture": ExtResource("11_b5cr2")
 }],
 "loop": true,
 "name": &"StillAngry",

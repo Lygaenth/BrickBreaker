@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://8j4rxn7fqj5v"]
 
-[ext_resource type="PackedScene" uid="uid://n8fdffos2rhq" path="res://Scenes/GamePlay/BarControl.tscn" id="1_ohviu"]
+[ext_resource type="PackedScene" uid="uid://n8fdffos2rhq" path="res://Scenes/GamePlay/BarControl/BarControl.tscn" id="1_ohviu"]
 [ext_resource type="Script" path="res://Scenes/GamePlay/Level.cs" id="1_re4xy"]
 [ext_resource type="PackedScene" uid="uid://c5ad7h5hsqokc" path="res://Scenes/GamePlay/Frame.tscn" id="2_3lgnu"]
 [ext_resource type="PackedScene" uid="uid://cei0skg7hfarg" path="res://Scenes/GamePlay/Ball.tscn" id="2_kthgc"]
@@ -46,7 +46,7 @@ grow_vertical = 1
 
 [node name="BarControl" parent="." instance=ExtResource("1_ohviu")]
 position = Vector2(516, 910)
-Speed = 500
+Speed = 600
 
 [node name="TopFrame" parent="." instance=ExtResource("2_3lgnu")]
 position = Vector2(501, 0)

@@ -21,6 +21,7 @@ public partial class Main : Node
     private readonly ILevelService _levelService;
     private IHighScoreService _highScoreService;
     private IBrickFactory _brickFactory;
+    private IProjectileFactory _projectileFactory;
     private IHighScoreDal _highScoreDal;
     #endregion
 
@@ -47,6 +48,7 @@ public partial class Main : Node
     {
         _levelService = new LevelService();
         _brickFactory = new BrickFactory();
+        _projectileFactory = new ProjectileFactory();
         _mainMenuPackedScene = ResourceLoader.Load<PackedScene>(MainMenuPath);
         _highScoresScreenPackedScene = ResourceLoader.Load<PackedScene>(HighScorePath);
         _inputScreenPackedScene = ResourceLoader.Load<PackedScene>(ControlsPath);
@@ -186,7 +188,7 @@ public partial class Main : Node
         _level = levelPackedScene.Instantiate<Level>();
         _level.OnFinalScore += OnFinalScoreReceived;
         AddChild(_level);
-        _level.Setup(_levelService, _brickFactory);
+        _level.Setup(_levelService, _brickFactory, _projectileFactory);
     }
 
     private void OnFinalScoreReceived(int score)

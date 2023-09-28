@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgw0f1pn7ys3u"
-path="res://.godot/imported/Violon.png-8c099a5580cb6d5dc7e419c56a24144f.ctex"
+uid="uid://4myc744erlm3"
+path="res://.godot/imported/Piano.png-49f3c18b0e62c475b829578db30cd6e5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Violon.png"
-dest_files=["res://.godot/imported/Violon.png-8c099a5580cb6d5dc7e419c56a24144f.ctex"]
+source_file="res://Images/Boss/Projectiles/Piano.png"
+dest_files=["res://.godot/imported/Piano.png-49f3c18b0e62c475b829578db30cd6e5.ctex"]
 
 [params]
 
