@@ -2,8 +2,8 @@
 <ArrayOfScore xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Score>
     <UserID>1</UserID>
-    <UserName>undefined</UserName>
-    <Points>3905</Points>
+    <UserName>TEst</UserName>
+    <Points>733</Points>
     <Rank>1</Rank>
   </Score>
 </ArrayOfScore>

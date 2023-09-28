@@ -21,6 +21,8 @@ namespace Cassebrique.Services
                     return CreateFirstLevel();
                 case 2:
                     return CreateSecondLevel();
+                case 3:
+                    return CreateThirdLevel();
                 case 4:
                     return CreateMozartLevel();
                 default:
@@ -45,14 +47,8 @@ namespace Cassebrique.Services
                     brick.Id = i * j + j;
                     brick.X = i * 100 + 150;
                     brick.Y = j * 52 + 81;
-                    //if (levelId == 1)
-                    //    brick.BrickType = BrickType.Normal;
-                    //if (levelId == 2)
-                    //    brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Divider;
-                    //if (levelId >= 3)
                         brick.BrickType = (BrickType) (rand.Next() %6);
                     bricks.Add(brick);
-                    GD.Print(brick.BrickType);
                 }
             }
             return bricks;
@@ -87,7 +83,38 @@ namespace Cassebrique.Services
                     brick.Id = i * j + j;
                     brick.X = i * 100 + 150;
                     brick.Y = j * 52 + 81;
-                    brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Divider;
+                    brick.BrickType = (j % 2 == 0) ? BrickType.Normal : BrickType.Sturdy;
+                    firstLevel.Bricks.Add(brick);
+                }
+            }
+            return firstLevel;
+        }
+
+        private LevelDto CreateThirdLevel()
+        {
+            var firstLevel = new LevelDto();
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    var brick = new BrickDto();
+                    brick.Id = i * j + j;
+                    brick.X = i * 100 + 150;
+                    brick.Y = j * 52 + 81;
+                    switch(j)
+                    {
+                        case 0:
+                        case 3:
+                        case 6:
+                            brick.BrickType = BrickType.Sturdy;
+                            break;
+                        case 4:
+                            brick.BrickType = (i % 2 == 0) ? BrickType.Accelerator : BrickType.Divider;
+                            break;
+                        default:
+                            brick.BrickType = BrickType.Normal;
+                            break;
+                    }
                     firstLevel.Bricks.Add(brick);
                 }
             }

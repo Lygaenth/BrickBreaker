@@ -65,7 +65,7 @@ public partial class HighScores : Control
 		int offset = 0;
         foreach (Score score in scores)
         {
-            GD.Print(score);
+            GD.Print("Score: "+score.Rank+" "+score.UserName+" "+score.Points);
             var userScore = _scoreScene.Instantiate<UserScore>();
             _scorePanel.AddChild(userScore);
 			userScore.GlobalPosition = new Vector2(0, 150 + offset);

@@ -90,10 +90,7 @@ public partial class Level : Node2D
         _mainUI.UpdateLives(Lives);
         var isDead = await CheckDeath();
         if (isDead)
-        {
-
             StartGame();
-        }
     }
 
     #region Loading and starting level
@@ -199,6 +196,8 @@ public partial class Level : Node2D
 
         _mainUI.UpdateScore(Score);
 
+        ClearDynamicallyCreatedItems();
+
         _barControl.Position = _barStartMarker.Position;
         _barControl.Show();
 
@@ -267,11 +266,16 @@ public partial class Level : Node2D
         if (_boss != null)
             _boss.QueueFree();
 
+        ClearDynamicallyCreatedItems();
+        _balls.Clear();
+        _bonusTrackers.Clear();
+    }
+
+    private void ClearDynamicallyCreatedItems()
+    {
         GetTree().CallGroup("Projectiles", Node.MethodName.QueueFree);
         GetTree().CallGroup("balls", Node.MethodName.QueueFree);
         GetTree().CallGroup("BonusTrackers", Node.MethodName.QueueFree);
-        _balls.Clear();
-        _bonusTrackers.Clear();
     }
 
     #region Ball management

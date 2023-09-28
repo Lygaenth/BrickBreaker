@@ -80,8 +80,10 @@ namespace Casse_brique.Services
             var scores = new List<Score>();
             foreach (var key in data.Keys)
             {
-                var score = data[key].AsGodotDictionary();
-                scores.Add(new Score(Convert.ToInt32(score["rank"].ToString()), score["userName"].ToString(), Convert.ToInt32(score["points"].ToString())));
+                var scoreDto = data[key].AsGodotDictionary();
+                var score =new Score(Convert.ToInt32(scoreDto["userID"].ToString()), scoreDto["userName"].ToString(), Convert.ToInt32(scoreDto["points"].ToString()));
+                score.Rank = Convert.ToInt32(scoreDto["rank"].ToString());
+                scores.Add(score);
             }
             return scores;
         }
@@ -103,7 +105,7 @@ namespace Casse_brique.Services
             string json = JsonConvert.SerializeObject(score);
             string[] headers = new string[] { "Content-Type: application/json" };
             
-            _requestNode.Request("https://localhost:7253/Users/Highscores", headers, HttpClient.Method.Post, json);
+            _requestNode.Request("https://localhost:7253/Users/"+score.UserID+"/Score", headers, HttpClient.Method.Post, json);
         }
     }
 }

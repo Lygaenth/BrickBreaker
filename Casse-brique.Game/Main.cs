@@ -2,11 +2,13 @@ using Casse_brique.DAL;
 using Casse_brique.DAL.API;
 using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
+using Casse_brique.Services;
 using Cassebrique.Domain.API;
 using Cassebrique.Factory;
 using Cassebrique.Scenes.UI;
 using Cassebrique.Services;
 using Godot;
+using static System.Formats.Asn1.AsnWriter;
 
 public partial class Main : Node
 {
@@ -15,6 +17,7 @@ public partial class Main : Node
     private const string MainMenuPath = "res://Scenes/UI/MainMenu/MainMenu.tscn";
     private const string HighScorePath = "res://Scenes/UI/Scores/HighScores.tscn";
     private const string ControlsPath = "res://Scenes/UI/InputControls.tscn";
+    private const string UserEntryPath = "res://Scenes/UI/Scores/UserEntry.tscn";
     #endregion
 
     #region Services
@@ -28,6 +31,8 @@ public partial class Main : Node
     private bool _gameIsOn = false;
     private ScreenType _currentScreen;
     private bool _paused = false;
+    private int _currentScore;
+
 
     #region SubNodes
     private Level _level = null;
@@ -35,6 +40,7 @@ public partial class Main : Node
     private HighScores _highScores = null;
     private HttpRequest _httpRequest = null;
     private InputControls _inputScreen = null;
+    private UserEntry _userEntry = null;
     #endregion
 
     private PackedScene _mainMenuPackedScene;
@@ -58,8 +64,10 @@ public partial class Main : Node
 
     public override void _Ready()
     {
+        bool isOnline = false;
+
         _httpRequest = GetNode<HttpRequest>("/root/HighScoreHttpRequest");
-        _highScoreService = new LocalHighScoreService(_highScoreDal); //new OnlineHighScoreService(_httpRequest);
+        _highScoreService = isOnline ? new OnlineHighScoreService(_httpRequest) : new LocalHighScoreService(_highScoreDal);
         GD.Print(OS.GetExecutablePath());
         LoadMenu();
     }
@@ -68,7 +76,6 @@ public partial class Main : Node
     {
         if (Input.IsActionJustPressed("DisplayMenu"))
         {
-            GD.Print("Quit");
             if (_currentScreen == ScreenType.Scores)
             {
                 if(_highScores.AllowNavigation)
@@ -96,7 +103,6 @@ public partial class Main : Node
                 GetTree().Paused = false;
                 _paused = false;
             }
-
         }
     }
 
@@ -191,10 +197,27 @@ public partial class Main : Node
         _level.Setup(_levelService, _brickFactory, _projectileFactory);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="score"></param>
     private void OnFinalScoreReceived(int score)
     {
-        GD.Print("Saving score");
-        _highScoreService.PostScore(new Score(1, "User", score));
+        var userEntryPackedScene = ResourceLoader.Load<PackedScene>(UserEntryPath);
+        _userEntry = userEntryPackedScene.Instantiate<UserEntry>();
+        _level.QueueFree();
+        _gameIsOn = false;
+        AddChild(_userEntry);
+        _currentScore = score;
+        _userEntry.UpdateScore(score);
+        _userEntry.ValidateUserName += OnValidateUserName;
+    }
+
+    private void OnValidateUserName(string userName)
+    {
+        _highScoreService.PostScore(new Score(0, userName, _currentScore));
+        _userEntry.QueueFree();
+        LoadMenu() ;
     }
 
     /// <summary>

@@ -22,14 +22,20 @@ namespace Cassebrique.Services
 
         public void PostScore(Score score)
         {
-            _highScoreDal.UpdateUserScore(score.UserID, score.Points);
+            _highScoreDal.UpdateUserScore(new ScoreDto { ID = score.UserID, UserName = score.UserName, Score = score.Points });
         }
 
         public void RequestHighScores()
         {
             var scores = _highScoreDal.GetHighScores(10);
+            
             if (OnHighScoreResult != null)
-                OnHighScoreResult(scores.ConvertAll<Score>(s => new Score(s.ID, s.UserName, s.Score)));
+                OnHighScoreResult(scores.ConvertAll<Score>(s =>
+                {
+                    var score =new Score(s.ID, s.UserName, s.Score);
+                    score.Rank = s.Rank;
+                    return score;
+                }));
         }
     }
 }

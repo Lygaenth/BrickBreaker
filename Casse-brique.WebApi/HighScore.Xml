@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfScore xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Score>
+    <UserID>1</UserID>
+    <UserName>Gaetan</UserName>
+    <Points>1612</Points>
+    <Rank>5</Rank>
+  </Score>
+  <Score>
+    <UserID>6</UserID>
+    <UserName>Gaetan</UserName>
+    <Points>25421</Points>
+    <Rank>1</Rank>
+  </Score>
+  <Score>
+    <UserID>4</UserID>
+    <UserName>Gaetan</UserName>
+    <Points>2775</Points>
+    <Rank>2</Rank>
+  </Score>
+  <Score>
+    <UserID>3</UserID>
+    <UserName>Gaetan 3</UserName>
+    <Points>1921</Points>
+    <Rank>3</Rank>
+  </Score>
+  <Score>
+    <UserID>5</UserID>
+    <UserName>Gaetan	</UserName>
+    <Points>1680</Points>
+    <Rank>4</Rank>
+  </Score>
+  <Score>
+    <UserID>2</UserID>
+    <UserName>Gaetan2</UserName>
+    <Points>1014</Points>
+    <Rank>6</Rank>
+  </Score>
+</ArrayOfScore>

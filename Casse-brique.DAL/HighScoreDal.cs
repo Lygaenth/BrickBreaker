@@ -9,24 +9,9 @@ namespace Casse_brique.DAL
     {
         private const string _file = "./HighScore.Xml";
 
-        private List<Score> _scores;
-
-        public HighScoreDal()
-        {
-            _scores = new List<Score>();
-            //_scores.Add(new Score(1, "Bob", 1000));
-            //_scores.Add(new Score(2, "Ted", 900));
-            //_scores.Add(new Score(3, "NomBeaucoupTropLong", 800));
-            //_scores.Add(new Score(4, "Nyx", 700));
-            //_scores.Add(new Score(5, "Zagreus", 600));
-            //_scores.Add(new Score(6, "Hades", 500));
-            //_scores.Add(new Score(7, "Artemis", 400));
-            //_scores.Add(new Score(8, "Athena", 300));
-        }
-
         public List<ScoreDto> GetHighScores(int numberToDisplay)
         {
-            IEnumerable<ScoreDto> scores = _scores.Select(s => new ScoreDto() { ID = s.UserID, UserName = s.UserName, Score = s.Points }).OrderByDescending(s => s.Score);
+            IEnumerable<ScoreDto> scores = ReadFile().Select(s => new ScoreDto() { ID = s.UserID, UserName = s.UserName, Score = s.Points, Rank = s.Rank }).OrderByDescending(s => s.Score);
             if (scores.Count() > numberToDisplay)
                 scores = scores.SkipLast(scores.Count() - numberToDisplay);
             return scores.ToList();
@@ -34,60 +19,81 @@ namespace Casse_brique.DAL
 
         public ScoreDto GetUserRanking(int userID)
         {
-            if (_scores.Any(s => s.UserID == userID))
+            var scores = ReadFile();
+            if (scores.Any(s => s.UserID == userID))
             {
-                var score = _scores.First(s => s.UserID == userID);
+                var score = scores.First(s => s.UserID == userID);
                 return new ScoreDto() { ID = score.UserID, UserName = score.UserName, Score = score.Points };
             }
-            return new ScoreDto() { ID = userID, UserName = "", Score = 0 };
+            return new ScoreDto() { ID = userID, UserName = "Unranked", Score = 0 };
         }
 
-        public int UpdateUserScore(int userID, int score)
-        {
-            UpdateRanks(userID, score);
-            var rank = GetRankForNewScore(score);
 
-            if (_scores.Any(s => s.UserID == userID))
+        public int UpdateUserScore(ScoreDto score)
+        {
+            var scores = ReadFile();
+            UpdateRanks(scores, score.ID, score.Score);
+            var rank = GetRankForNewScore(scores, score.Score);
+
+            if (scores.Any(s => s.UserID == score.ID))
             {
-                var storedScore = _scores.First(s => s.UserID == userID);
-                storedScore.Points = score;
+                var storedScore = scores.First(s => s.UserID == score.ID);
+                storedScore.Points = score.Score;
                 storedScore.Rank = rank;
                 return storedScore.Rank;
             }
             else
             {
-                var newScore = new Score(userID, "undefined", score);
+                if (score.ID == 0)
+                {
+                    if (scores.Count == 0)
+                        score.ID = 1;
+                    else
+                        score.ID = scores.OrderBy(s => s.UserID).Last().UserID + 1;
+                }
+                var newScore = new Score(score.ID, score.UserName, score.Score);
                 newScore.Rank = rank;
-                if (_scores.Count == 0)
-                    _scores.Add(newScore);
+                if (scores.Count == 0)
+                    scores.Add(newScore);
                 else
-                    _scores.Insert(rank, newScore);
+                    scores.Insert(rank, newScore);
             }
-            SaveFile();
+            SaveScores(scores);
             return rank;
         }
 
-        private void UpdateRanks(int userID, int score)
+        private void UpdateRanks(List<Score> scores, int userID, int score)
         {
-            foreach (var s in _scores.Where(s => s.Points >= score))
+            foreach (var s in scores.Where(s => s.Points <= score))
             {
                 if (s.UserID != userID)
                     s.Rank++;
             }
         }
 
-        private int GetRankForNewScore(int score)
+        private int GetRankForNewScore(List<Score> scores, int score)
         {
-            if (!_scores.Any(s => s.Points <= score))
+            if (!scores.Any(s => s.Points >= score))
                 return 1;
 
-            return _scores.Last(s => s.Points <= score).Rank+1;
+            return scores.Last(s => s.Points >= score).Rank+1;
         }
 
-        private void SaveFile()
+        private void SaveScores(List<Score> scores)
         {
+            var writer = new StreamWriter(_file);
             XmlSerializer serializer = new XmlSerializer(typeof(List<Score>));
-            serializer.Serialize(new StreamWriter(_file), _scores);
+            serializer.Serialize(writer, scores);
+            writer.Close();
+        }
+
+        private List<Score> ReadFile()
+        {
+            var reader = new StreamReader(_file);
+            XmlSerializer serializer = new XmlSerializer(typeof(List<Score>));
+            var result = serializer.Deserialize(reader) as List<Score>;
+            reader.Close();
+            return result;
         }
     }
 }

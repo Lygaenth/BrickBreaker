@@ -1,4 +1,6 @@
-﻿using Casse_brique.Domain.Scoring;
+﻿using Casse_brique.DAL;
+using Casse_brique.DAL.API;
+using Casse_brique.Domain.Scoring;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Casse_brique.WebApi.Controllers
@@ -11,13 +13,11 @@ namespace Casse_brique.WebApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly Dictionary<int, Score> _usersBestScores;
+        private readonly IHighScoreDal _highScoreDal;
 
-        public UserController()
+        public UserController(IHighScoreDal highScoreDal)
         {
-            _usersBestScores = new Dictionary<int, Score>();
-            _usersBestScores[1] = new Score(1, "Test1", 10000);
-            _usersBestScores[2] = new Score(2, "Test2", 9000);
-            _usersBestScores[3] = new Score(3, "Test3", 7000);
+            _highScoreDal = highScoreDal;
         }
 
         /// <summary>
@@ -27,23 +27,28 @@ namespace Casse_brique.WebApi.Controllers
         [HttpGet("Highscores")]
         public Dictionary<int, Score> GetHighScores()
         {
-            IEnumerable<Score> orderedScores = _usersBestScores.Values.OrderByDescending(s => s.Points);
-            if (orderedScores.Count() > 10)
-                orderedScores = orderedScores.SkipLast(_usersBestScores.Count - 10);
-            var scoreList = orderedScores.ToList();
+            var highScores = _highScoreDal.GetHighScores(10);
+
             var results = new Dictionary<int, Score>();
-            for (int i = 0; i < Math.Min(scoreList.Count, 10); i++)
+
+            for (int i = 0; i < highScores.Count; i++)
             {
-                scoreList[i].Rank = i + 1;
-                results.Add(i, scoreList[i]);
+                var score = new Score
+                {
+                    Rank = highScores[i].Rank,
+                    UserID = highScores[i].ID,
+                    UserName = highScores[i].UserName,
+                    Points = highScores[i].Score
+                };
+                results.Add(score.Rank, score);
             }
             return results;
         }
 
-        [HttpPost("Users/{id}/Score")]
+        [HttpPost("{id}/Score")]
         public async Task PostUserScore(Score score)
         {
-            _usersBestScores[score.Rank] = score;
+            _highScoreDal.UpdateUserScore(new ScoreDto() { ID = score.UserID, UserName = score.UserName, Score = score.Points });
         }
     }
 }
