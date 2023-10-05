@@ -5,6 +5,10 @@
     <RootNamespace>Cassebrique</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.15.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Casse-brique.DAL\Casse-brique.DAL.csproj" />
     <ProjectReference Include="..\Casse-brique.Domain\Casse-brique.Domain.csproj" />
   </ItemGroup>

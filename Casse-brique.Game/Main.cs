@@ -8,7 +8,6 @@ using Cassebrique.Factory;
 using Cassebrique.Scenes.UI;
 using Cassebrique.Services;
 using Godot;
-using static System.Formats.Asn1.AsnWriter;
 
 public partial class Main : Node
 {
@@ -26,6 +25,7 @@ public partial class Main : Node
     private IBrickFactory _brickFactory;
     private IProjectileFactory _projectileFactory;
     private IHighScoreDal _highScoreDal;
+    private IAuthenticationTokenService _authenticationTokenService;
     #endregion
 
     private bool _gameIsOn = false;
@@ -54,6 +54,7 @@ public partial class Main : Node
     {
         _levelService = new LevelService();
         _brickFactory = new BrickFactory();
+        _authenticationTokenService = new AuthenticationTokenService();
         _projectileFactory = new ProjectileFactory();
         _mainMenuPackedScene = ResourceLoader.Load<PackedScene>(MainMenuPath);
         _highScoresScreenPackedScene = ResourceLoader.Load<PackedScene>(HighScorePath);
@@ -64,10 +65,10 @@ public partial class Main : Node
 
     public override void _Ready()
     {
-        bool isOnline = false;
+        bool isOnline = true;
 
         _httpRequest = GetNode<HttpRequest>("/root/HighScoreHttpRequest");
-        _highScoreService = isOnline ? new OnlineHighScoreService(_httpRequest) : new LocalHighScoreService(_highScoreDal);
+        _highScoreService = isOnline ? new OnlineHighScoreService(_httpRequest, _authenticationTokenService) : new LocalHighScoreService(_highScoreDal);
         GD.Print(OS.GetExecutablePath());
         LoadMenu();
     }

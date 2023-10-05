@@ -1,11 +1,14 @@
 ﻿using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
 using Cassebrique.Exceptions;
+using Cassebrique.Services;
 using Godot;
 using Godot.Collections;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace Casse_brique.Services
 {
@@ -15,18 +18,20 @@ namespace Casse_brique.Services
     public class OnlineHighScoreService : IHighScoreService
     {
         private readonly HttpRequest _requestNode;
-
+        private IAuthenticationTokenService _tokenManager;
         public event IHighScoreService.HighScoreEventHandler OnHighScoreResult;
 
         public delegate void HighScoreListResultEventHandler();
+
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="requestNode"></param>
-        public OnlineHighScoreService(HttpRequest requestNode)
+        public OnlineHighScoreService(HttpRequest requestNode, IAuthenticationTokenService tokenManager)
         {
             _requestNode = requestNode;
+            _tokenManager = tokenManager;
         }
 
         /// <summary>
@@ -46,9 +51,9 @@ namespace Casse_brique.Services
         {
             if (needsResult)
                 _requestNode.RequestCompleted += OnRequestCompleted;
-
-            var error = _requestNode.Request(url);
-            GD.Print(error);
+            var token = _tokenManager.GetToken();
+            var error = _requestNode.Request(url, customHeaders: new string[] { "Authorization: Bearer " + token });
+            GD.Print("Request error: "+error+" token: "+token);
             if (error != Error.Ok)
                 throw new ConnectionFailedException(error);
         }
@@ -63,6 +68,8 @@ namespace Casse_brique.Services
         private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
         {
             _requestNode.RequestCompleted -= OnRequestCompleted;
+
+            GD.Print("Request responseCode: "+responseCode);
 
             var scores = ConvertResult(GetDataFromBody(body));
 

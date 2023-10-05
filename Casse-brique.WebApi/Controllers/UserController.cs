@@ -1,6 +1,7 @@
 ﻿using Casse_brique.DAL;
 using Casse_brique.DAL.API;
 using Casse_brique.Domain.Scoring;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Casse_brique.WebApi.Controllers
@@ -8,11 +9,11 @@ namespace Casse_brique.WebApi.Controllers
     /// <summary>
     /// User controller for users (data should be managed through a database)
     /// </summary>
-    [ApiController]
     [Route("Users")]
+    [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        private readonly Dictionary<int, Score> _usersBestScores;
         private readonly IHighScoreDal _highScoreDal;
 
         public UserController(IHighScoreDal highScoreDal)

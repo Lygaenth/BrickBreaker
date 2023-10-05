@@ -4,6 +4,12 @@
     <UserID>1</UserID>
     <UserName>TEst</UserName>
     <Points>733</Points>
+    <Rank>2</Rank>
+  </Score>
+  <Score>
+    <UserID>2</UserID>
+    <UserName>test</UserName>
+    <Points>2631</Points>
     <Rank>1</Rank>
   </Score>
 </ArrayOfScore>

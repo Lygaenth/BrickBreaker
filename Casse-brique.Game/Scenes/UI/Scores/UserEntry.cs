@@ -1,6 +1,4 @@
-using Casse_brique.Domain.Scoring;
 using Godot;
-using System;
 
 public partial class UserEntry : Control
 {
