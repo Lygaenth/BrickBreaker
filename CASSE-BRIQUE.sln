@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique", ".\Casse-brique.Game\Casse-brique.csproj"", "{BAE0358C-A063-4FA6-9B95-9F17936A668E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique", "Casse-brique.Game\Casse-brique.csproj", "{BAE0358C-A063-4FA6-9B95-9F17936A668E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casse-brique.WebApi", ".\Casse-brique.WebApi\Casse-brique.WebApi.csproj", "{BC675385-F19F-4FB4-A785-937772F9D5ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.WebApi", "Casse-brique.WebApi\Casse-brique.WebApi.csproj", "{BC675385-F19F-4FB4-A785-937772F9D5ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casse-brique.Domain", ".\Casse-brique.Domain\Casse-brique.Domain.csproj", "{69769E12-674C-42EF-AFAF-BF129B9A66EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.Domain", "Casse-brique.Domain\Casse-brique.Domain.csproj", "{69769E12-674C-42EF-AFAF-BF129B9A66EB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.DAL", "Casse-brique.DAL\Casse-brique.DAL.csproj", "{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{69769E12-674C-42EF-AFAF-BF129B9A66EB}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{69769E12-674C-42EF-AFAF-BF129B9A66EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{69769E12-674C-42EF-AFAF-BF129B9A66EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFEAC3EA-9045-495B-B2D8-6BEFEC0659FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
