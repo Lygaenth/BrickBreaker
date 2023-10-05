@@ -3,19 +3,41 @@ using System.Drawing;
 
 namespace Casse_brique.Domain.API
 {
+    /// <summary>
+    /// Level Data object
+    /// </summary>
     public class LevelDto
     {
         public int ID { get; set; }
-        public bool HasBoss { get; set; }
-        public string BossUri { get; set; }
-        public List<BrickDto> Bricks { get; set; }
-        public List<Point> BossPath { get; set; }
 
+        /// <summary>
+        /// Has boss
+        /// </summary>
+        public bool HasBoss { get; set; }
+
+        /// <summary>
+        /// Boss URI
+        /// </summary>
+        public string BossUri { get; set; }
+
+        /// <summary>
+        /// List of bricks
+        /// </summary>
+        public List<BrickDto> Bricks { get; set; }
+
+        /// <summary>
+        /// Boss paths
+        /// </summary>
+        public List<List<Point>> BossPaths { get; set; }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public LevelDto()
         {
             BossUri = string.Empty;
             Bricks = new List<BrickDto>();
-            BossPath = new List<Point>();
+            BossPaths = new List<List<Point>>();
         }
     }
 }

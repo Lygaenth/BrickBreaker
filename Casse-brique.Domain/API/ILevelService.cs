@@ -13,13 +13,6 @@ namespace Cassebrique.Domain.API
         /// </summary>
         /// <param name="levelId"></param>
         /// <returns></returns>
-        LevelDto GetLevel(int levelId);
-
-        /// <summary>
-        /// Get level bricks
-        /// </summary>
-        /// <param name="levelId"></param>
-        /// <returns></returns>
-        public List<BrickDto> GetBricks(int levelId);        
+        LevelDto GetLevel(int levelId);      
     }
 }

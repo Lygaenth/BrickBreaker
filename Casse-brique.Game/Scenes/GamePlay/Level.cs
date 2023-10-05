@@ -4,7 +4,7 @@ using Cassebrique.Factory;
 using Cassebrique.Scenes.UI;
 using Godot;
 using System.Collections.Generic;
-using System.IO;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -37,16 +37,22 @@ public partial class Level : Node2D
 
     private int _numberOfBricks = 0;
     private int _numberOfBallsCreated = 0;
-    private int _currentLevel = 1;
+    private int _currentStage = 1;
     private Boss _boss;
+    private List<List<Point>> _bossPaths;
+    private int _bossPathIndex;
 
     private readonly List<Ball> _balls;
     private readonly List<BonusTracker> _bonusTrackers;
+
 
     private IBrickFactory _brickFactory;
     private IProjectileFactory _projectileFactory;
     private ILevelService _levelService;
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public Level()
     {
         _balls = new List<Ball>();
@@ -98,7 +104,15 @@ public partial class Level : Node2D
     public override void _Process(double delta)
     {
         if (_boss != null)
-            BossPathFollow.Progress += (float)delta * _boss.Speed;
+        {
+            var progress= BossPathFollow.Progress + (float)delta * _boss.Speed;
+            BossPathFollow.Progress = progress;
+            if (BossPathFollow.Progress < progress)
+            {
+                LoadBossPath();
+                BossPathFollow.Progress = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -130,7 +144,7 @@ public partial class Level : Node2D
     /// </summary>
     private void LoadLevel()
     {
-        var level = _levelService.GetLevel(_currentLevel);
+        var level = _levelService.GetLevel(_currentStage);
         BossPathFollow.Progress = 0;
         _numberOfBricks = level.Bricks.Count(b => b.BrickType != BrickType.Unbreakable);
         if (level.HasBoss)
@@ -141,10 +155,12 @@ public partial class Level : Node2D
             boss.Speed = 100;
             _boss = boss;
 
-            BossPath.Curve.ClearPoints();
-            foreach(var point in level.BossPath)
-                BossPath.Curve.AddPoint(new Vector2(point.X, point.Y));
+            _bossPaths = level.BossPaths;
+            _bossPathIndex = 0;
+
+            LoadBossPath();
             BossPathFollow.AddChild(boss);
+
             _boss.BossHit += OnBossHit;
             _boss.BossDestroyed += OnBossDestroyed;
             _boss.BossSpawnProjectile += OnBossSpawnProjectile;
@@ -158,6 +174,15 @@ public partial class Level : Node2D
             CallDeferred(Node.MethodName.AddChild, brick);
             brick.Show();
         }
+    }
+
+    private void LoadBossPath()
+    {
+        BossPath.Curve.ClearPoints();
+        foreach (var point in _bossPaths[_bossPathIndex])
+            BossPath.Curve.AddPoint(new Vector2(point.X, point.Y));
+        BossPathFollow.Progress = 0;
+        _bossPathIndex = (_bossPathIndex + 1) % _bossPaths.Count;
     }
 
     private void OnBossSpawnProjectile()
@@ -235,9 +260,9 @@ public partial class Level : Node2D
         StopParty();
         GetTree().CallGroup("UnbreakableBricks", Node.MethodName.QueueFree);
 
-        _currentLevel++;
+        _currentStage++;
 
-        await _mainUI.ShowMessages(new List<TimedMessage>() { new TimedMessage("Level cleared !", 1.0f), new TimedMessage("Level " + _currentLevel + " !", 1.0f)});
+        await _mainUI.ShowMessages(new List<TimedMessage>() { new TimedMessage("Level cleared !", 1.0f), new TimedMessage("Level " + _currentStage + " !", 1.0f)});
 
         LoadAndStartGame();
     }

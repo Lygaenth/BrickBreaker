@@ -25,6 +25,7 @@ public partial class Main : Node
     private IBrickFactory _brickFactory;
     private IProjectileFactory _projectileFactory;
     private IHighScoreDal _highScoreDal;
+    private ILevelDal _levelDal;
     private IAuthenticationTokenService _authenticationTokenService;
     #endregion
 
@@ -52,7 +53,8 @@ public partial class Main : Node
     /// </summary>
     public Main()
     {
-        _levelService = new LevelService();
+        _levelDal = new LevelDal();
+        _levelService = new LevelService(_levelDal);
         _brickFactory = new BrickFactory();
         _authenticationTokenService = new AuthenticationTokenService();
         _projectileFactory = new ProjectileFactory();
@@ -69,7 +71,6 @@ public partial class Main : Node
 
         _httpRequest = GetNode<HttpRequest>("/root/HighScoreHttpRequest");
         _highScoreService = isOnline ? new OnlineHighScoreService(_httpRequest, _authenticationTokenService) : new LocalHighScoreService(_highScoreDal);
-        GD.Print(OS.GetExecutablePath());
         LoadMenu();
     }
 
