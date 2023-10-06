@@ -29,7 +29,7 @@ namespace Casse_brique.DAL
         }
 
 
-        public int UpdateUserScore(ScoreDto score)
+        public async Task<int> UpdateUserScore(ScoreDto score)
         {
             var scores = ReadFile();
             UpdateRanks(scores, score.ID, score.Score);
@@ -58,7 +58,7 @@ namespace Casse_brique.DAL
                 else
                     scores.Insert(rank, newScore);
             }
-            SaveScores(scores);
+            await SaveScores(scores);
             return rank;
         }
 
@@ -79,11 +79,11 @@ namespace Casse_brique.DAL
             return scores.Last(s => s.Points >= score).Rank+1;
         }
 
-        private void SaveScores(List<Score> scores)
+        private async Task SaveScores(List<Score> scores)
         {
             var writer = new StreamWriter(_file);
             XmlSerializer serializer = new XmlSerializer(typeof(List<Score>));
-            serializer.Serialize(writer, scores);
+            await Task.Run(() => serializer.Serialize(writer, scores));
             writer.Close();
         }
 
@@ -93,7 +93,7 @@ namespace Casse_brique.DAL
             XmlSerializer serializer = new XmlSerializer(typeof(List<Score>));
             var result = serializer.Deserialize(reader) as List<Score>;
             reader.Close();
-            return result;
+            return result == null ? new List<Score>() : result;
         }
     }
 }

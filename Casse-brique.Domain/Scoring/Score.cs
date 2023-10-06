@@ -38,7 +38,7 @@ namespace Casse_brique.Domain.Scoring
         /// </summary>
         public Score()
         {
-
+            UserName = string.Empty;
         }
 
         /// <summary>

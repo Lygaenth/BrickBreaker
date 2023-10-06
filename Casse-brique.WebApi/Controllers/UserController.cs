@@ -49,7 +49,7 @@ namespace Casse_brique.WebApi.Controllers
         [HttpPost("{id}/Score")]
         public async Task PostUserScore(Score score)
         {
-            _highScoreDal.UpdateUserScore(new ScoreDto() { ID = score.UserID, UserName = score.UserName, Score = score.Points });
+            await _highScoreDal.UpdateUserScore(new ScoreDto() { ID = score.UserID, UserName = score.UserName, Score = score.Points });
         }
     }
 }

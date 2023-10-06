@@ -1,5 +1,6 @@
 using Casse_brique.DAL;
 using Casse_brique.DAL.API;
+using Cassebrique.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -39,6 +40,9 @@ public class Program
         app.Run();
     }
 
+    /// <summary>
+    /// Build configuration
+    /// </summary>
     private static void BuildConfiguration()
     {
         var confBuilder = new ConfigurationBuilder()
@@ -48,6 +52,10 @@ public class Program
         Configuration = confBuilder.Build();
     }
 
+    /// <summary>
+    /// Register services
+    /// </summary>
+    /// <param name="builder"></param>
     private static void RegisterServices(WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
@@ -55,6 +63,10 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         builder.Services.AddTransient<IHighScoreDal, HighScoreDal>();
+
+        if (Configuration == null)
+            throw new InitializationException();
+
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
             options =>
             {
