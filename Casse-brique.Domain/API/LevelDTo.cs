@@ -31,6 +31,11 @@ namespace Casse_brique.Domain.API
         public List<List<Point>> BossPaths { get; set; }
 
         /// <summary>
+        /// Boss name
+        /// </summary>
+        public string BossName { get; set; }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public LevelDto()

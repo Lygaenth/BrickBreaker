@@ -5,24 +5,18 @@ using Casse_brique.Domain.Scoring;
 using Casse_brique.Services;
 using Cassebrique.Domain.API;
 using Cassebrique.Factory;
+using Cassebrique.Locators;
 using Cassebrique.Scenes.UI;
 using Cassebrique.Services;
 using Godot;
 
 public partial class Main : Node
 {
-    #region NodePaths
-    private const string LevelPath = "res://Scenes/GamePlay/Level.tscn";
-    private const string MainMenuPath = "res://Scenes/UI/MainMenu/MainMenu.tscn";
-    private const string HighScorePath = "res://Scenes/UI/Scores/HighScores.tscn";
-    private const string ControlsPath = "res://Scenes/UI/InputControls.tscn";
-    private const string UserEntryPath = "res://Scenes/UI/Scores/UserEntry.tscn";
-    #endregion
-
     #region Services
     private readonly ILevelService _levelService;
     private IHighScoreService _highScoreService;
     private IBrickFactory _brickFactory;
+    private IBallFactory _ballFactory;
     private IProjectileFactory _projectileFactory;
     private IHighScoreDal _highScoreDal;
     private ILevelDal _levelDal;
@@ -44,25 +38,31 @@ public partial class Main : Node
     private UserEntry _userEntry = null;
     #endregion
 
-    private PackedScene _mainMenuPackedScene;
-    private PackedScene _highScoresScreenPackedScene;
-    private PackedScene _inputScreenPackedScene;
-
     /// <summary>
     /// Constructor
     /// </summary>
     public Main()
     {
+        Services
         _levelDal = new LevelDal();
         _levelService = new LevelService(_levelDal);
         _brickFactory = new BrickFactory();
         _authenticationTokenService = new AuthenticationTokenService();
         _projectileFactory = new ProjectileFactory();
-        _mainMenuPackedScene = ResourceLoader.Load<PackedScene>(MainMenuPath);
-        _highScoresScreenPackedScene = ResourceLoader.Load<PackedScene>(HighScorePath);
-        _inputScreenPackedScene = ResourceLoader.Load<PackedScene>(ControlsPath);
 
         _highScoreDal = new HighScoreDal();
+
+    }
+
+    private void RegisterScenes()
+    {
+        PackedSceneLocator.Register<Ball>("res://Scenes/UI/Tracker/BonusTracker.tscn");
+        PackedSceneLocator.Register<Level>("res://Scenes/GamePlay/Level.tscn");
+        PackedSceneLocator.Register<MainMenu>("res://Scenes/UI/MainMenu/MainMenu.tscn");
+        PackedSceneLocator.Register<HighScores>("res://Scenes/UI/Scores/HighScores.tscn");
+        PackedSceneLocator.Register<InputControls>("res://Scenes/UI/InputControls.tscn");
+        PackedSceneLocator.Register<InputControls>("res://Scenes/UI/Scores/UserEntry.tscn");
+        PackedSceneLocator.Register<BonusTracker>("res://Scenes/UI/Tracker/BonusTracker.tscn");
     }
 
     public override void _Ready()
@@ -147,7 +147,7 @@ public partial class Main : Node
     private void OnRequestHighScores()
     {        
         _menu.QueueFree();
-        _highScores = _highScoresScreenPackedScene.Instantiate<HighScores>();
+        _highScores = PackedSceneLocator.GetScene<HighScores>();
         _highScores.Setup(_highScoreService);
         AddChild(_highScores);
         _highScores.OnQuitScoresRequested += OnQuitScoresRequested;
@@ -170,7 +170,7 @@ public partial class Main : Node
     private void OnRequestInputs()
     {
         _menu.QueueFree();
-        _inputScreen = _inputScreenPackedScene.Instantiate<InputControls>();
+        _inputScreen = PackedSceneLocator.GetScene<InputControls>();
         AddChild(_inputScreen);
         _currentScreen = ScreenType.Inputs;
         _inputScreen.OnRequestQuit += OnQuitInputRequested;
@@ -192,11 +192,10 @@ public partial class Main : Node
     /// </summary>
     private void LoadGame()
     {
-        var levelPackedScene = ResourceLoader.Load<PackedScene>(LevelPath);
-        _level = levelPackedScene.Instantiate<Level>();
+        _level = PackedSceneLocator.GetScene<Level>();
         _level.OnFinalScore += OnFinalScoreReceived;
         AddChild(_level);
-        _level.Setup(_levelService, _brickFactory, _projectileFactory);
+        _level.Setup(_levelService, _brickFactory, _ballFactory, _projectileFactory);
     }
 
     /// <summary>
@@ -205,8 +204,7 @@ public partial class Main : Node
     /// <param name="score"></param>
     private void OnFinalScoreReceived(int score)
     {
-        var userEntryPackedScene = ResourceLoader.Load<PackedScene>(UserEntryPath);
-        _userEntry = userEntryPackedScene.Instantiate<UserEntry>();
+        _userEntry = PackedSceneLocator.GetScene<UserEntry>();
         _level.QueueFree();
         _gameIsOn = false;
         AddChild(_userEntry);
@@ -227,7 +225,7 @@ public partial class Main : Node
     /// </summary>
     private void LoadMenu()
     {
-        _menu = _mainMenuPackedScene.Instantiate<MainMenu>();
+        _menu = PackedSceneLocator.GetScene<MainMenu>();
         _menu.Setup(_gameIsOn);
         _menu.RequestStart += OnRequestStart;
         _menu.RequestRestart += OnRequestReset;

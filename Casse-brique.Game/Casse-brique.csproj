@@ -5,6 +5,9 @@
     <RootNamespace>Cassebrique</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="level.json" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.15.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
   </ItemGroup>

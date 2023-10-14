@@ -341,7 +341,8 @@
         "BrickType": 0
       }
     ],
-    "BossPaths": []
+    "BossPaths": [],
+	"BossName": ""
   },
   {
     "ID": 2,
@@ -685,7 +686,8 @@
         "BrickType": 0
       }
     ],
-    "BossPaths": []
+    "BossPaths": [],
+	"BossName": ""
   },
   {
     "ID": 3,
@@ -1029,7 +1031,8 @@
         "BrickType": 1
       }
     ],
-    "BossPaths": []
+    "BossPaths": [],
+	"BossName": ""
   },
   {
     "ID": 4,
@@ -1061,6 +1064,7 @@
         "BrickType": 5
       }
     ],
-    "BossPaths": [ [ "250, 150", "750, 450", "750, 150", "250, 450", "250, 150" ] ]
+    "BossPaths": [ [ "250, 150", "750, 450", "750, 150", "250, 450", "250, 150" ] ],
+	"BossName": "Mozart"
   }
 ]

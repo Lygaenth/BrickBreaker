@@ -1,6 +1,7 @@
 using Cassebrique.Domain.API;
 using Cassebrique.Domain.Bricks;
 using Cassebrique.Factory;
+using Cassebrique.Locators;
 using Cassebrique.Scenes.UI;
 using Godot;
 using System.Collections.Generic;
@@ -10,8 +11,6 @@ using System.Threading.Tasks;
 
 public partial class Level : Node2D
 {
-    private const string _bonusTrackerPackedScene = "res://Scenes/UI/Tracker/BonusTracker.tscn";
-
     #region SubNodes
     private MainUI _mainUI;
     private BarControl _barControl;
@@ -26,11 +25,6 @@ public partial class Level : Node2D
     public delegate void OnFinalScoreEventHandler(int score);
 
     [Export]
-    public PackedScene BallScene { get; set; }
-
-    private PackedScene _bonusTrackerScene;
-
-    [Export]
     public int Lives { get; set; }
 
     public int Score { get; set; }
@@ -39,14 +33,13 @@ public partial class Level : Node2D
     private int _numberOfBallsCreated = 0;
     private int _currentStage = 1;
     private Boss _boss;
-    private List<List<Point>> _bossPaths;
-    private int _bossPathIndex;
 
     private readonly List<Ball> _balls;
     private readonly List<BonusTracker> _bonusTrackers;
 
 
     private IBrickFactory _brickFactory;
+    private IBallFactory _ballFactory;
     private IProjectileFactory _projectileFactory;
     private ILevelService _levelService;
 
@@ -64,10 +57,11 @@ public partial class Level : Node2D
     /// </summary>
     /// <param name="levelService"></param>
     /// <param name="brickFactory"></param>
-    public void Setup(ILevelService levelService, IBrickFactory brickFactory, IProjectileFactory projectileFactory)
+    public void Setup(ILevelService levelService, IBrickFactory brickFactory, IBallFactory ballFactory, IProjectileFactory projectileFactory)
     {
         _levelService = levelService;
         _brickFactory = brickFactory;
+        _ballFactory = ballFactory;
         _projectileFactory = projectileFactory;
         Initialize();
     }
@@ -77,8 +71,6 @@ public partial class Level : Node2D
     /// </summary>
     public override void _Ready()
 	{
-        _bonusTrackerScene = ResourceLoader.Load<PackedScene>(_bonusTrackerPackedScene);
-
         _mainUI  = GetNode<MainUI>("MainUi");
         _barControl = GetNode<BarControl>("BarControl");
         _barStartMarker = GetNode<Marker2D>("BarStartPosition");
@@ -108,10 +100,7 @@ public partial class Level : Node2D
             var progress= BossPathFollow.Progress + (float)delta * _boss.Speed;
             BossPathFollow.Progress = progress;
             if (BossPathFollow.Progress < progress)
-            {
-                LoadBossPath();
-                BossPathFollow.Progress = 0;
-            }
+                LoadNextBossPath();
         }
     }
 
@@ -149,17 +138,13 @@ public partial class Level : Node2D
         _numberOfBricks = level.Bricks.Count(b => b.BrickType != BrickType.Unbreakable);
         if (level.HasBoss)
         {
-            var bossPackedScene = ResourceLoader.Load<PackedScene>(level.BossUri);
-            var boss = bossPackedScene.Instantiate() as Boss;
-            boss.HP = 10;
-            boss.Speed = 100;
-            _boss = boss;
+            _boss = PackedSceneLocator.GetScene<Boss>(level.BossName);
+            _boss.HP = 10;
+            _boss.Speed = 100;
+            _boss.SetPaths(level.BossPaths);
 
-            _bossPaths = level.BossPaths;
-            _bossPathIndex = 0;
-
-            LoadBossPath();
-            BossPathFollow.AddChild(boss);
+            BossPathFollow.AddChild(_boss);
+            LoadNextBossPath();
 
             _boss.BossHit += OnBossHit;
             _boss.BossDestroyed += OnBossDestroyed;
@@ -176,13 +161,10 @@ public partial class Level : Node2D
         }
     }
 
-    private void LoadBossPath()
+    private void LoadNextBossPath()
     {
-        BossPath.Curve.ClearPoints();
-        foreach (var point in _bossPaths[_bossPathIndex])
-            BossPath.Curve.AddPoint(new Vector2(point.X, point.Y));
+        BossPath.Curve = _boss.GetNextBossPath();
         BossPathFollow.Progress = 0;
-        _bossPathIndex = (_bossPathIndex + 1) % _bossPaths.Count;
     }
 
     private void OnBossSpawnProjectile()
@@ -311,17 +293,15 @@ public partial class Level : Node2D
     /// <returns></returns>
     private Ball CreateBall(Vector2 position)
     {
-        var ball = BallScene.Instantiate<Ball>();
+        var ball = _ballFactory.CreateBall(position);
         ball.ID = _numberOfBallsCreated++;
-        ball.Scale = new Vector2(0.3f, 0.3f);
-        ball.Position = position;
         ball.OnDuplicateBall += OnDuplicateBall;
         ball.OnHit += OnBallHit;
         _balls.Add(ball);
         GD.Print("Created ball: " + ball.ID);
         ball.Show();
 
-        var bonusTracker = _bonusTrackerScene.Instantiate<BonusTracker>();
+        var bonusTracker = PackedSceneLocator.GetScene<BonusTracker>();
         bonusTracker.ID = ball.ID;
         bonusTracker.Scale *= (GD.Randf() + 0.5f);
         _bonusTrackers.Add(bonusTracker);

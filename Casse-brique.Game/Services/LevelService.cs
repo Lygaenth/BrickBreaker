@@ -2,6 +2,7 @@
 using Casse_brique.Domain.API;
 using Cassebrique.Domain.API;
 using Cassebrique.Domain.Bricks;
+using Cassebrique.Locators;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -23,11 +24,16 @@ namespace Cassebrique.Services
         public LevelDto GetLevel(int levelId)
         {
             if (_levelDal.HasLevel(levelId))
-                return _levelDal.GetLevel(levelId);
+            {
+                var level = _levelDal.GetLevel(levelId);
+                if (level.HasBoss)
+                    PackedSceneLocator.Register<Boss>(level.BossUri, level.BossName);
+                return level;
+            }
             
-            var level = new LevelDto();
-            level.Bricks = GetRandomBricks(levelId);
-            return level;
+            var randomLevel = new LevelDto();
+            randomLevel.Bricks = GetRandomBricks(levelId);
+            return randomLevel;
         }
 
         private List<BrickDto> GetRandomBricks(int levelId)

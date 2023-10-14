@@ -1,4 +1,6 @@
 using Godot;
+using System.Collections.Generic;
+using System.Drawing;
 
 public partial class Boss : Node2D
 {
@@ -26,6 +28,9 @@ public partial class Boss : Node2D
 	private bool _isHit;
 	private bool _isAttacking;
 	private bool _requestAttackAfterRecover;
+	private int _bossPathIndex = -1;
+
+	private List<List<Point>> _paths;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -42,6 +47,24 @@ public partial class Boss : Node2D
 	{
 
 	}
+
+	public void SetPaths(List<List<Point>> paths)
+	{
+		_paths = paths;
+	}
+
+	/// <summary>
+	/// Load next boss path on Curve2D object
+	/// </summary>
+	/// <param name="curve"></param>
+	public Curve2D GetNextBossPath()
+	{
+		var curve = new Curve2D();
+        _bossPathIndex = (_bossPathIndex + 1) % _paths.Count;
+        foreach (var point in _paths[_bossPathIndex])
+            curve.AddPoint(new Vector2(point.X, point.Y));
+		return curve;
+    }
 
 	public void OnBossHit(Node2D body)
 	{
