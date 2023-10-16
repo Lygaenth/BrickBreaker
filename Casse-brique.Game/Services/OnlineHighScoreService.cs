@@ -1,6 +1,7 @@
 ﻿using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
 using Cassebrique.Exceptions;
+using Cassebrique.Locators;
 using Cassebrique.Services;
 using Godot;
 using Godot.Collections;
@@ -17,10 +18,11 @@ namespace Casse_brique.Services
     /// </summary>
     public class OnlineHighScoreService : IHighScoreService
     {
-        private readonly HttpRequest _requestNode;
-        private IAuthenticationTokenService _tokenManager;
-        public event IHighScoreService.HighScoreEventHandler OnHighScoreResult;
+        private readonly IAutoLoaderProvider _autoLoaderProvider;
+        private readonly IAuthenticationTokenService _tokenManager;
 
+        public event IHighScoreService.HighScoreEventHandler OnHighScoreResult;
+        private HttpRequest _requestNode;
         public delegate void HighScoreListResultEventHandler();
 
 
@@ -28,9 +30,9 @@ namespace Casse_brique.Services
         /// Constructor
         /// </summary>
         /// <param name="requestNode"></param>
-        public OnlineHighScoreService(HttpRequest requestNode, IAuthenticationTokenService tokenManager)
+        public OnlineHighScoreService(IAutoLoaderProvider autoLoaderProvider, IAuthenticationTokenService tokenManager)
         {
-            _requestNode = requestNode;
+            _autoLoaderProvider = autoLoaderProvider;
             _tokenManager = tokenManager;
         }
 
@@ -49,6 +51,7 @@ namespace Casse_brique.Services
         /// <param name="needsResult"></param>
         private void SendRequest(string url, bool needsResult = false)
         {
+            SetRequestNode();
             if (needsResult)
                 _requestNode.RequestCompleted += OnRequestCompleted;
             var token = _tokenManager.GetToken();
@@ -67,6 +70,7 @@ namespace Casse_brique.Services
         /// <param name="body"></param>
         private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
         {
+
             _requestNode.RequestCompleted -= OnRequestCompleted;
 
             GD.Print("Request responseCode: "+responseCode);
@@ -109,10 +113,17 @@ namespace Casse_brique.Services
 
         public void PostScore(Score score)
         {
+            SetRequestNode();
             string json = JsonConvert.SerializeObject(score);
             string[] headers = new string[] { "Content-Type: application/json" };
             
             _requestNode.Request("https://localhost:7253/Users/"+score.UserID+"/Score", headers, HttpClient.Method.Post, json);
+        }
+
+        private void SetRequestNode()
+        {
+            if (_requestNode == null)
+                _requestNode = _autoLoaderProvider.GetHttopRequestNode();
         }
     }
 }

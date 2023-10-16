@@ -14,6 +14,8 @@ namespace Cassebrique.Locators
 
         public static void Register<T>(string uriName, string key = DefaultKey) where T : Node
         {
+            if (PackedSceneLocatorEntry<T>.Instance == null)
+                PackedSceneLocatorEntry<T>.Instance = new Dictionary<string, PackedScene>();
             PackedSceneLocatorEntry<T>.Instance[key] = ResourceLoader.Load<PackedScene>(uriName);
         }
 

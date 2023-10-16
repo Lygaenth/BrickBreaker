@@ -1,5 +1,9 @@
-﻿using Godot;
+﻿using Cassebrique.Enums;
+using Cassebrique.Locators;
+using Godot;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cassebrique.Factory
 {
@@ -8,30 +12,17 @@ namespace Cassebrique.Factory
     /// </summary>
     public class ProjectileFactory : IProjectileFactory
     {
-        PackedScene _violonPackedScene;
-        PackedScene _pianoPackedScene;
-        PackedScene _clarinettePackedScene;
-
-        List<PackedScene> _scenes;
+        private readonly List<ProjectileTypes> _projectileTypes;
 
         public ProjectileFactory()
         {
-            _violonPackedScene = ResourceLoader.Load<PackedScene>("res://Scenes/GamePlay/Projectiles/Violon.tscn");
-            _pianoPackedScene = ResourceLoader.Load<PackedScene>("res://Scenes/GamePlay/Projectiles/Piano.tscn");
-            _clarinettePackedScene = ResourceLoader.Load<PackedScene>("res://Scenes/GamePlay/Projectiles/Clarinette.tscn");
-
-            _scenes = new List<PackedScene>
-            {
-                _violonPackedScene,
-                _pianoPackedScene,
-                _clarinettePackedScene
-            };
+            _projectileTypes = Enum.GetValues(typeof(ProjectileTypes)).Cast<ProjectileTypes>().ToList();
         }
 
         public Projectile GetRandomProjectile()
         {
-            var index = GD.RandRange(0, _scenes.Count - 1);
-            var projectile = _scenes[index].Instantiate<Projectile>();
+            var index = GD.RandRange(0, _projectileTypes.Count - 1);
+            var projectile = PackedSceneLocator.GetScene<Projectile>(_projectileTypes[index].GetHashCode().ToString());
             return projectile;
         }
     }
