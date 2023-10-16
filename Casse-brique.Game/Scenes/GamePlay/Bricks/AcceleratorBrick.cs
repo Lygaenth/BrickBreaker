@@ -1,3 +1,4 @@
+using Cassebrique;
 using Godot;
 using System;
 
@@ -13,10 +14,9 @@ public partial class AcceleratorBrick : Brick
 	{
 	}
 
-    protected override void OnBrickHit(Ball ball, Vector2 velocity)
+    protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, 5);
-        ApplyBounceVelocity(ball, velocity, ball.Speed);
+        ball.Bounce(IsBrickHeavy, 5, axisBounce);
 
         HP--;
 

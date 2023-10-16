@@ -1,5 +1,4 @@
-using Godot;
-using System;
+using Cassebrique;
 
 public partial class UnbreakableBrick : Brick
 {
@@ -13,9 +12,8 @@ public partial class UnbreakableBrick : Brick
 	{
 	}
 
-    protected override void OnBrickHit(Ball ball, Vector2 velocity)
+    protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, -2);
-        ApplyBounceVelocity(ball, velocity, ball.Speed);
+        ball.Bounce(IsBrickHeavy, -2, axisBounce);
     }
 }

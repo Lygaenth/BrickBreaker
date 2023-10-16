@@ -1,3 +1,4 @@
+using Cassebrique;
 using Cassebrique.Scenes.GamePlay.BarControl;
 using Godot;
 
@@ -90,11 +91,7 @@ public partial class BarControl : Area2D
 	/// <param name="ball"></param>
 	private void ReactToBall(Ball ball)
 	{
-        var velocity = ball.LinearVelocity;
-        velocity.Y = -1 * ball.Speed;
-        velocity.X += _velocity.X * ball.Speed;
-        ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0);
-        ball.UpdateVelocity(velocity.Normalized() * ball.Speed);
+		ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0, AxisBounce.Y, (_velocity + Vector2.Down) * Speed);
     }
 
 	/// <summary>

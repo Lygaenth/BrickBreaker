@@ -1,3 +1,4 @@
+using Cassebrique;
 using Godot;
 using System;
 
@@ -17,7 +18,8 @@ public partial class Projectile : RigidBody2D
 		if (colliders.Count > 0)
 		{
 			if (colliders[0] is Ball ball)
-				ball.UpdateVelocity(((GlobalPosition - ball.GlobalPosition).Normalized() - ball.LinearVelocity.Normalized()) * ball.Speed);
+				ball.Bounce(true, 1, AxisBounce.XY);
+				//ball.UpdateVelocity(((GlobalPosition - ball.GlobalPosition).Normalized() - ball.LinearVelocity.Normalized()) * ball.Speed,);
 			QueueFree();
 			return;
 		}

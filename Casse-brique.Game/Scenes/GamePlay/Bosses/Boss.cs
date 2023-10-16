@@ -88,9 +88,9 @@ public partial class Boss : Node2D
 
 		EmitSignal(Boss.SignalName.BossHit, HP);
 
-		var reaction = (ball.GlobalPosition - GlobalPosition);
-		ball.UpdateVelocity((reaction - ball.LinearVelocity).Normalized() * ball.Speed);
-        ball.Bounce(true, 0);
+		//var reaction = (ball.GlobalPosition - GlobalPosition);
+		//ball.UpdateVelocity((reaction - ball.LinearVelocity).Normalized() * ball.Speed);
+        ball.Bounce(true, 0, Cassebrique.AxisBounce.XY);
 
 		if (HP <= 0)
 			EmitSignal(Boss.SignalName.BossDestroyed);

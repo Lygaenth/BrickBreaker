@@ -1,3 +1,4 @@
+using Cassebrique;
 using Godot;
 
 public partial class SturdyBrick : Brick
@@ -18,10 +19,9 @@ public partial class SturdyBrick : Brick
         _sprite = GetNode<Sprite2D>("Border/Sprite2D");
     }
 
-    protected override void OnBrickHit(Ball ball, Vector2 velocity)
+    protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, -1);
-        ApplyBounceVelocity(ball, velocity, ball.Speed);
+        ball.Bounce(IsBrickHeavy, -1, axisBounce);
         HP--;
 
         switch (HP)

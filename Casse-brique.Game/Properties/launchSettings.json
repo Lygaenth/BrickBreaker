@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Casse-brique": {
+      "commandName": "Project",
+      "commandLineArgs": "-e --path \"F:\\GodotProjects\\Casse-brique\""
+    }
+  }
+}

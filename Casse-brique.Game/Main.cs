@@ -4,23 +4,22 @@ using Casse_brique.Domain.API;
 using Casse_brique.Domain.Scoring;
 using Casse_brique.Services;
 using Cassebrique.Domain.API;
+using Cassebrique.Enums;
 using Cassebrique.Factory;
 using Cassebrique.Locators;
 using Cassebrique.Scenes.UI;
 using Cassebrique.Services;
 using Godot;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 public partial class Main : Node
 {
     #region Services
-    private readonly ILevelService _levelService;
     private IHighScoreService _highScoreService;
-    private IBrickFactory _brickFactory;
-    private IBallFactory _ballFactory;
-    private IProjectileFactory _projectileFactory;
-    private IHighScoreDal _highScoreDal;
-    private ILevelDal _levelDal;
-    private IAuthenticationTokenService _authenticationTokenService;
+    private readonly ServiceProvider _serviceProvider;
+    private IConfigurationRoot _configuration;
     #endregion
 
     private bool _gameIsOn = false;
@@ -33,7 +32,7 @@ public partial class Main : Node
     private Level _level = null;
     private MainMenu _menu = null;
     private HighScores _highScores = null;
-    private HttpRequest _httpRequest = null;
+    //private HttpRequest _httpRequest = null;
     private InputControls _inputScreen = null;
     private UserEntry _userEntry = null;
     #endregion
@@ -43,34 +42,67 @@ public partial class Main : Node
     /// </summary>
     public Main()
     {
-        Services
-        _levelDal = new LevelDal();
-        _levelService = new LevelService(_levelDal);
-        _brickFactory = new BrickFactory();
-        _authenticationTokenService = new AuthenticationTokenService();
-        _projectileFactory = new ProjectileFactory();
+        CreateConfiguration();
+        _serviceProvider = RegisterServices();
+        RegisterScenes();
+    }
 
-        _highScoreDal = new HighScoreDal();
+    private void CreateConfiguration()
+    {
+        var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        _configuration = builder.Build();
+    }
 
+    private ServiceProvider RegisterServices()
+    {
+        GD.Print("Registering services");
+        var serviceCollection = new ServiceCollection();
+
+        serviceCollection.AddTransient<ILevelDal, LevelDal>();
+        serviceCollection.AddTransient<IHighScoreDal, HighScoreDal>();
+        serviceCollection.AddTransient<ILevelService, LevelService>();
+        serviceCollection.AddTransient<IBrickFactory, BrickFactory>();
+        serviceCollection.AddTransient<IBallFactory, BallFactory>();
+        serviceCollection.AddTransient<IAuthenticationTokenService, AuthenticationTokenService>();
+        serviceCollection.AddTransient<IProjectileFactory, ProjectileFactory>();
+        serviceCollection.AddSingleton<IAutoLoaderProvider, AutoLoaderProvider>();
+
+        if (_configuration["OnlineActive"] == "true")
+        {
+            GD.Print("Registering online highscore service");
+            serviceCollection.AddTransient<IHighScoreService, OnlineHighScoreService>();
+        }
+        else
+        {
+            GD.Print("Registering local highscore service");
+            serviceCollection.AddTransient<IHighScoreService, LocalHighScoreService>();
+        }
+
+        return serviceCollection.BuildServiceProvider();
     }
 
     private void RegisterScenes()
     {
-        PackedSceneLocator.Register<Ball>("res://Scenes/UI/Tracker/BonusTracker.tscn");
+        PackedSceneLocator.Register<Ball>("res://Scenes/GamePlay/Ball.tscn");
         PackedSceneLocator.Register<Level>("res://Scenes/GamePlay/Level.tscn");
         PackedSceneLocator.Register<MainMenu>("res://Scenes/UI/MainMenu/MainMenu.tscn");
         PackedSceneLocator.Register<HighScores>("res://Scenes/UI/Scores/HighScores.tscn");
         PackedSceneLocator.Register<InputControls>("res://Scenes/UI/InputControls.tscn");
         PackedSceneLocator.Register<InputControls>("res://Scenes/UI/Scores/UserEntry.tscn");
         PackedSceneLocator.Register<BonusTracker>("res://Scenes/UI/Tracker/BonusTracker.tscn");
+        PackedSceneLocator.Register<UserEntry>("res://Scenes/UI/Scores/UserEntry.tscn");
+
+        PackedSceneLocator.Register<Projectile>("res://Scenes/GamePlay/Projectiles/Violon.tscn", ProjectileTypes.Violon.GetHashCode().ToString());
+        PackedSceneLocator.Register<Projectile>("res://Scenes/GamePlay/Projectiles/Piano.tscn", ProjectileTypes.Piano.GetHashCode().ToString());
+        PackedSceneLocator.Register<Projectile>("res://Scenes/GamePlay/Projectiles/Clarinette.tscn", ProjectileTypes.Clarinette.GetHashCode().ToString());
     }
 
     public override void _Ready()
     {
-        bool isOnline = true;
-
-        _httpRequest = GetNode<HttpRequest>("/root/HighScoreHttpRequest");
-        _highScoreService = isOnline ? new OnlineHighScoreService(_httpRequest, _authenticationTokenService) : new LocalHighScoreService(_highScoreDal);
+        var autoloaderProvider = _serviceProvider.GetService<IAutoLoaderProvider>();
+        autoloaderProvider.Initialize(this);
+        _highScoreService = _serviceProvider.GetService<IHighScoreService>();
         LoadMenu();
     }
 
@@ -195,7 +227,7 @@ public partial class Main : Node
         _level = PackedSceneLocator.GetScene<Level>();
         _level.OnFinalScore += OnFinalScoreReceived;
         AddChild(_level);
-        _level.Setup(_levelService, _brickFactory, _ballFactory, _projectileFactory);
+        _level.Setup(_serviceProvider.GetService<ILevelService>(), _serviceProvider.GetService<IBrickFactory>(), _serviceProvider.GetService<IBallFactory>(), _serviceProvider.GetService<IProjectileFactory>());
     }
 
     /// <summary>

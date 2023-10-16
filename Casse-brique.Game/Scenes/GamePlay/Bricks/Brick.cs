@@ -1,3 +1,4 @@
+using Cassebrique;
 using Cassebrique.Domain.Bricks;
 using Godot;
 using System;
@@ -35,7 +36,7 @@ public partial class Brick : Node2D
 			return false;
 		}
 
-		if ((hitTime - _lastHitTime).Milliseconds < 10)
+		if ((hitTime - _lastHitTime).Milliseconds < 30)
 		{
 			ball = null;
 			return false;
@@ -56,7 +57,7 @@ public partial class Brick : Node2D
         if (velocity.Y > 0)
         {
             velocity.Y *= -1;
-            OnBrickHit(ball, velocity);
+            OnBrickHit(ball, AxisBounce.Y);
         }
     }
 
@@ -70,7 +71,7 @@ public partial class Brick : Node2D
 		if (velocity.Y < 0)
 		{
 			velocity.Y *= -1;
-			OnBrickHit(ball, velocity);
+			OnBrickHit(ball, AxisBounce.Y);
 		}
     }
 
@@ -84,7 +85,7 @@ public partial class Brick : Node2D
         if (velocity.X > 0)
         {
             velocity.X *= -1;
-            OnBrickHit(ball, velocity);
+            OnBrickHit(ball, AxisBounce.X);
         }
     }
 
@@ -98,7 +99,7 @@ public partial class Brick : Node2D
         if (velocity.X < 0)
         {
             velocity.X *= -1;
-            OnBrickHit(ball, velocity);
+            OnBrickHit(ball, AxisBounce.X);
         }
     }
 
@@ -113,10 +114,9 @@ public partial class Brick : Node2D
         ball.LinearVelocity = velocity.Normalized() * speed;
     }
 
-    protected virtual void OnBrickHit(Ball ball, Vector2 velocity)
+    protected virtual void OnBrickHit(Ball ball, AxisBounce axisBounce)
 	{
-		ball.Bounce(IsBrickHeavy, 1);
-        ApplyBounceVelocity(ball, velocity, ball.Speed);
+		ball.Bounce(IsBrickHeavy, 1, axisBounce);
 
         HP--;
 

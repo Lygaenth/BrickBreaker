@@ -7,7 +7,7 @@ using Godot;
 public partial class Frame : Node2D
 {
 	[Export]
-	FramePositionType FrameType { get; set; }
+	AxisBounce FrameType { get; set; }
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -29,19 +29,7 @@ public partial class Frame : Node2D
 	{
 		if (body is Ball ball)
 		{
-			var velocity = ball.LinearVelocity;
-			switch(FrameType)
-			{
-				case FramePositionType.Top:					
-					velocity.Y *= -1;
-					break;
-				case FramePositionType.Side:
-					velocity.X = velocity.Normalized().X * -1 * ball.Speed;
-					break;
-			}
-			ball.Bounce(true, -1);
-			var vector = velocity.Normalized();
-			ball.UpdateVelocity(vector * ball.Speed);
+			ball.Bounce(true, -1, FrameType);
 		}
 	}
 }

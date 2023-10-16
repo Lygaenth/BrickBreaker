@@ -3,9 +3,10 @@
     /// <summary>
     /// Enum for frame position
     /// </summary>
-    public enum FramePositionType
+    public enum AxisBounce
     {
-        Top = 0,
-        Side = 1
+        Y = 0,
+        X = 1,
+        XY = 2
     }
 }

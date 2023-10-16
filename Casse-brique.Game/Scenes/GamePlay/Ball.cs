@@ -1,3 +1,4 @@
+using Cassebrique;
 using Cassebrique.Helper;
 using Godot;
 
@@ -98,13 +99,13 @@ public partial class Ball : RigidBody2D
                 ApplyImpulse(Vector2.Up * Speed);
                 return;
             }
-            UpdateVelocity(velocity * Speed);
+            UpdateVelocity(velocity);
         }
     }
 
-    public void UpdateVelocity(Vector2 vector)
+    private void UpdateVelocity(Vector2 vector)
     {
-		LinearVelocity = vector;
+		LinearVelocity = vector * Speed;
         AngularVelocity = Mathf.Sign(LinearVelocity.X) * 5;
     }
 
@@ -119,13 +120,21 @@ public partial class Ball : RigidBody2D
 			_bonus = 5;
 	}
 
-	/// <summary>
-	/// Bounce on a surface and update internal stats
-	/// </summary>
-	/// <param name="isHeavy"></param>
-	public void Bounce(bool isHeavy, int bonusModifier)
+    public void Bounce(bool isHeavy, int bonusModifier, AxisBounce axisBounce)
 	{
-		_bounceSoundPlayer.PitchScale = isHeavy ? _lowPitch[_lowPitchIndex] : _highPitch[_highPitchIndex];
+		Bounce(isHeavy, bonusModifier, axisBounce, Vector2.Zero);
+	}
+
+    /// <summary>
+    /// Bounce on a surface and update internal stats
+    /// </summary>
+    /// <param name="isHeavy"></param>
+    public void Bounce(bool isHeavy, int bonusModifier, AxisBounce axisBounce, Vector2 offset)
+	{
+		if (offset != Vector2.Zero)
+			GD.Print("Offset: " + offset.X + " " + offset.Y);
+
+        _bounceSoundPlayer.PitchScale = isHeavy ? _lowPitch[_lowPitchIndex] : _highPitch[_highPitchIndex];
         _bounceSoundPlayer.Play();
 
 		if (isHeavy)
@@ -141,8 +150,17 @@ public partial class Ball : RigidBody2D
 			_bonus += bonusModifier;
 
         Speed = GameConstants.BaseSpeed * (100 + _bonus * 10) / 100;
+        var velocity = LinearVelocity + offset;
+        if (axisBounce == AxisBounce.Y || axisBounce ==  AxisBounce.XY)
+            velocity.Y *= -1;
+		if (axisBounce == AxisBounce.X || axisBounce == AxisBounce.XY)
+            velocity.X = velocity.Normalized().X * -1 * Speed;
 
-		EmitSignal(SignalName.OnHit, ID, _bonus);
+		if (Mathf.Abs(velocity.Y) < 10)
+			velocity.Y += Mathf.Sign(velocity.Y) * (GD.Randf() + 0.5f) * 100;
+
+		UpdateVelocity(velocity.Normalized());
+        EmitSignal(SignalName.OnHit, ID, _bonus);
     }
 
 	/// <summary>

@@ -57,6 +57,8 @@ public partial class Level : Node2D
     /// </summary>
     /// <param name="levelService"></param>
     /// <param name="brickFactory"></param>
+    /// <param name="ballFactory"></param>
+    /// <param name="projectileFactory"></param>
     public void Setup(ILevelService levelService, IBrickFactory brickFactory, IBallFactory ballFactory, IProjectileFactory projectileFactory)
     {
         _levelService = levelService;
@@ -332,7 +334,7 @@ public partial class Level : Node2D
         duplicatedBall.Rotation = ball.Rotation;
         GD.Randomize();
         var sign = GD.RandRange(0, 1) == 0 ? -1 : 1;
-        var duplicatedVector = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 4);
+        var duplicatedVector = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 2);
         if (duplicatedVector.Y < 0.3 && duplicatedVector.Y > -0.3)
         {
             duplicatedVector = duplicatedVector.Rotated(duplicatedVector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
