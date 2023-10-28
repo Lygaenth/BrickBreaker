@@ -105,9 +105,7 @@ namespace Casse_brique.Domain.Level
         {
             _numberOfBallsCreated++;
             var ball = new BallModel(_numberOfBallsCreated);
-            ball.Destroyed += OnBallDestroyed;
-            ball.Duplicated += OnBallDuplicated;
-            ball.Bounced += OnBallBounced;
+            SubscribeToBall(ball);
             _ballModels.Add(ball);
 
             OnBallCreated?.Invoke(this, new BallCreationInfo(ball.ID, creationInfo.Position, creationInfo.InitialVelocity));
@@ -127,19 +125,45 @@ namespace Casse_brique.Domain.Level
         private void OnBallDestroyed(object? sender, int id)
         {
             var destroyedBall = _ballModels.First(b => b.ID == id);
-            destroyedBall.Destroyed -= OnBallDestroyed;
-            destroyedBall.Duplicated -= OnBallDuplicated;
+            UnSubscribeFromBall(destroyedBall);
             _ballModels.Remove(destroyedBall);
             if (_ballModels.Count > 0)
                 return;
 
             _lives--;
+            GameStateUpdated?.Invoke(this, CreateGameState());
             if (!CheckGameIsLost())
             {
-                _numberOfBallsCreated = 0;
+                CleanUpBalls();
+
                 CreateBall(new BallCreationInfo(1, new Vector2(), new Vector2()));
                 ResetBarPosition?.Invoke(this, new EventArgs());
             }
+        }
+
+        private void CleanUpBalls()
+        {
+            _numberOfBallsCreated = 0;
+            while (_ballModels.Count > 0)
+            {
+                UnSubscribeFromBall(_ballModels[0]);
+                _ballModels[0].Destroy();
+                _ballModels.RemoveAt(0);
+            }
+        }
+
+        private void SubscribeToBall(BallModel ball)
+        {
+            ball.Destroyed += OnBallDestroyed;
+            ball.Duplicated += OnBallDuplicated;
+            ball.Bounced += OnBallBounced;
+        }
+
+        private void UnSubscribeFromBall(BallModel ball)
+        {
+            ball.Destroyed -= OnBallDestroyed;
+            ball.Duplicated -= OnBallDuplicated;
+            ball.Bounced -= OnBallBounced;
         }
 
         private void OnBrickBroken(object? sender, int score)
@@ -176,6 +200,8 @@ namespace Casse_brique.Domain.Level
 
             if (_ballModels.Count > 1)
                 _score += _ballModels.Count * 100;
+
+            CleanUpBalls();
 
             _currentStage++;
 

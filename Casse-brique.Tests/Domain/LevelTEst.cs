@@ -235,6 +235,13 @@ namespace Casse_brique.Tests.Domain
             Assert.That(level.CurrentStage, Is.EqualTo("2"));
             Assert.That(_resetBarPositionRequested, Is.True);
             Assert.That(_numberOfBallCreated, Is.EqualTo(1));
+
+            Assert.That(level.Balls.Count, Is.EqualTo(1));
+
+            level.GameStateUpdated += OnGameStateUpdated;
+            level.Balls[0].Destroy();
+            Assert.That(_gameState.Lives, Is.EqualTo(2));
+
         }
 
         private void OnLevelEnded(object? sender, EventArgs e)
