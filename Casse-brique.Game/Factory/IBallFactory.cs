@@ -1,9 +1,10 @@
-﻿using Godot;
+﻿using Casse_brique.Domain;
+using Godot;
 
 namespace Cassebrique.Factory
 {
     public interface IBallFactory
     {
-        Ball CreateBall(int id, Vector2 position);
+        Ball CreateBall(BallModel model, Vector2 position);
     }
 }

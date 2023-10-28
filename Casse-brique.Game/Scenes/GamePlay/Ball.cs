@@ -27,19 +27,12 @@ public partial class Ball : RigidBody2D
 
     public bool IsAttached { get => _ballModel.IsAttached; }
 
-    [Signal]
-    public delegate void OnDuplicateBallEventHandler(Ball ball);
-
-	[Signal]
-	public delegate void OnHitEventHandler(int ID, int intensity);
-
     public int ID { get => _ballModel.ID; }
 
     public void Setup(BallModel ballModel)
     {
         _ballModel = ballModel;
         _ballModel.Impulsed += OnBallImpulsed;
-
     }
 
     private void OnBallImpulsed(object sender, System.EventArgs e)
@@ -49,7 +42,6 @@ public partial class Ball : RigidBody2D
 
     public void Destroy()
     {
-        GD.Print("Ball destroyed");
         _ballModel.Destroy();
         _ballModel.Impulsed -= OnBallImpulsed;
         QueueFree();
@@ -115,14 +107,19 @@ public partial class Ball : RigidBody2D
         _bounceSoundPlayer.Play(isHeavy);
     }
 
+    /// <summary>
+    /// Hit lose zone
+    /// </summary>
     public void HitLoseZone()
     {
         _ballModel.Destroy();
     }
 
+    /// <summary>
+    /// Request ball duplication
+    /// </summary>
     public void Duplicate()
     {
         _ballModel.Duplicate(Position);
     }
-
 }

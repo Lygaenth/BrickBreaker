@@ -5,6 +5,7 @@ using Cassebrique.Locators;
 using Cassebrique.Scenes.UI;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 public partial class Level : Node2D
@@ -61,12 +62,23 @@ public partial class Level : Node2D
         _levelModel.LevelLoaded += OnLevelLoaded;
         _levelModel.LevelEnded += OnLevelEnded;
         _levelModel.PlayerLost += OnPlayerLost;
+        _levelModel.OnAnyBounce += OnAnyBallBounce;
         _levelModel.OnBallCreated += OnBallCreated;
+        _levelModel.ResetBarPosition += OnResetBarPosition;
+    }
+
+    private void OnResetBarPosition(object sender, System.EventArgs e)
+    {
+        ResetBar();
+    }
+
+    private void OnAnyBallBounce(object sender, System.EventArgs e)
+    {
+        _mainUI.Hit();
     }
 
     private void OnBallCreated(object sender, BallCreationInfo e)
     {
-        GD.Print("Ball node created");
         CreateBall(e);
     }
 
@@ -92,6 +104,7 @@ public partial class Level : Node2D
 
     private async void OnPlayerLost(object sender, int finalScore)
     {
+        GD.Print("Player lost");
         StopParty();
         EmitSignal(SignalName.OnFinalScore, finalScore);
         await _mainUI.ShowMessage("You lost :(");
@@ -136,16 +149,10 @@ public partial class Level : Node2D
         }
 
         foreach (var brickDto in _levelModel.Bricks)
-        {
-            var brick = _brickFactory.CreateBrick(brickDto);
-            AddChild(brick);
-        }
+            AddDefered(_brickFactory.CreateBrick(brickDto));
 
         _mainUI.SwitchGameMode(levelObjective);
-
-        GD.Print("Loaded level: " + levelObjective + " Balls: " + _balls.Count);
-
-        StartGame();
+        ResetBar();
     }
 
     private void OnBossSpawnProjectile()
@@ -155,16 +162,11 @@ public partial class Level : Node2D
         AddChild(projectile);
     }
 
-    /// <summary>
-    /// Start game
-    /// </summary>
-    private void StartGame()
+    private void AddDefered(Node2D node)
     {
-        _barControl.Position = _barStartMarker.Position;
-        _barControl.Show();
-
-        _barControl.CanMove = true;
+        CallDeferred(MethodName.AddChild, node);
     }
+
     #endregion
 
     #region Level clear management
@@ -214,6 +216,16 @@ public partial class Level : Node2D
         _bonusTrackers.Clear();
     }
 
+    private void ResetBar()
+    {
+        _barControl.Position = _barStartMarker.Position;
+        _barControl.Show();
+        _barControl.CanMove = true;
+    }
+
+    /// <summary>
+    /// Clear items
+    /// </summary>
     private void ClearDynamicallyCreatedItems()
     {
         GetTree().CallGroup("Projectiles", Node.MethodName.QueueFree);
@@ -232,30 +244,24 @@ public partial class Level : Node2D
         var ballPosition = creationInfo.Position;
         if (ballPosition.X == 0 && ballPosition.Y == 0)
             ballPosition = GetNode<Marker2D>("BallStartPosition").GlobalPosition;
-        GD.Print("Create ball at : " + ballPosition.X + ", " + ballPosition.Y);
-        var ball = _ballFactory.CreateBall(creationInfo.ID, ballPosition);
-        ball.OnHit += OnBallHit;
-        
+
+        var ballModel = _levelModel.Balls.First(b => b.ID == creationInfo.ID);
+        var ball = _ballFactory.CreateBall(ballModel, ballPosition);
         _balls.Add(ball);
-        AddChild(ball);
+        AddDefered(ball);
+
         ball.LinearVelocity = creationInfo.InitialVelocity;
         ball.Show();
 
         var bonusTracker = PackedSceneLocator.GetScene<BonusTracker>();
-        bonusTracker.ID = ball.ID;
+        bonusTracker.Setup(ballModel);
         bonusTracker.Scale *= (GD.Randf() + 0.5f);
         _bonusTrackers.Add(bonusTracker);
         AddChild(bonusTracker);
         bonusTracker.Position = _trackerStartMarker.Position;        
         bonusTracker.ActivateLevel(0);
-        ball.OnHit += bonusTracker.OnAssociatedBallHit;
 
         return ball;
-    }
-
-    private void OnBallHit(int ID, int intensity)
-    {
-        _mainUI.Hit();
     }
     #endregion
 }

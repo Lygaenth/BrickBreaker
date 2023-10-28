@@ -41,15 +41,21 @@ namespace Casse_brique.Domain.Level
 
         private readonly ILevelService _levelService;
 
+        #region Events
         public event EventHandler<GameState> GameStateUpdated;
 
         public event EventHandler<EventArgs> LevelEnded;
 
         public event EventHandler<LevelObjective> LevelLoaded;
 
+        public event EventHandler<EventArgs> ResetBarPosition;
+
         public event EventHandler<int> PlayerLost;
 
         public event EventHandler<BallCreationInfo> OnBallCreated;
+
+        public event EventHandler<EventArgs> OnAnyBounce;
+        #endregion
 
         public LevelModel(ILevelService levelService)
         {
@@ -88,10 +94,11 @@ namespace Casse_brique.Domain.Level
                 _bossModel.Destroyed += OnBossDestroyed;
             }
 
-            CreateBall(new BallCreationInfo(1, new Vector2(), new Vector2()));
-
-            GameStateUpdated?.Invoke(this, CreateGameState());
             LevelLoaded?.Invoke(this, _levelObjective);
+            ResetBarPosition?.Invoke(this, new EventArgs());
+
+            CreateBall(new BallCreationInfo(1, new Vector2(), new Vector2()));
+            GameStateUpdated?.Invoke(this, CreateGameState());
         }
 
         void CreateBall(BallCreationInfo creationInfo)
@@ -100,37 +107,38 @@ namespace Casse_brique.Domain.Level
             var ball = new BallModel(_numberOfBallsCreated);
             ball.Destroyed += OnBallDestroyed;
             ball.Duplicated += OnBallDuplicated;
+            ball.Bounced += OnBallBounced;
             _ballModels.Add(ball);
 
             OnBallCreated?.Invoke(this, new BallCreationInfo(ball.ID, creationInfo.Position, creationInfo.InitialVelocity));
+        }
+
+        private void OnBallBounced(object? sender, int e)
+        {
+            OnAnyBounce?.Invoke(this, new EventArgs());
         }
 
         private void OnBallDuplicated(object? sender, BallCreationInfo e)
         {
             _numberOfBallsCreated++;
             CreateBall(e);
-
         }
 
         private void OnBallDestroyed(object? sender, int id)
         {
-            GD.Print("Level notified of ball destroyed");
             var destroyedBall = _ballModels.First(b => b.ID == id);
             destroyedBall.Destroyed -= OnBallDestroyed;
             destroyedBall.Duplicated -= OnBallDuplicated;
             _ballModels.Remove(destroyedBall);
             if (_ballModels.Count > 0)
-            {
-                GD.Print("At least one ball in models");
                 return;
-            }
 
             _lives--;
-            GD.Print("Lives: " + _lives);
             if (!CheckGameIsLost())
             {
                 _numberOfBallsCreated = 0;
                 CreateBall(new BallCreationInfo(1, new Vector2(), new Vector2()));
+                ResetBarPosition?.Invoke(this, new EventArgs());
             }
         }
 
@@ -168,6 +176,8 @@ namespace Casse_brique.Domain.Level
 
             if (_ballModels.Count > 1)
                 _score += _ballModels.Count * 100;
+
+            _currentStage++;
 
             LoadLevel();
         }

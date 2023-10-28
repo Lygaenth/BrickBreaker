@@ -18,6 +18,8 @@ namespace Casse_brique.Domain
 
         public event EventHandler<int> Destroyed;
 
+        public event EventHandler<int> Bounced;
+
         public int Bonus { get => _bonus; }
 
         private bool _isAttached;
@@ -30,6 +32,12 @@ namespace Casse_brique.Domain
             _bonus = 0;
         }
 
+        /// <summary>
+        /// Bounce
+        /// </summary>
+        /// <param name="axisBounce"></param>
+        /// <param name="bonusModifier"></param>
+        /// <param name="offset"></param>
         public void Bounce(AxisBounce axisBounce, int bonusModifier, Vector2 offset)
         {
             var movement = GetBounceNormalizedVector(axisBounce, offset);
@@ -38,6 +46,7 @@ namespace Casse_brique.Domain
 
             LinearVelocity = movement * ConvertModifierToSpeed(bonusModifier);
 
+            Bounced?.Invoke(this, _bonus);
             Impulsed?.Invoke(this, new EventArgs());
         }
 
@@ -126,12 +135,14 @@ namespace Casse_brique.Domain
         /// </summary>
         public void Duplicate(Vector2 position)
         {
-            // Get random angle between Pi/4 and Pi/8 or -Pi/8 and -Pi/4
-            var randombaseAngle = ((GD.Randf() * Mathf.Pi / 4) + Mathf.Pi / 8);
-            var randomSign = Mathf.Sign(GD.Randf() - 0.5);
+            var random = new Random(DateTime.Now.Millisecond);
+            // Get random angle between Pi / 8 and Pi / 4
+            var randombaseAngle = (float)((random.NextDouble() * Mathf.Pi / 8) + Mathf.Pi / 8);
+            var angle = Mathf.RadToDeg(randombaseAngle);
+            var randomSign = Mathf.Sign(random.NextDouble() - 0.5);
             var randomAngle = randomSign >= 0 ? randombaseAngle : -randombaseAngle;
 
-            Duplicated?.Invoke(this, new BallCreationInfo(ID, position, new Vector2(Mathf.Cos(randomAngle), Mathf.Cos(randomAngle))));
+            Duplicated?.Invoke(this, new BallCreationInfo(ID, position, new Vector2(Mathf.Cos(randomAngle), Mathf.Sin(randomAngle))));
         }
 
         /// <summary>
@@ -139,7 +150,6 @@ namespace Casse_brique.Domain
         /// </summary>
         public void Destroy()
         {
-            GD.Print("Ball model raise destroyed for ID "+ID);
             Destroyed?.Invoke(this, ID);
         }
     }

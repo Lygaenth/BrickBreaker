@@ -1,3 +1,4 @@
+using Casse_brique.Domain;
 using Godot;
 using System;
 
@@ -5,7 +6,9 @@ public partial class BonusTracker : Node2D
 {
 	private BallBonus[] _bonuses;
 
-	public int ID { get; set; }
+	public int ID { get => _ballModel.ID; }
+
+	private BallModel _ballModel;
 
 	public BonusTracker()
 	{
@@ -23,19 +26,32 @@ public partial class BonusTracker : Node2D
 		ActivateLevel(0);
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public void Setup(BallModel ballModel)
 	{
+		_ballModel = ballModel;
+        _ballModel.Bounced += OnBallBounced;
+        _ballModel.Destroyed += OnBallDestroyed;
 	}
 
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="ID"></param>
-	/// <param name="level"></param>
-	public void OnAssociatedBallHit(int ID, int level)
+    private void OnBallDestroyed(object sender, int e)
+    {
+		Hide();
+		QueueFree();
+    }
+
+    /// <summary>
+    /// On associated ball bounced
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="bonusLevel"></param>
+    private void OnBallBounced(object sender, int bonusLevel)
+    {
+        ActivateLevel(bonusLevel);
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
-		ActivateLevel(level);
 	}
 
 	/// <summary>

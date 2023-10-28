@@ -134,8 +134,9 @@ namespace Casse_brique.Tests.Domain
             Assert.IsNotNull(_ballCreationInfo);
             Assert.That(_ballCreationInfo.ID, Is.EqualTo(ball.ID));
             Assert.That(_ballCreationInfo.Position, Is.EqualTo(position));
-            Assert.That(_ballCreationInfo.InitialVelocity.X, Is.EqualTo(0));
-            Assert.That(_ballCreationInfo.InitialVelocity.Y, Is.EqualTo(0));
+            var angle = Mathf.Acos(_ballCreationInfo.InitialVelocity.X);
+            Assert.That(Math.Abs(angle), Is.LessThan(Mathf.Pi / 4));
+            Assert.That(Math.Abs(angle), Is.GreaterThan(Mathf.Pi / 8));
         }
 
         private void OnBallDuplicated(object? sender, BallCreationInfo creationInfo)

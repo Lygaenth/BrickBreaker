@@ -3,6 +3,7 @@ using Casse_brique.Domain.Level;
 using Cassebrique.Domain.API;
 using Cassebrique.Domain.Bricks;
 using Moq;
+using NUnit.Framework.Constraints;
 using System.Drawing;
 
 namespace Casse_brique.Tests.Domain
@@ -13,7 +14,10 @@ namespace Casse_brique.Tests.Domain
 
         private GameState _gameState;
         private BallCreationInfo _ballCreationInfo;
+        private int _numberOfBallCreated;
         private int _finalScore;
+        private bool _resetBarPositionRequested;
+        private bool _levelEnded;
 
         [SetUp]
         public void Setup()
@@ -90,7 +94,6 @@ namespace Casse_brique.Tests.Domain
 
             _levelService.Setup(s => s.GetLevel(1)).Returns(levelDto);
 
-
             var level = new LevelModel(_levelService.Object);
             level.LoadLevel();
 
@@ -118,6 +121,10 @@ namespace Casse_brique.Tests.Domain
         [Test]
         public void TestLoseABall()
         {
+            _resetBarPositionRequested = false;
+            _ballCreationInfo = null;
+            _numberOfBallCreated = 0;
+
             var levelDto = new LevelDto();
             levelDto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 }, new BrickDto() { BrickType = BrickType.Sturdy, Id = 2, X = 40, Y = 50 } };
             levelDto.BossName = "";
@@ -131,6 +138,7 @@ namespace Casse_brique.Tests.Domain
             var level = new LevelModel(_levelService.Object);
             level.OnBallCreated += OnBallCreated;
             level.GameStateUpdated += OnGameStateUpdated;
+            level.ResetBarPosition += OnResetBarPosition;
             level.LoadLevel();
 
             Assert.NotNull(_ballCreationInfo);
@@ -139,27 +147,110 @@ namespace Casse_brique.Tests.Domain
             Assert.That(_ballCreationInfo.Position.Y, Is.EqualTo(0));
             Assert.That(_ballCreationInfo.InitialVelocity.X, Is.EqualTo(0));
             Assert.That(_ballCreationInfo.InitialVelocity.Y, Is.EqualTo(0));
+            Assert.That(_numberOfBallCreated, Is.EqualTo(1));
 
+            _numberOfBallCreated = 0;
             _ballCreationInfo = null;
             var ball = level.Balls[0];
             ball.Destroy();
 
-            Assert.That(level.Lives, Is.EqualTo(2));
+            level.OnBallCreated -= OnBallCreated;
+            level.GameStateUpdated -= OnGameStateUpdated;
+            level.ResetBarPosition -= OnResetBarPosition;
 
+            Assert.That(level.Lives, Is.EqualTo(2));
+            Assert.IsTrue(_resetBarPositionRequested);
+            Assert.That(_numberOfBallCreated, Is.EqualTo(1));
             Assert.NotNull(_ballCreationInfo);
             Assert.That(_ballCreationInfo.ID, Is.EqualTo(1));
             Assert.That(_ballCreationInfo.Position.X, Is.EqualTo(0));
             Assert.That(_ballCreationInfo.Position.Y, Is.EqualTo(0));
             Assert.That(_ballCreationInfo.InitialVelocity.X, Is.EqualTo(0));
             Assert.That(_ballCreationInfo.InitialVelocity.Y, Is.EqualTo(0));
+        }
 
+        [Test]
+        public void TestLoseByLostBall()
+        {
+            var levelDto = new LevelDto();
+            levelDto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 }, new BrickDto() { BrickType = BrickType.Sturdy, Id = 2, X = 40, Y = 50 } };
+            levelDto.BossName = "";
+            levelDto.BossUri = "";
+            levelDto.BossPaths = new List<List<Point>>();
+            levelDto.HasBoss = false;
+            levelDto.ID = 1;
+
+            _levelService.Setup(s => s.GetLevel(1)).Returns(levelDto);
+
+            var level = new LevelModel(_levelService.Object);
+            level.LoadLevel();
+            level.PlayerLost += OnPlayerLost;
+            level.AddScore(75);
+            level.Balls[0].Destroy();
+            level.Balls[0].Destroy();
+            level.Balls[0].Destroy();
+
+            level.PlayerLost -= OnPlayerLost;
+
+            Assert.That(level.Lives, Is.EqualTo(0));
+            Assert.That(_finalScore, Is.EqualTo(75));
+        }
+
+        [Test]
+        public void TestLevelWin()
+        {
+            _numberOfBallCreated = 0;
+            _resetBarPositionRequested = false;
+
+            var level1Dto = new LevelDto();
+            level1Dto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 }, new BrickDto() { BrickType = BrickType.Sturdy, Id = 2, X = 40, Y = 50 } };
+            level1Dto.BossName = "";
+            level1Dto.BossUri = "";
+            level1Dto.BossPaths = new List<List<Point>>();
+            level1Dto.HasBoss = false;
+            level1Dto.ID = 1;
+
+            var level2Dto = new LevelDto();
+            level2Dto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 } };
+
+            _levelService.Setup(s => s.GetLevel(1)).Returns(level1Dto);
+            _levelService.Setup(s => s.GetLevel(2)).Returns(level2Dto);
+
+            var level = new LevelModel(_levelService.Object);
+            level.LoadLevel();
+
+            level.ResetBarPosition += OnResetBarPosition;
+            level.OnBallCreated += OnBallCreated;
+            level.LevelEnded += OnLevelEnded;
+
+            level.Bricks[0].Hit(0);
+            level.Bricks[1].Hit(0);
+            Thread.Sleep(30);
+            level.Bricks[1].Hit(0);
+
+            level.ResetBarPosition -= OnResetBarPosition;
             level.OnBallCreated -= OnBallCreated;
-            level.GameStateUpdated -= OnGameStateUpdated;
+            level.LevelEnded -= OnLevelEnded;
+
+            Assert.That(level.CurrentStage, Is.EqualTo("2"));
+            Assert.That(_resetBarPositionRequested, Is.True);
+            Assert.That(_numberOfBallCreated, Is.EqualTo(1));
+        }
+
+        private void OnLevelEnded(object? sender, EventArgs e)
+        {
+            _levelEnded = true;
+        }
+
+        private void OnResetBarPosition(object? sender, EventArgs e)
+        {
+            _resetBarPositionRequested = true;
         }
 
         private void OnBallCreated(object? sender, BallCreationInfo ballCreationInfo)
         {
             _ballCreationInfo = ballCreationInfo;
+            _numberOfBallCreated++;
         }
 
         private void OnPlayerLost(object? sender, int finalScore)
