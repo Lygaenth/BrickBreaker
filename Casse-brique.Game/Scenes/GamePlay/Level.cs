@@ -143,7 +143,7 @@ public partial class Level : Node2D
         if (_levelModel.Boss != null)
         {
             _boss = _bossFactory.CreateBoss(_levelModel.Boss);
-            BossPathFollow.AddChild(_boss);
+            BossPathFollow.CallDeferred(MethodName.AddChild, _boss);
 
             _boss.BossSpawnProjectile += OnBossSpawnProjectile;
         }
@@ -241,8 +241,10 @@ public partial class Level : Node2D
     /// <returns></returns>
     private Ball CreateBall(BallCreationInfo creationInfo)
     {
+
         var ballPosition = creationInfo.Position;
-        if (ballPosition.X == 0 && ballPosition.Y == 0)
+        bool isDefaultBall = (ballPosition.X == 0 && ballPosition.Y == 0);
+        if (isDefaultBall)
             ballPosition = GetNode<Marker2D>("BallStartPosition").GlobalPosition;
 
         var ballModel = _levelModel.Balls.First(b => b.ID == creationInfo.ID);
@@ -250,7 +252,6 @@ public partial class Level : Node2D
         _balls.Add(ball);
         AddDefered(ball);
 
-        ball.LinearVelocity = creationInfo.InitialVelocity;
         ball.Show();
 
         var bonusTracker = PackedSceneLocator.GetScene<BonusTracker>();
@@ -260,6 +261,9 @@ public partial class Level : Node2D
         AddChild(bonusTracker);
         bonusTracker.Position = _trackerStartMarker.Position;        
         bonusTracker.ActivateLevel(0);
+
+        if (!isDefaultBall)
+            ballModel.Launch(creationInfo.InitialVelocity);
 
         return ball;
     }

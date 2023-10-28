@@ -1,5 +1,4 @@
 using Casse_brique.Domain.Enums;
-using Cassebrique;
 using Godot;
 
 public partial class UnbreakableBrick : Brick
@@ -16,6 +15,6 @@ public partial class UnbreakableBrick : Brick
 
     protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, -2, axisBounce, Vector2.Zero);
+        ball.Bounce(IsBrickHeavy, -1, axisBounce, Vector2.Zero, SpecialEffect.None);
     }
 }

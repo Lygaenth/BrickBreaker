@@ -5,7 +5,7 @@ public partial class AcceleratorBrick : Brick
 {
     protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, 5, axisBounce, Vector2.Zero);
+        ball.Bounce(IsBrickHeavy, 5, axisBounce, Vector2.Zero, SpecialEffect.Accelerate);
 
 		_brickModel.Hit(ball.Bonus);
     }

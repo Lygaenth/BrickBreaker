@@ -1,5 +1,7 @@
-﻿using Cassebrique.Domain.Bricks;
+﻿using Casse_brique.Domain.Enums;
+using Cassebrique.Domain.Bricks;
 using Godot;
+using System.Xml.Serialization;
 
 namespace Casse_brique.Domain.Bricks
 {
@@ -38,6 +40,11 @@ namespace Casse_brique.Domain.Bricks
 
             if (HP == 0 && Broken != null)
                 Broken(this, (int)(_points * multiplier));
+        }
+
+        public virtual SpecialEffect GetSpecialEffect()
+        {
+            return SpecialEffect.None;
         }
     }
 }

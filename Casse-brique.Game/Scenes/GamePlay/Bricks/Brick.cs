@@ -27,7 +27,7 @@ public partial class Brick : Node2D
 		_lastHitTime = DateTime.Now;
 	}
 
-    public void Initialize(BrickModel brickModel)
+    public void Setup(BrickModel brickModel)
     {
         _brickModel = brickModel;
         _brickModel.Broken += OnBroken;
@@ -118,7 +118,7 @@ public partial class Brick : Node2D
 
     protected virtual void OnBrickHit(Ball ball, AxisBounce axisBounce)
 	{
-		ball.Bounce(IsBrickHeavy, 1, axisBounce, Vector2.Zero);
-        _brickModel.Hit(ball.Bonus);
+		ball.Bounce(IsBrickHeavy, 1, axisBounce, Vector2.Zero, _brickModel.GetSpecialEffect());
+        _brickModel.Hit(ball.Bonus);       
     }
 }

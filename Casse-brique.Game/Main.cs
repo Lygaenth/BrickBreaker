@@ -28,6 +28,7 @@ public partial class Main : Node
     private bool _paused = false;
     private int _currentScore;
 
+    private int _defaultStartLevel = 3;
 
     #region SubNodes
     private Level _level = null;
@@ -230,7 +231,7 @@ public partial class Main : Node
         _level.OnFinalScore += OnFinalScoreReceived;
         AddChild(_level);
 
-        var level = new LevelModel(_serviceProvider.GetService<ILevelService>());
+        var level = new LevelModel(_serviceProvider.GetService<ILevelService>(), _defaultStartLevel);
 
         _level.Setup(level,
             _serviceProvider.GetService<IBrickFactory>(),

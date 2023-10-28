@@ -37,6 +37,7 @@ namespace Casse_brique.Tests.Domain
         public void TestBrickImmuneToDamageForATime()
         {
             var brick = new BrickModel(Vector2.Zero, BrickType.Normal, 5, 30, 0);
+            Thread.Sleep(30);
             brick.Hit(1);
             brick.Hit(1);
             Assert.That(brick.HP, Is.EqualTo(4));

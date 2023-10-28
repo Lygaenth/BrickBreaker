@@ -1,5 +1,4 @@
 using Casse_brique.Domain.Enums;
-using Cassebrique;
 using Godot;
 
 public partial class SturdyBrick : Brick
@@ -17,15 +16,24 @@ public partial class SturdyBrick : Brick
         _3HPImg = GD.Load<CompressedTexture2D>("res://Images/Brick/brick3Hp.png");
         _2HPImg = GD.Load<CompressedTexture2D>("res://Images/Brick/brickSturdy.png");
         _1HPImg = GD.Load<CompressedTexture2D>("res://Images/Brick/brickNormal.png");
+
         _sprite = GetNode<Sprite2D>("Border/Sprite2D");
+        ConvertHPToTexture();
     }
 
     protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
         base.OnBrickHit(ball, axisBounce);
+        ConvertHPToTexture();
+    }
 
+    private void ConvertHPToTexture()
+    {
         switch (HP)
         {
+            case 4:
+                _sprite.Texture = _4HPImg;
+                break;
             case 3:
                 _sprite.Texture = _3HPImg;
                 break;

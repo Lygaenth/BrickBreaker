@@ -30,7 +30,7 @@ public partial class Frame : Node2D
 	{
 		if (body is Ball ball)
 		{
-			ball.Bounce(true, -1, FrameType, Vector2.Zero);
+			ball.Bounce(true, -1, FrameType, Vector2.Zero, SpecialEffect.None);
 		}
 	}
 }

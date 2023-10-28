@@ -28,7 +28,7 @@ namespace Casse_brique.Tests.Domain
         [Test]
         public void TestLoadingLevelWithoutBoss()
         {
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
 
             var levelDto = new LevelDto();
             levelDto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Divider, Id = 1, X = 10, Y = 20 } };
@@ -57,7 +57,7 @@ namespace Casse_brique.Tests.Domain
         public void TestScoreUpdate()
         {
             _gameState = null;
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.GameStateUpdated += OnGameStateUpdated;
             level.AddScore(100);
             level.GameStateUpdated -= OnGameStateUpdated;
@@ -70,7 +70,7 @@ namespace Casse_brique.Tests.Domain
         public void TestLivesUpdate()
         {
             _gameState = null;
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.GameStateUpdated += OnGameStateUpdated;
             level.Damage(1);
             level.GameStateUpdated -= OnGameStateUpdated;
@@ -94,7 +94,7 @@ namespace Casse_brique.Tests.Domain
 
             _levelService.Setup(s => s.GetLevel(1)).Returns(levelDto);
 
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.LoadLevel();
 
             var brick = level.Bricks[0];
@@ -109,7 +109,7 @@ namespace Casse_brique.Tests.Domain
         [Test]
         public void TestLoseGameByDamage()
         {
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.PlayerLost += OnPlayerLost;
             level.AddScore(50);
             level.Damage(4);
@@ -135,7 +135,7 @@ namespace Casse_brique.Tests.Domain
 
             _levelService.Setup(s => s.GetLevel(1)).Returns(levelDto);
 
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.OnBallCreated += OnBallCreated;
             level.GameStateUpdated += OnGameStateUpdated;
             level.ResetBarPosition += OnResetBarPosition;
@@ -182,7 +182,7 @@ namespace Casse_brique.Tests.Domain
 
             _levelService.Setup(s => s.GetLevel(1)).Returns(levelDto);
 
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.LoadLevel();
             level.PlayerLost += OnPlayerLost;
             level.AddScore(75);
@@ -216,7 +216,7 @@ namespace Casse_brique.Tests.Domain
             _levelService.Setup(s => s.GetLevel(1)).Returns(level1Dto);
             _levelService.Setup(s => s.GetLevel(2)).Returns(level2Dto);
 
-            var level = new LevelModel(_levelService.Object);
+            var level = new LevelModel(_levelService.Object, 1);
             level.LoadLevel();
 
             level.ResetBarPosition += OnResetBarPosition;

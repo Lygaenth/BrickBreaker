@@ -57,8 +57,9 @@ namespace Casse_brique.Domain.Level
         public event EventHandler<EventArgs> OnAnyBounce;
         #endregion
 
-        public LevelModel(ILevelService levelService)
+        public LevelModel(ILevelService levelService, int startLevel)
         {
+            _currentStage = startLevel;
             _levelService = levelService;
             _brickModels = new List<BrickModel>();
             _ballModels = new List<BallModel>();
@@ -83,7 +84,7 @@ namespace Casse_brique.Domain.Level
                 _brickModels.Add(brickModel);
                 brickModel.Broken += OnBrickBroken;
             }
-            _numberOfBricks = _brickModels.Count;
+            _numberOfBricks = _brickModels.Where(b => b.BrickType != BrickType.Unbreakable).Count();
 
             _levelObjective = LevelObjective.Bricks;
 

@@ -1,5 +1,4 @@
 using Casse_brique.Domain;
-using Casse_brique.Domain.Constants;
 using Casse_brique.Domain.Enums;
 using Godot;
 
@@ -15,7 +14,6 @@ public partial class Ball : RigidBody2D
     private BounceSoundPlayer _bounceSoundPlayer;
 	#endregion
 
-	private float _scale = 0.3f;
     private bool _isAccelerated = false;
 	private bool _launching;
     private Vector2 _screenSize;
@@ -55,16 +53,6 @@ public partial class Ball : RigidBody2D
         _collisionShape = GetNode<CollisionShape2D>("BallCollision");
 
         _screenSize = GetViewportRect().Size;
-
-		UpdateScale();
-    }
-
-	private void UpdateScale()
-	{
-		if (_sprite != null)
-	        _sprite.Scale = Vector2.One * _scale;
-		if (_collisionShape != null)
-	        _collisionShape.Scale = Vector2.One * _scale;
     }
 
     /// <summary>
@@ -91,6 +79,10 @@ public partial class Ball : RigidBody2D
         }
     }
 
+    /// <summary>
+    /// Update ball velocity
+    /// </summary>
+    /// <param name="vector"></param>
     private void UpdateVelocity(Vector2 vector)
     {
 		LinearVelocity = vector;
@@ -101,10 +93,13 @@ public partial class Ball : RigidBody2D
     /// Bounce on a surface and update internal stats
     /// </summary>
     /// <param name="isHeavy"></param>
-    public void Bounce(bool isHeavy, int bonusModifier, AxisBounce axisBounce, Vector2 offset)
+    public void Bounce(bool isHeavy, int bonusModifier, AxisBounce axisBounce, Vector2 offset, SpecialEffect specialEffect)
 	{
 		_ballModel.Bounce(axisBounce, bonusModifier, offset);
         _bounceSoundPlayer.Play(isHeavy);
+
+        if (specialEffect == SpecialEffect.Duplicate)
+            Duplicate();
     }
 
     /// <summary>

@@ -73,7 +73,7 @@ namespace Cassebrique.Factory
                     brick = _brickPackedScene.Instantiate<Brick>();
                     break;
             }
-            brick.Initialize(brickModel);
+            brick.Setup(brickModel);
             brick.Position = brickModel.Position;
             return brick;
         }

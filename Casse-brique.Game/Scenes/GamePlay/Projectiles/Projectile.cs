@@ -17,8 +17,7 @@ public partial class Projectile : RigidBody2D
 		if (colliders.Count > 0)
 		{
 			if (colliders[0] is Ball ball)
-				ball.Bounce(true, 1, AxisBounce.XY, Vector2.Zero);
-				//ball.UpdateVelocity(((GlobalPosition - ball.GlobalPosition).Normalized() - ball.LinearVelocity.Normalized()) * ball.Speed,);
+				ball.Bounce(true, 1, AxisBounce.XY, Vector2.Zero, SpecialEffect.None);
 			QueueFree();
 			return;
 		}

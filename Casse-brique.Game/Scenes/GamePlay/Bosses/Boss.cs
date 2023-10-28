@@ -77,7 +77,7 @@ public partial class Boss : Node2D
 			UpdateAnimationToHit();			
 		}
 
-        ball.Bounce(true, 0, AxisBounce.XY, Vector2.Zero);
+        ball.Bounce(true, 0, AxisBounce.XY, Vector2.Zero, SpecialEffect.None);
 	}
 
 	void UpdateAnimationToHit()

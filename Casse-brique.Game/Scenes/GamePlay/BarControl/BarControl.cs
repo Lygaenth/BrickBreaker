@@ -92,7 +92,7 @@ public partial class BarControl : Area2D
 	/// <param name="ball"></param>
 	private void ReactToBall(Ball ball)
 	{
-		ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0, AxisBounce.Y, _velocity * Speed);
+		ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0, AxisBounce.Y, _velocity * Speed, SpecialEffect.None);
     }
 
 	/// <summary>
