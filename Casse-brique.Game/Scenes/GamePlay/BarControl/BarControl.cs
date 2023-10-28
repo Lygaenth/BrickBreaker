@@ -1,3 +1,4 @@
+using Casse_brique.Domain.Enums;
 using Cassebrique;
 using Cassebrique.Scenes.GamePlay.BarControl;
 using Godot;
@@ -78,7 +79,7 @@ public partial class BarControl : Area2D
 	/// <param name="body"></param>
     private void OnAreaHit(Node2D body)
     {
-		if (body is Ball ball && !ball.IsAttachedToBar)
+		if (body is Ball ball && !ball.IsAttached)
 			ReactToBall(ball);
 
 		if (body is Projectile projectile)
@@ -91,7 +92,7 @@ public partial class BarControl : Area2D
 	/// <param name="ball"></param>
 	private void ReactToBall(Ball ball)
 	{
-		ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0, AxisBounce.Y, (_velocity + Vector2.Down) * Speed);
+		ball.Bounce(true, _bashManager.IsBashing() ? 5 : 0, AxisBounce.Y, _velocity * Speed);
     }
 
 	/// <summary>

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cei0skg7hfarg"]
+[gd_scene load_steps=10 format=3 uid="uid://cei0skg7hfarg"]
 
 [ext_resource type="Script" path="res://Scenes/GamePlay/Ball.cs" id="1_bdylk"]
 [ext_resource type="Texture2D" uid="uid://d1d4vpscbkixk" path="res://Images/Ball/Ball1.png" id="2_4npsg"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ceot7ujhphucn" path="res://Images/Ball/Ball3.png" id="4_gmecr"]
 [ext_resource type="Texture2D" uid="uid://d6pgli1odsrw" path="res://Images/Ball/Ball4.png" id="5_dokjh"]
 [ext_resource type="AudioStream" uid="uid://cmju5ma7y2y2l" path="res://Sound/Bounce.mp3" id="6_6x84f"]
+[ext_resource type="Script" path="res://Scenes/GamePlay/BounceSoundPlayer.cs" id="7_v7io5"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x33xx"]
 radius = 17.0
@@ -46,9 +47,6 @@ gravity_scale = 0.0
 contact_monitor = true
 can_sleep = false
 script = ExtResource("1_bdylk")
-Speed = 400
-DetachedSpeedBall = 400
-CanMove = true
 
 [node name="BallCollision" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_x33xx")
@@ -62,3 +60,4 @@ animation = &"Moving"
 stream = ExtResource("6_6x84f")
 pitch_scale = 0.5
 max_polyphony = 3
+script = ExtResource("7_v7io5")

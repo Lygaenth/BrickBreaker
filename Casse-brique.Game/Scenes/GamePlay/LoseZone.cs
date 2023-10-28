@@ -16,8 +16,7 @@ public partial class LoseZone : Area2D
 	{
 		if (body is Ball ball)
 		{
-			ball.QueueFree();
-			EmitSignal(SignalName.BallHitLoseZone, ball.ID);
+			ball.Destroy();
 			return;
 		}
 

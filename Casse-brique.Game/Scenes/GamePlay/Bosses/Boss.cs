@@ -1,25 +1,18 @@
+using Casse_brique.Domain;
+using Casse_brique.Domain.Enums;
 using Godot;
-using System.Collections.Generic;
-using System.Drawing;
 
 public partial class Boss : Node2D
 {
 	[Export]
-	public int HP { get; set; }
-
-	public int Speed { get; set; }
-
-	[Export]
 	public Vector2 ProjectileSpawnPoint { get; set; }
 
 	[Signal]
-	public delegate void BossDestroyedEventHandler();
-
-	[Signal]
-	public delegate void BossHitEventHandler(int hp);
-
-	[Signal]
 	public delegate void BossSpawnProjectileEventHandler();
+
+	public int Speed { get => _model.Speed; }
+
+	public int HP { get => _model.HP; }
 
 	private AnimatedSprite2D _animatedSprite;
 	private Timer _attackTimer;
@@ -30,7 +23,7 @@ public partial class Boss : Node2D
 	private bool _requestAttackAfterRecover;
 	private int _bossPathIndex = -1;
 
-	private List<List<Point>> _paths;
+	private BossModel _model;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -42,28 +35,33 @@ public partial class Boss : Node2D
 		_attackTimer = GetNode<Timer>("AttackTimer");
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public void Initialize(BossModel model)
 	{
-
+		_model = model;
+        _model.Destroyed += OnDestroyed;
 	}
 
-	public void SetPaths(List<List<Point>> paths)
+    private void OnDestroyed(object sender, int e)
+    {
+		QueueFree();
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
 	{
-		_paths = paths;
+		if(GetParent() is PathFollow2D pathFollow)
+		{
+            var progress = pathFollow.Progress + (float)delta * Speed;
+            pathFollow.Progress = progress;
+            if (pathFollow.Progress < progress)
+                LoadNextBossPath(pathFollow);
+        }
 	}
 
-	/// <summary>
-	/// Load next boss path on Curve2D object
-	/// </summary>
-	/// <param name="curve"></param>
-	public Curve2D GetNextBossPath()
-	{
-		var curve = new Curve2D();
-        _bossPathIndex = (_bossPathIndex + 1) % _paths.Count;
-        foreach (var point in _paths[_bossPathIndex])
-            curve.AddPoint(new Vector2(point.X, point.Y));
-		return curve;
+    private void LoadNextBossPath(PathFollow2D pathFollow)
+    {
+        (pathFollow.GetParent() as Path2D).Curve = _model.GetNextBossPath();
+        pathFollow.Progress = 0;
     }
 
 	public void OnBossHit(Node2D body)
@@ -71,14 +69,7 @@ public partial class Boss : Node2D
 		if (body is not Ball ball)
 			return;
 
-		HP-= ball.Bonus > 3 ? 2 : 1;
-
-        if (HP <= 5 && !_phase2)
-        {
-            Speed *= 2;
-            _phase2 = true;
-			_attackTimer.WaitTime = 1;
-        }
+		_model.Hit(ball.Bonus);
 
         if (!_isHit)
 		{
@@ -86,14 +77,7 @@ public partial class Boss : Node2D
 			UpdateAnimationToHit();			
 		}
 
-		EmitSignal(Boss.SignalName.BossHit, HP);
-
-		//var reaction = (ball.GlobalPosition - GlobalPosition);
-		//ball.UpdateVelocity((reaction - ball.LinearVelocity).Normalized() * ball.Speed);
-        ball.Bounce(true, 0, Cassebrique.AxisBounce.XY);
-
-		if (HP <= 0)
-			EmitSignal(Boss.SignalName.BossDestroyed);
+        ball.Bounce(true, 0, AxisBounce.XY, Vector2.Zero);
 	}
 
 	void UpdateAnimationToHit()

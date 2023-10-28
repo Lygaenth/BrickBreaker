@@ -1,3 +1,4 @@
+using Casse_brique.Domain.Enums;
 using Cassebrique;
 using Godot;
 
@@ -29,7 +30,7 @@ public partial class Frame : Node2D
 	{
 		if (body is Ball ball)
 		{
-			ball.Bounce(true, -1, FrameType);
+			ball.Bounce(true, -1, FrameType, Vector2.Zero);
 		}
 	}
 }

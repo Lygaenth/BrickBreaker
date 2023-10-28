@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.WebApi", "..\C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.Domain", "..\Casse-brique.Domain\Casse-brique.Domain.csproj", "{69769E12-674C-42EF-AFAF-BF129B9A66EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casse-brique.DAL", "..\Casse-brique.DAL\Casse-brique.DAL.csproj", "{5B300BF0-7D1E-4388-9BB4-D95B05B190C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Casse-brique.DAL", "..\Casse-brique.DAL\Casse-brique.DAL.csproj", "{5B300BF0-7D1E-4388-9BB4-D95B05B190C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Casse-brique.Tests", "..\Casse-brique.Tests\Casse-brique.Tests.csproj", "{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{5B300BF0-7D1E-4388-9BB4-D95B05B190C0}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{5B300BF0-7D1E-4388-9BB4-D95B05B190C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B300BF0-7D1E-4388-9BB4-D95B05B190C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3028DB8D-D9EF-412B-96D4-D1EBDC303F17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

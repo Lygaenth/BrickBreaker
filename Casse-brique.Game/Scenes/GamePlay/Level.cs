@@ -1,12 +1,10 @@
-using Cassebrique.Domain.API;
-using Cassebrique.Domain.Bricks;
+using Casse_brique.Domain.Enums;
+using Casse_brique.Domain.Level;
 using Cassebrique.Factory;
 using Cassebrique.Locators;
 using Cassebrique.Scenes.UI;
 using Godot;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
 
 public partial class Level : Node2D
@@ -24,24 +22,16 @@ public partial class Level : Node2D
     [Signal]
     public delegate void OnFinalScoreEventHandler(int score);
 
-    [Export]
-    public int Lives { get; set; }
-
-    public int Score { get; set; }
-
-    private int _numberOfBricks = 0;
-    private int _numberOfBallsCreated = 0;
-    private int _currentStage = 1;
     private Boss _boss;
 
     private readonly List<Ball> _balls;
     private readonly List<BonusTracker> _bonusTrackers;
 
-
     private IBrickFactory _brickFactory;
     private IBallFactory _ballFactory;
+    private IBossFactory _bossFactory;
     private IProjectileFactory _projectileFactory;
-    private ILevelService _levelService;
+    private LevelModel _levelModel;
 
     /// <summary>
     /// Constructor
@@ -59,13 +49,52 @@ public partial class Level : Node2D
     /// <param name="brickFactory"></param>
     /// <param name="ballFactory"></param>
     /// <param name="projectileFactory"></param>
-    public void Setup(ILevelService levelService, IBrickFactory brickFactory, IBallFactory ballFactory, IProjectileFactory projectileFactory)
+    public void Setup(LevelModel levelModel, IBrickFactory brickFactory, IBallFactory ballFactory, IBossFactory bossFactory, IProjectileFactory projectileFactory)
     {
-        _levelService = levelService;
         _brickFactory = brickFactory;
+        _bossFactory = bossFactory;
         _ballFactory = ballFactory;
         _projectileFactory = projectileFactory;
-        Initialize();
+
+        _levelModel = levelModel;
+        _levelModel.GameStateUpdated += OnScoreUpdated;
+        _levelModel.LevelLoaded += OnLevelLoaded;
+        _levelModel.LevelEnded += OnLevelEnded;
+        _levelModel.PlayerLost += OnPlayerLost;
+        _levelModel.OnBallCreated += OnBallCreated;
+    }
+
+    private void OnBallCreated(object sender, BallCreationInfo e)
+    {
+        GD.Print("Ball node created");
+        CreateBall(e);
+    }
+
+    private void OnLevelEnded(object sender, System.EventArgs e)
+    {
+        StopParty();
+    }
+
+    private void OnLevelLoaded(object sender, LevelObjective levelObjective)
+    {
+        LoadLevel(levelObjective);
+    }
+
+    private void OnScoreUpdated(object sender, GameState scoreUpdate)
+    {
+        if (scoreUpdate.BrickWasBroke)
+            _mainUI.BrickBroken();
+    
+        _mainUI.UpdateRemainingBricks(scoreUpdate.NumberOfRemainingBricks);
+        _mainUI.UpdateScore(scoreUpdate.Score);
+        _mainUI.UpdateLives(scoreUpdate.Lives);
+    }
+
+    private async void OnPlayerLost(object sender, int finalScore)
+    {
+        StopParty();
+        EmitSignal(SignalName.OnFinalScore, finalScore);
+        await _mainUI.ShowMessage("You lost :(");
     }
 
     /// <summary>
@@ -84,89 +113,39 @@ public partial class Level : Node2D
         _barControl.HitByProjectile += OnBarHitByProjectile;
     }
 
-    private async void OnBarHitByProjectile(int damage)
+    private void OnBarHitByProjectile(int damage)
     {
-        Lives += damage;
-        _mainUI.UpdateLives(Lives);
-        var isDead = await CheckDeath();
-        if (isDead)
-            StartGame();
+        _levelModel.Damage(damage);
     }
 
     #region Loading and starting level
 
-    public override void _Process(double delta)
-    {
-        if (_boss != null)
-        {
-            var progress= BossPathFollow.Progress + (float)delta * _boss.Speed;
-            BossPathFollow.Progress = progress;
-            if (BossPathFollow.Progress < progress)
-                LoadNextBossPath();
-        }
-    }
-
-    /// <summary>
-    /// Reset game
-    /// </summary>
-    public void Initialize()
-    {
-        InitializeLevelSeries();
-        LoadAndStartGame();
-    }
-
-    private void LoadAndStartGame()
-    {
-        LoadLevel();
-        StartGame();   
-    }
-
-    /// <summary>
-    /// Initialize variables persisting through levels
-    /// </summary>
-    private void InitializeLevelSeries()
-    {
-        Lives = 3;
-        Score = 0;
-    }
-
     /// <summary>
     /// Load level
     /// </summary>
-    private void LoadLevel()
+    private void LoadLevel(LevelObjective levelObjective)
     {
-        var level = _levelService.GetLevel(_currentStage);
         BossPathFollow.Progress = 0;
-        _numberOfBricks = level.Bricks.Count(b => b.BrickType != BrickType.Unbreakable);
-        if (level.HasBoss)
+
+        if (_levelModel.Boss != null)
         {
-            _boss = PackedSceneLocator.GetScene<Boss>(level.BossName);
-            _boss.HP = 10;
-            _boss.Speed = 100;
-            _boss.SetPaths(level.BossPaths);
-
+            _boss = _bossFactory.CreateBoss(_levelModel.Boss);
             BossPathFollow.AddChild(_boss);
-            LoadNextBossPath();
 
-            _boss.BossHit += OnBossHit;
-            _boss.BossDestroyed += OnBossDestroyed;
             _boss.BossSpawnProjectile += OnBossSpawnProjectile;
         }
-        _mainUI.SwitchGameMode(level.HasBoss ? LevelObjective.Boss : LevelObjective.Bricks);
 
-        foreach (var brickDto in level.Bricks)
+        foreach (var brickDto in _levelModel.Bricks)
         {
             var brick = _brickFactory.CreateBrick(brickDto);
-            brick.OnBrickDestroyed += OnBrickDestroyed;
-            CallDeferred(Node.MethodName.AddChild, brick);
-            brick.Show();
+            AddChild(brick);
         }
-    }
 
-    private void LoadNextBossPath()
-    {
-        BossPath.Curve = _boss.GetNextBossPath();
-        BossPathFollow.Progress = 0;
+        _mainUI.SwitchGameMode(levelObjective);
+
+        GD.Print("Loaded level: " + levelObjective + " Balls: " + _balls.Count);
+
+        StartGame();
     }
 
     private void OnBossSpawnProjectile()
@@ -176,47 +155,15 @@ public partial class Level : Node2D
         AddChild(projectile);
     }
 
-    private void OnBossDestroyed()
-    {
-        Score += 1000;
-        _boss.BossHit -= OnBossHit;
-        _boss.BossDestroyed -= OnBossDestroyed;
-        _boss.QueueFree();
-        _boss = null;
-        Lives++;
-        LoadNextLevel();
-    }
-
-    private void OnBossHit(int hp)
-    {
-        _mainUI.UpdateRemainingBricks(hp);
-    }
-
     /// <summary>
     /// Start game
     /// </summary>
     private void StartGame()
     {
-        _mainUI.UpdateLives(Lives);
-        if (_boss != null)
-            _mainUI.UpdateRemainingBricks(_boss.HP);
-        else
-            _mainUI.UpdateRemainingBricks(_numberOfBricks);
-
-        _mainUI.UpdateScore(Score);
-
-        ClearDynamicallyCreatedItems();
-
         _barControl.Position = _barStartMarker.Position;
         _barControl.Show();
 
-        _numberOfBallsCreated = 0;
-        var ball = CreateBall(_ballStartMarker.Position);
-        ball.IsAttachedToBar = true;
-        ball.Show();
-
         _barControl.CanMove = true;
-        CallDeferred(MethodName.AddChild, ball);
     }
     #endregion
 
@@ -224,16 +171,9 @@ public partial class Level : Node2D
     /// <summary>
     /// Check if level is cleared on brick destroyed
     /// </summary>
-    private void OnBrickDestroyed(int points)
+    private void OnBrickDestroyed()
     {
-        _numberOfBricks--;
         _mainUI.BrickBroken();
-        Score += points;
-        _mainUI.UpdateScore(Score);
-        _mainUI.UpdateRemainingBricks(_numberOfBricks);
-
-        if (_numberOfBricks == 0)
-            LoadNextLevel();
     }
 
     /// <summary>
@@ -244,11 +184,7 @@ public partial class Level : Node2D
         StopParty();
         GetTree().CallGroup("UnbreakableBricks", Node.MethodName.QueueFree);
 
-        _currentStage++;
-
-        await _mainUI.ShowMessages(new List<TimedMessage>() { new TimedMessage("Level cleared !", 1.0f), new TimedMessage("Level " + _currentStage + " !", 1.0f)});
-
-        LoadAndStartGame();
+        await _mainUI.ShowMessages(new List<TimedMessage>() { new TimedMessage("Level cleared !", 1.0f), new TimedMessage("Level " + _levelModel.CurrentStage + " !", 1.0f)});
     }
     #endregion
 
@@ -269,8 +205,6 @@ public partial class Level : Node2D
     {
         _barControl.SetPhysicsProcess(false);
         _barControl.Hide();
-
-        Score += _balls.Count * 100;
 
         if (_boss != null)
             _boss.QueueFree();
@@ -293,14 +227,18 @@ public partial class Level : Node2D
     /// </summary>
     /// <param name="position"></param>
     /// <returns></returns>
-    private Ball CreateBall(Vector2 position)
+    private Ball CreateBall(BallCreationInfo creationInfo)
     {
-        var ball = _ballFactory.CreateBall(position);
-        ball.ID = _numberOfBallsCreated++;
-        ball.OnDuplicateBall += OnDuplicateBall;
+        var ballPosition = creationInfo.Position;
+        if (ballPosition.X == 0 && ballPosition.Y == 0)
+            ballPosition = GetNode<Marker2D>("BallStartPosition").GlobalPosition;
+        GD.Print("Create ball at : " + ballPosition.X + ", " + ballPosition.Y);
+        var ball = _ballFactory.CreateBall(creationInfo.ID, ballPosition);
         ball.OnHit += OnBallHit;
+        
         _balls.Add(ball);
-        GD.Print("Created ball: " + ball.ID);
+        AddChild(ball);
+        ball.LinearVelocity = creationInfo.InitialVelocity;
         ball.Show();
 
         var bonusTracker = PackedSceneLocator.GetScene<BonusTracker>();
@@ -308,96 +246,16 @@ public partial class Level : Node2D
         bonusTracker.Scale *= (GD.Randf() + 0.5f);
         _bonusTrackers.Add(bonusTracker);
         AddChild(bonusTracker);
-        bonusTracker.Position = _trackerStartMarker.Position;
+        bonusTracker.Position = _trackerStartMarker.Position;        
         bonusTracker.ActivateLevel(0);
         ball.OnHit += bonusTracker.OnAssociatedBallHit;
+
         return ball;
     }
 
     private void OnBallHit(int ID, int intensity)
     {
         _mainUI.Hit();
-    }
-
-    /// <summary>
-    /// Duplicate ball
-    /// </summary>
-    /// <param name="ball"></param>
-    private void OnDuplicateBall(Ball ball)
-    {
-        GD.Print("Ball count: " + _balls.Count + " bricks count:" + _numberOfBricks);
-        if (_balls.Count >= 10 || _numberOfBricks == 0)
-            return;
-
-        var duplicatedBall = CreateBall(ball.Position);
-        duplicatedBall.CanMove = false;
-        duplicatedBall.Rotation = ball.Rotation;
-        GD.Randomize();
-        var sign = GD.RandRange(0, 1) == 0 ? -1 : 1;
-        var duplicatedVector = ball.LinearVelocity.Rotated(duplicatedBall.Rotation + sign * Mathf.Pi / 2);
-        if (duplicatedVector.Y < 0.3 && duplicatedVector.Y > -0.3)
-        {
-            duplicatedVector = duplicatedVector.Rotated(duplicatedVector.Y > 0 ? Mathf.Pi / 6 : -Mathf.Pi / 6);
-            if (duplicatedVector.X > 0)
-                duplicatedVector.Y *= -1;
-        }
-        duplicatedBall.LinearVelocity = duplicatedVector;
-        CallDeferred(MethodName.AddChild, duplicatedBall);
-        duplicatedBall.Show();
-    }
-
-    /// <summary>
-    /// On ball hit lose zone
-    /// </summary>
-    private async void OnBallHitLoseZone(int ID)
-    {
-        var ball = _balls.FirstOrDefault(b => b.ID == ID);
-
-        var associatedBonusTracker = _bonusTrackers.FirstOrDefault(t => t.ID == ID);
-        ball.OnHit -= associatedBonusTracker.OnAssociatedBallHit;
-        _bonusTrackers.Remove(associatedBonusTracker);
-        if (associatedBonusTracker != null)
-            associatedBonusTracker.QueueFree();
-
-        _balls.Remove(ball);
-
-        if (_balls.Count != 0)
-            return;
-
-        Lives--;
-
-        if (_boss != null && Lives >0)
-        {
-            GD.Print("QuickStartGame");
-            StartGame();
-            return;
-        }
-
-        await Wait(0.5f);
-
-        _mainUI.UpdateLives(Lives);
-
-        StopParty();
-
-        await CheckDeath();
-        StartGame();
-    }
-
-    private async Task<bool> CheckDeath()
-    {
-        if (Lives == 0)
-        {
-            _barControl.Hide();
-            StopParty();
-            EmitSignal(SignalName.OnFinalScore, Score);
-            await _mainUI.ShowMessage("You lost :(");
-
-            InitializeLevelSeries();
-            LoadLevel();
-            return true;
-        }
-
-        return false;
     }
     #endregion
 }

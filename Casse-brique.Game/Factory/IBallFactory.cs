@@ -4,6 +4,6 @@ namespace Cassebrique.Factory
 {
     public interface IBallFactory
     {
-        Ball CreateBall(Vector2 position);
+        Ball CreateBall(int id, Vector2 position);
     }
 }

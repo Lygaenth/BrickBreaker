@@ -48,16 +48,17 @@ Speed = 600
 
 [node name="TopFrame" parent="." instance=ExtResource("2_3lgnu")]
 position = Vector2(501, 0)
+FrameType = 1
 
 [node name="LeftFrame" parent="." instance=ExtResource("2_3lgnu")]
 position = Vector2(-1, 500)
 rotation = -1.5708
-FrameType = 1
+FrameType = 2
 
 [node name="RightFrame" parent="." instance=ExtResource("2_3lgnu")]
 position = Vector2(1000, 502)
 rotation = 1.5708
-FrameType = 1
+FrameType = 2
 
 [node name="BarStartPosition" type="Marker2D" parent="."]
 position = Vector2(515, 912)
@@ -66,7 +67,7 @@ position = Vector2(515, 912)
 position = Vector2(518, 895)
 
 [node name="TrackerStartPosition" type="Marker2D" parent="."]
-position = Vector2(508, 699)
+position = Vector2(510, 680)
 
 [node name="LoseZone" parent="." instance=ExtResource("3_t3n81")]
 position = Vector2(502, 963)

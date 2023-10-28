@@ -1,3 +1,5 @@
+using Casse_brique.Domain.Bricks;
+using Casse_brique.Domain.Enums;
 using Cassebrique;
 using Cassebrique.Domain.Bricks;
 using Godot;
@@ -5,20 +7,18 @@ using System;
 
 public partial class Brick : Node2D
 {
-	[Export]
-	public int HP { get; set; } = 1;
+	public int HP { get => _brickModel.HP; }
 
-	[Export]
-	public BrickType BrickType { get; set; }
+	public BrickType BrickType { get => _brickModel.BrickType; }
 
-	[Export]
-    public int Points { get; set; } = 10;
+    public int Points { get => _brickModel.HP; }
 
-	[Export]
-	public bool IsBrickHeavy { get; set; }
+	public bool IsBrickHeavy { get => _brickModel.IsHeavy; }
+
+    protected BrickModel _brickModel;
 
     [Signal]
-	public delegate void OnBrickDestroyedEventHandler(int point);
+	public delegate void OnBrickDestroyedEventHandler();
 
 	private DateTime _lastHitTime;
 	
@@ -27,7 +27,20 @@ public partial class Brick : Node2D
 		_lastHitTime = DateTime.Now;
 	}
 
-	private bool CheckIsValid(Node2D body, out Ball ball)
+    public void Initialize(BrickModel brickModel)
+    {
+        _brickModel = brickModel;
+        _brickModel.Broken += OnBroken;
+    }
+
+    private void OnBroken(object sender, int e)
+    {
+        EmitSignal(SignalName.OnBrickDestroyed);
+        _brickModel.Broken -= OnBroken;
+        this.QueueFree();
+    }
+
+    private bool CheckIsValid(Node2D body, out Ball ball)
 	{
         var hitTime = DateTime.Now;
 		if (body is not Ball)
@@ -103,24 +116,9 @@ public partial class Brick : Node2D
         }
     }
 
-    protected void RaiseBroken(Ball ball)
-    {
-        EmitSignal(SignalName.OnBrickDestroyed, Points * ball.Bonus);
-        this.QueueFree();
-    }
-
-    protected void ApplyBounceVelocity(Ball ball, Vector2 velocity, int speed)
-    {
-        ball.LinearVelocity = velocity.Normalized() * speed;
-    }
-
     protected virtual void OnBrickHit(Ball ball, AxisBounce axisBounce)
 	{
-		ball.Bounce(IsBrickHeavy, 1, axisBounce);
-
-        HP--;
-
-        if (HP <= 0)
-            RaiseBroken(ball);
+		ball.Bounce(IsBrickHeavy, 1, axisBounce, Vector2.Zero);
+        _brickModel.Hit(ball.Bonus);
     }
 }

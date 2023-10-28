@@ -1,3 +1,4 @@
+using Casse_brique.Domain.Enums;
 using Cassebrique;
 using Godot;
 
@@ -21,8 +22,7 @@ public partial class SturdyBrick : Brick
 
     protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, -1, axisBounce);
-        HP--;
+        base.OnBrickHit(ball, axisBounce);
 
         switch (HP)
         {
@@ -34,10 +34,6 @@ public partial class SturdyBrick : Brick
                 break;
             case 1:
                 _sprite.Texture = _1HPImg;
-                IsBrickHeavy = false;
-                break;
-            default:
-                RaiseBroken(ball);
                 break;
         }
     }

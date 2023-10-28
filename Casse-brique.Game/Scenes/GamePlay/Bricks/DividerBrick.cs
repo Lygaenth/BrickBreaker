@@ -1,4 +1,4 @@
-using Cassebrique;
+using Casse_brique.Domain.Enums;
 using Godot;
 
 public partial class DividerBrick : Brick
@@ -7,17 +7,13 @@ public partial class DividerBrick : Brick
 
     protected override void OnBrickHit(Ball ball, AxisBounce axisBounce)
     {
-        ball.Bounce(IsBrickHeavy, 1, axisBounce);
-
-        HP--;
+        ball.Bounce(IsBrickHeavy, 1, axisBounce, Vector2.Zero);
+        _brickModel.Hit(ball.Bonus);
 
         if (!_hasDuplicated)
         {
             _hasDuplicated = true;
-            ball.RaiseDuplicate();
+            ball.Duplicate();
         }
-
-        if (HP <= 0)
-            RaiseBroken(ball);
     }
 }

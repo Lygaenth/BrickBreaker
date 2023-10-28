@@ -1,6 +1,7 @@
 using Casse_brique.DAL;
 using Casse_brique.DAL.API;
 using Casse_brique.Domain.API;
+using Casse_brique.Domain.Level;
 using Casse_brique.Domain.Scoring;
 using Casse_brique.Services;
 using Cassebrique.Domain.API;
@@ -64,6 +65,7 @@ public partial class Main : Node
         serviceCollection.AddTransient<ILevelService, LevelService>();
         serviceCollection.AddTransient<IBrickFactory, BrickFactory>();
         serviceCollection.AddTransient<IBallFactory, BallFactory>();
+        serviceCollection.AddTransient<IBossFactory, BossFactory>();
         serviceCollection.AddTransient<IAuthenticationTokenService, AuthenticationTokenService>();
         serviceCollection.AddTransient<IProjectileFactory, ProjectileFactory>();
         serviceCollection.AddSingleton<IAutoLoaderProvider, AutoLoaderProvider>();
@@ -227,7 +229,16 @@ public partial class Main : Node
         _level = PackedSceneLocator.GetScene<Level>();
         _level.OnFinalScore += OnFinalScoreReceived;
         AddChild(_level);
-        _level.Setup(_serviceProvider.GetService<ILevelService>(), _serviceProvider.GetService<IBrickFactory>(), _serviceProvider.GetService<IBallFactory>(), _serviceProvider.GetService<IProjectileFactory>());
+
+        var level = new LevelModel(_serviceProvider.GetService<ILevelService>());
+
+        _level.Setup(level,
+            _serviceProvider.GetService<IBrickFactory>(),
+            _serviceProvider.GetService<IBallFactory>(),
+            _serviceProvider.GetService<IBossFactory>(),
+            _serviceProvider.GetService<IProjectileFactory>());
+
+        level.LoadLevel();
     }
 
     /// <summary>

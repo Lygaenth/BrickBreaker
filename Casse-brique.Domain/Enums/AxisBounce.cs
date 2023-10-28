@@ -1,12 +1,13 @@
-﻿namespace Cassebrique
+﻿namespace Casse_brique.Domain.Enums
 {
     /// <summary>
     /// Enum for frame position
     /// </summary>
     public enum AxisBounce
     {
-        Y = 0,
-        X = 1,
-        XY = 2
+        None = 0,
+        Y = 1,
+        X = 2,
+        XY = 3
     }
 }

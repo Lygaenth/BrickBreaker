@@ -1,6 +1,5 @@
-using Cassebrique;
+using Casse_brique.Domain.Enums;
 using Godot;
-using System;
 
 public partial class Projectile : RigidBody2D
 {
@@ -18,7 +17,7 @@ public partial class Projectile : RigidBody2D
 		if (colliders.Count > 0)
 		{
 			if (colliders[0] is Ball ball)
-				ball.Bounce(true, 1, AxisBounce.XY);
+				ball.Bounce(true, 1, AxisBounce.XY, Vector2.Zero);
 				//ball.UpdateVelocity(((GlobalPosition - ball.GlobalPosition).Normalized() - ball.LinearVelocity.Normalized()) * ball.Speed,);
 			QueueFree();
 			return;

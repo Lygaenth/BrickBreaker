@@ -1,4 +1,5 @@
-﻿using Cassebrique.Domain.Bricks;
+﻿using Casse_brique.Domain.API;
+using Casse_brique.Domain.Bricks;
 
 namespace Cassebrique.Factory
 {
@@ -12,6 +13,6 @@ namespace Cassebrique.Factory
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        Brick CreateBrick(BrickDto model);
+        Brick CreateBrick(BrickModel model);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Cassebrique.Domain.Bricks;
+﻿using Casse_brique.Domain.API;
+using Casse_brique.Domain.Bricks;
+using Cassebrique.Domain.Bricks;
 using Godot;
 
 namespace Cassebrique.Factory
@@ -47,11 +49,10 @@ namespace Cassebrique.Factory
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public Brick CreateBrick(BrickDto model)
+        public Brick CreateBrick(BrickModel brickModel)
         {
             Brick brick;
-
-            switch (model.BrickType)
+            switch (brickModel.BrickType)
             {
                 case BrickType.Sturdy:
                     brick = _sturdyBrickPackedScene.Instantiate<Brick>();
@@ -72,7 +73,8 @@ namespace Cassebrique.Factory
                     brick = _brickPackedScene.Instantiate<Brick>();
                     break;
             }
-            brick.Position = new Vector2(model.X, model.Y);
+            brick.Initialize(brickModel);
+            brick.Position = brickModel.Position;
             return brick;
         }
 

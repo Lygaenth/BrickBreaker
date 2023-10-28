@@ -1,4 +1,6 @@
-﻿namespace Cassebrique.Domain.Bricks
+﻿using Cassebrique.Domain.Bricks;
+
+namespace Casse_brique.Domain.API
 {
     /// <summary>
     /// Brick

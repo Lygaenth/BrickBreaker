@@ -1,5 +1,4 @@
-﻿using Cassebrique.Domain.Bricks;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace Casse_brique.Domain.API
 {

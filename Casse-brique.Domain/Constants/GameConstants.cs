@@ -1,4 +1,4 @@
-﻿namespace Cassebrique.Helper
+﻿namespace Casse_brique.Domain.Constants
 {
     /// <summary>
     /// Game constants
@@ -8,7 +8,7 @@
         /// <summary>
         /// Default speed (might change based on level)
         /// </summary>
-        public static int BaseSpeed = 500; 
+        public static int BaseSpeed = 500;
 
     }
 }

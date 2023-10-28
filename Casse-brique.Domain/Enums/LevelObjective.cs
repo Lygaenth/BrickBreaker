@@ -1,4 +1,4 @@
-﻿namespace Cassebrique.Scenes.UI
+﻿namespace Casse_brique.Domain.Enums
 {
     /// <summary>
     /// Game objective
