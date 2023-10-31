@@ -7,5 +7,7 @@ namespace Cassebrique.Locators
         void Initialize(Node node);
 
         HttpRequest GetHttopRequestNode();
+
+        SoundService GetSoundService();
     }
 }

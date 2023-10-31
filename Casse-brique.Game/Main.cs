@@ -28,14 +28,14 @@ public partial class Main : Node
     private bool _paused = false;
     private int _currentScore;
 
-    private int _defaultStartLevel = 3;
+    private int _defaultStartLevel = 4;
 
     #region SubNodes
     private Level _level = null;
     private MainMenu _menu = null;
     private HighScores _highScores = null;
     //private HttpRequest _httpRequest = null;
-    private InputControls _inputScreen = null;
+    private SettingsScreen _settingsScreen = null;
     private UserEntry _userEntry = null;
     #endregion
 
@@ -92,7 +92,9 @@ public partial class Main : Node
         PackedSceneLocator.Register<MainMenu>("res://Scenes/UI/MainMenu/MainMenu.tscn");
         PackedSceneLocator.Register<HighScores>("res://Scenes/UI/Scores/HighScores.tscn");
         PackedSceneLocator.Register<InputControls>("res://Scenes/UI/InputControls.tscn");
-        PackedSceneLocator.Register<InputControls>("res://Scenes/UI/Scores/UserEntry.tscn");
+        PackedSceneLocator.Register<SoundSettings>("res://Scenes/UI/SoundSettings.tscn");
+        PackedSceneLocator.Register<SettingsScreen>("res://Scenes/UI/SettingsScreen.tscn");
+        PackedSceneLocator.Register<UserEntry>("res://Scenes/UI/Scores/UserEntry.tscn");
         PackedSceneLocator.Register<BonusTracker>("res://Scenes/UI/Tracker/BonusTracker.tscn");
         PackedSceneLocator.Register<UserEntry>("res://Scenes/UI/Scores/UserEntry.tscn");
 
@@ -202,19 +204,19 @@ public partial class Main : Node
         _currentScreen = ScreenType.MainMenu;
     }
 
-    private void OnRequestInputs()
+    private void OnRequestSettings()
     {
         _menu.QueueFree();
-        _inputScreen = PackedSceneLocator.GetScene<InputControls>();
-        AddChild(_inputScreen);
+        _settingsScreen = PackedSceneLocator.GetScene<SettingsScreen>();
+        AddChild(_settingsScreen);
         _currentScreen = ScreenType.Inputs;
-        _inputScreen.OnRequestQuit += OnQuitInputRequested;
+        _settingsScreen.OnRequestQuit += OnQuitInputRequested;
     }
 
     private void OnQuitInputRequested()
     {
-        _inputScreen.OnRequestQuit -= OnQuitInputRequested;
-        _inputScreen.QueueFree();
+        _settingsScreen.OnRequestQuit -= OnQuitInputRequested;
+        _settingsScreen.QueueFree();
         LoadMenu();
         _currentScreen = ScreenType.MainMenu;
     }
@@ -274,7 +276,7 @@ public partial class Main : Node
         _menu.RequestStart += OnRequestStart;
         _menu.RequestRestart += OnRequestReset;
         _menu.RequestHighScore += OnRequestHighScores;
-        _menu.RequestControls += OnRequestInputs;
+        _menu.RequestControls += OnRequestSettings;
         AddChild(_menu);
     }
 
@@ -289,7 +291,7 @@ public partial class Main : Node
         _menu.RequestStart -= OnRequestStart;
         _menu.RequestRestart -= OnRequestReset;
         _menu.RequestHighScore -= OnRequestHighScores;
-        _menu.RequestControls -= OnRequestInputs;
+        _menu.RequestControls -= OnRequestSettings;
         _menu.QueueFree();
     }
 

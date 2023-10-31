@@ -16,5 +16,10 @@ namespace Cassebrique.Locators
         {
             return _mainNode.GetNode<HttpRequest>("/root/HighScoreHttpRequest");
         }
+
+        public SoundService GetSoundService()
+        {
+            return _mainNode.GetNode<SoundService>("/root/SoundService");
+        }
     }
 }

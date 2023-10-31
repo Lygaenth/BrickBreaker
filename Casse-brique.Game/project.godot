@@ -18,6 +18,7 @@ config/icon="res://Images/Note.png"
 [autoload]
 
 HighScoreHttpRequest="*res://Scenes/NodeServices/HighScoreHttpRequest.tscn"
+SoundService="*res://Scenes/Configurations/SoundService.tscn"
 
 [display]
 

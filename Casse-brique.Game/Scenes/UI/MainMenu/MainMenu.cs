@@ -49,7 +49,7 @@ public partial class MainMenu : PanelContainer
         foreach (var button in _buttonList)
         {
             _buttonsPanel.AddChild(button);
-            button.OnButtonPressed += OnButtonPressed;
+            //button.OnButtonPressed += OnButtonPressed;
         }
         SelectButton(0);
         foreach (var button in _buttonList)
@@ -59,9 +59,7 @@ public partial class MainMenu : PanelContainer
     public override void _Process(double delta)
     {
         if (Input.IsActionPressed("Enter"))
-        {
-            OnButtonPressed(_buttonList.FirstOrDefault(b => b.HasFocus()).Action.GetHashCode());
-        }
+            _buttonList.FirstOrDefault(b => b.HasFocus()).Action.Invoke();
     }
 
     private void SelectButton(int index)
@@ -78,7 +76,7 @@ public partial class MainMenu : PanelContainer
         var buttons = new List<MenuButton>();
         // Start/continue button
         var startButton = _buttonPackedScene.Instantiate<MenuButton>();
-        startButton.Action = MenuAction.Start;
+        startButton.Action = OnStartButtonPressed; // MenuAction.Start;
         startButton.Text = isGameOn ? "Continue" : "Start";
         buttons.Add(startButton);
 
@@ -86,26 +84,26 @@ public partial class MainMenu : PanelContainer
         if (isGameOn)
         {
             var resetButton = _buttonPackedScene.Instantiate<MenuButton>();
-            resetButton.Action = MenuAction.Reset;
+            resetButton.Action = OnRestartButtonPressed; // MenuAction.Reset;
             resetButton.Text = "Reset";
             buttons.Add(resetButton);
         }
 
         // High scores button
         var highScoreButton = _buttonPackedScene.Instantiate<MenuButton>();
-        highScoreButton.Action = MenuAction.HighScore;
+        highScoreButton.Action = OnScoreButtonPressed; // MenuAction.HighScore;
         highScoreButton.Text = "Scores";
         buttons.Add(highScoreButton);
 
         // Control button
         var controlsButton = _buttonPackedScene.Instantiate<MenuButton>();
-        controlsButton.Action = MenuAction.Controls;
+        controlsButton.Action = OnControlsButtonPressed; //MenuAction.Controls;
         controlsButton.Text = "Controls";
         buttons.Add(controlsButton);
 
         // Quit button
         var quitButton = _buttonPackedScene.Instantiate<MenuButton>();
-        quitButton.Action = MenuAction.Quit;
+        quitButton.Action = () => GetTree().Quit(); //MenuAction.Quit;
         quitButton.Text = "Quit";
         buttons.Add(quitButton);
 
@@ -123,29 +121,30 @@ public partial class MainMenu : PanelContainer
             _pitchscaleIndex = 0;
     }
 
-    private void OnButtonPressed(int actionCode)
-    {
-        var action = (MenuAction)actionCode;
-        switch(action)
-        {
-            case MenuAction.Start:
-            case MenuAction.Continue:
-                OnStartButtonPressed();
-                break;
-            case MenuAction.Reset:
-                OnRestartButtonPressed();
-                break;
-            case MenuAction.HighScore:
-                OnScoreButtonPressed();
-                break;
-            case MenuAction.Controls:
-                OnControlsButtonPressed();
-                break;
-            case MenuAction.Quit:
-                GetTree().Quit();
-                break;
-        }
-    }
+    //private void OnButtonPressed(string actionCode)
+    //{
+    //    EmitSignal(StringName)
+
+    //    switch(actionCode)
+    //    {
+    //        case MenuAction.Start:
+    //        case MenuAction.Continue:
+    //            OnStartButtonPressed();
+    //            break;
+    //        case MenuAction.Reset:
+    //            OnRestartButtonPressed();
+    //            break;
+    //        case MenuAction.HighScore:
+    //            OnScoreButtonPressed();
+    //            break;
+    //        case MenuAction.Controls:
+    //            OnControlsButtonPressed();
+    //            break;
+    //        case MenuAction.Quit:
+    //            GetTree().Quit();
+    //            break;
+    //    }
+    //}
 
     private void OnStartButtonPressed()
 	{
