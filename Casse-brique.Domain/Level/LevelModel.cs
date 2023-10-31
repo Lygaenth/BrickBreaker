@@ -67,6 +67,8 @@ namespace Casse_brique.Domain.Level
 
         public void LoadLevel()
         {
+            _brickModels.Clear();
+            _bossModel = null;
             var level = _levelService.GetLevel(_currentStage);
             foreach (var brick in level.Bricks)
             {
@@ -203,6 +205,8 @@ namespace Casse_brique.Domain.Level
                 _score += _ballModels.Count * 100;
 
             CleanUpBalls();
+            foreach (var brick in Bricks.Where(b => b.BrickType == BrickType.Unbreakable).ToList())
+                brick.Destroy(0);
 
             _currentStage++;
 

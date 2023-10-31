@@ -39,7 +39,12 @@ namespace Casse_brique.Domain.Bricks
             _hp = Math.Max(0, _hp -1);
 
             if (HP == 0 && Broken != null)
-                Broken(this, (int)(_points * multiplier));
+                Destroy((int)(_points * multiplier));
+        }
+
+        public void Destroy(int points)
+        {
+            Broken(this, points);
         }
 
         public virtual SpecialEffect GetSpecialEffect()

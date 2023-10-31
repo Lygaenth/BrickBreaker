@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://ceot7ujhphucn" path="res://Images/Ball/Ball3.png" id="4_gmecr"]
 [ext_resource type="Texture2D" uid="uid://d6pgli1odsrw" path="res://Images/Ball/Ball4.png" id="5_dokjh"]
 [ext_resource type="AudioStream" uid="uid://cmju5ma7y2y2l" path="res://Sound/Bounce.mp3" id="6_6x84f"]
-[ext_resource type="Script" path="res://Scenes/GamePlay/BounceSoundPlayer.cs" id="7_v7io5"]
+[ext_resource type="Script" path="res://Scenes/UI/BounceSoundPlayer.cs" id="7_c7a3a"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x33xx"]
 radius = 17.0
@@ -58,6 +58,7 @@ animation = &"Moving"
 
 [node name="BounceSoundPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_6x84f")
+volume_db = -5.2
 pitch_scale = 0.5
 max_polyphony = 3
-script = ExtResource("7_v7io5")
+script = ExtResource("7_c7a3a")

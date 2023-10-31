@@ -244,6 +244,41 @@ namespace Casse_brique.Tests.Domain
 
         }
 
+        [Test] 
+        public void TestLevelWinIgnoringUnbreakableBricks()
+        {
+            _numberOfBallCreated = 0;
+            _resetBarPositionRequested = false;
+
+            var level1Dto = new LevelDto();
+            level1Dto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 }, new BrickDto() { BrickType = BrickType.Unbreakable, Id = 2, X = 40, Y = 50 } };
+            level1Dto.BossName = "";
+            level1Dto.BossUri = "";
+            level1Dto.BossPaths = new List<List<Point>>();
+            level1Dto.HasBoss = false;
+            level1Dto.ID = 1;
+
+            var level2Dto = new LevelDto();
+            level2Dto.Bricks = new List<BrickDto>() { new BrickDto() { BrickType = BrickType.Normal, Id = 1, X = 10, Y = 20 } };
+
+            _levelService.Setup(s => s.GetLevel(1)).Returns(level1Dto);
+            _levelService.Setup(s => s.GetLevel(2)).Returns(level2Dto);
+
+            _levelEnded = false;
+
+            var level = new LevelModel(_levelService.Object, 1);
+            level.LoadLevel();
+
+            level.LevelEnded += OnLevelEnded;
+            level.Bricks[0].Hit(1);
+            level.LevelEnded -= OnLevelEnded;
+
+            Assert.IsTrue(_levelEnded);
+            Assert.That(level.CurrentStage, Is.EqualTo("2"));
+            Assert.That(level.Bricks.Count, Is.EqualTo(1));
+            Assert.IsFalse(level.Bricks.Any(b => b.BrickType == BrickType.Unbreakable));
+        }
+
         private void OnLevelEnded(object? sender, EventArgs e)
         {
             _levelEnded = true;

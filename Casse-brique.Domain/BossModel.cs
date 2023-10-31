@@ -33,7 +33,7 @@ namespace Casse_brique.Domain
         {
             BossName = bossName;
             _hp = maxHp;
-            _speed = 400;
+            _speed = 100;
             _attackRate = 2;
             _paths = pathLists;
         }
@@ -56,12 +56,12 @@ namespace Casse_brique.Domain
                 Destroyed(this, _scoreValue);
         }
 
-        public Curve2D GetNextBossPath()
+        public List<Point> GetNextBossPath()
         {
-            var curve = new Curve2D();
-            _bossPathIndex = (_bossPathIndex + 1) % _paths.Count;
+            var curve = new List<Point>();
             foreach (var point in _paths[_bossPathIndex])
-                curve.AddPoint(new Vector2(point.X, point.Y));
+                curve.Add(point);
+            _bossPathIndex = (_bossPathIndex + 1) % _paths.Count;
             return curve;
         }
     }

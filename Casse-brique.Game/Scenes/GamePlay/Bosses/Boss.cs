@@ -1,6 +1,8 @@
 using Casse_brique.Domain;
 using Casse_brique.Domain.Enums;
 using Godot;
+using System.Collections.Generic;
+using System.Drawing;
 
 public partial class Boss : Node2D
 {
@@ -60,9 +62,18 @@ public partial class Boss : Node2D
 
     private void LoadNextBossPath(PathFollow2D pathFollow)
     {
-        (pathFollow.GetParent() as Path2D).Curve = _model.GetNextBossPath();
+        (pathFollow.GetParent() as Path2D).Curve = ConvertPointsToCurve2D(_model.GetNextBossPath());
         pathFollow.Progress = 0;
     }
+
+	private Curve2D ConvertPointsToCurve2D(List<Point> points)
+	{
+		Curve2D curve = new Curve2D();
+		foreach(var point in points)
+			curve.AddPoint(new Vector2(point.X, point.Y));
+
+		return curve;
+	}
 
 	public void OnBossHit(Node2D body)
 	{
