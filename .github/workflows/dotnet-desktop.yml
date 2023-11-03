@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir -v -p build/windows
           cd $PROJECT_PATH
-          godot -v --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+          godot -v --export-release "Windows Desktop" ../build/windows/$EXPORT_NAME.exe --rendering-driver opengl3
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
