@@ -2,16 +2,16 @@ name: "godot-ci test"
 on: push
 
 env:
-  GODOT_VERSION: 4.1.1
+  GODOT_VERSION: 4.1.3
   EXPORT_NAME: GDBrickBreaker
   PROJECT_PATH: Casse-brique.Game
   
 jobs:
   export-windows:
     name: Windows Export
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:mono-4.1.1
+      image: barichello/godot-ci:mono-${GODOT_VERSION}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,7 +20,8 @@ jobs:
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/templates
-          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+          mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/mono-${GODOT_VERSION}.stable
+      - name: test
       - name: Windows Build
         run: |
           mkdir -v -p build/windows
